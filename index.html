@@ -826,6 +826,51 @@ select{border:1px solid var(--line);border-radius:6px;padding:4px 8px;font-size:
 #act_tbl .bad{color:var(--red);font-weight:600}
 #act_tbl .ok{color:var(--green);font-weight:600}
 #act_note{margin-top:6px;color:var(--muted);font-size:11px;line-height:1.7}
+/* ---- 投放优化 · 搜索词逐日下钻弹层 ---- */
+#act_tbl tr.rowclk{cursor:pointer}
+#act_tbl tr.rowclk:hover td{background:#F0F6FF}
+#actpop{position:fixed;inset:0;z-index:900;display:none;background:rgba(15,23,42,.45)}
+#actpop.on{display:flex;align-items:center;justify-content:center}
+#actpop .pp{position:relative;background:#fff;border-radius:10px;box-shadow:0 12px 40px rgba(0,0,0,.25);
+  width:min(860px,94vw);max-height:86vh;display:flex;flex-direction:column;overflow:hidden}
+#actpop .pp-h{padding:12px 40px 8px 16px;border-bottom:1px solid var(--line,#E5EAF1)}
+#actpop .pp-t{font-size:14px;font-weight:700}
+#actpop .pp-s{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.6}
+#actpop .pp-x{position:absolute;top:8px;right:10px;padding:2px 8px;cursor:pointer;font-size:16px;color:var(--muted)}
+#actpop .pp-b{overflow:auto;padding:8px 16px 14px}
+#actpop table{width:100%;border-collapse:collapse;font-size:11.5px}
+#actpop th{position:sticky;top:0;background:#F7F9FC;text-align:right;padding:5px 8px;
+  font-weight:600;color:var(--muted);white-space:nowrap}
+#actpop th:first-child,#actpop td:first-child{text-align:left}
+#actpop td{padding:4px 8px;border-top:1px solid #F0F3F7;text-align:right;white-space:nowrap}
+#actpop tr.sumrow td{border-top:2px solid var(--line,#DDE3EB);font-weight:700;background:#FAFBFD}
+#actpop .sbar{display:inline-block;height:8px;background:#C9DCF7;border-radius:2px;vertical-align:middle;margin-right:5px}
+/* ---- 盈亏平衡悬停测算 ---- */
+#acttip{position:fixed;z-index:950;display:none;background:#1E293B;color:#CBD5E1;border-radius:8px;
+  padding:9px 12px;font-size:11px;line-height:1.9;box-shadow:0 8px 24px rgba(0,0,0,.35);
+  max-width:320px;pointer-events:none;white-space:normal}
+#acttip b{color:#fff;font-weight:700}
+#acttip .tt-h{font-weight:700;color:#fff;margin-bottom:2px;font-size:11.5px}
+#acttip .tt-ok{color:#6EE7A0}
+#acttip .tt-bad{color:#FCA5A5}
+#acttip .tt-warn{color:#FCD34D}
+#act_tbl .c-be{cursor:help;border-bottom:1px dashed #C3CEDC}
+#tbl .c-beh{cursor:help;border-bottom:1px dashed #C3CEDC;display:inline-block}
+/* 来源方式多标签换行 */
+#act_tbl td.wrap{white-space:normal;line-height:1.6}
+#act_tbl td.wrap .adtag{margin:1px 3px 1px 0;display:inline-block}
+/* 投放优化 / 漏斗诊断 搜索框 */
+#act_qwrap,#adg_qwrap{display:flex;align-items:center;gap:8px;margin:6px 0 8px}
+#act_qwrap input,#adg_qwrap input{flex:0 1 460px;border:1px solid var(--line,#D9E1EB);border-radius:7px;
+  padding:5px 10px;font-size:12px;background:#fff}
+#act_qwrap input:focus,#adg_qwrap input:focus{outline:none;border-color:var(--blue,#2563EB)}
+#act_qn,#adg_qn{font-size:11px;color:var(--muted)}
+/* 广告位下钻弹层内的可点行与返回 */
+#actpop tr.plclk{cursor:pointer}
+#actpop tr.plclk:hover td{background:#F0F6FF}
+#actpop tr.plcur td{background:#F6FAFF}
+#actpop .pp-back{display:inline-block;margin-right:8px;color:var(--blue,#2563EB);cursor:pointer;font-size:12px;font-weight:600}
+#actpop .pp-back:hover{text-decoration:underline}
 /* 恶化预警：结构沿用前两块 */
 #warn{margin-bottom:4px}
 #warn .sechead{cursor:pointer;user-select:none}
@@ -1099,6 +1144,7 @@ select{border:1px solid var(--line);border-radius:6px;padding:4px 8px;font-size:
       <div id="adg_recon" class="hide"></div>
       <div id="adg_sites" class="hide"></div>
       <div id="adg_tabs"></div>
+      <div id="adg_qwrap"><input id="adg_q" type="search" placeholder="搜索：ASIN / 标题 / 搜索词 / 投放词 / 匹配方式 / 活动名 / 账号（空格=同时满足，逗号=任一满足，如：礼好，金中）"><span id="adg_qn"></span></div>
       <div class="tblwrap" id="adg_tbl" style="max-height:560px"></div>
       <div id="adg_note"></div>
     </section>
@@ -1114,6 +1160,7 @@ select{border:1px solid var(--line);border-radius:6px;padding:4px 8px;font-size:
       </div>
       <div id="act_tabs"></div>
       <div id="act_sites" class="hide"></div>
+      <div id="act_qwrap"><input id="act_q" type="search" placeholder="搜索：ASIN / 品名 / 匹配方式 / 搜索词 / 活动名 / 广告组 / 账号（空格=同时满足，逗号=任一满足）"><span id="act_qn"></span></div>
       <div class="tblwrap" id="act_tbl" style="max-height:520px"></div>
       <div id="act_note"></div>
     </section>
@@ -1354,6 +1401,49 @@ function matchCn(m,kwid,kwText){
   return String(m).trim();
 }
 const matchRank=v=>{const i=MATCH_ORDER.indexOf(v);return i<0?99:i;};
+
+/* ---- 细分匹配方式 ----
+   有些报表（如本表）自动投放也带 keywordId，「投放的关键词」写的是
+   close-match / loose-match / substitutes / complements 这类预定义表达式，
+   商品定向写 asin= / category= / asin-expanded=。
+   不能再用「有没有 keywordId」判断手动还是自动，要看匹配类型本身。 */
+const AUTO_EXPR_CN={'close-match':'\u7D27\u5BC6\u5339\u914D','loose-match':'\u5BBD\u6CDB\u5339\u914D',
+  'substitutes':'\u540C\u7C7B\u5546\u54C1','complements':'\u5173\u8054\u5546\u54C1'};
+const isAutoMatch=m=>m==='\u81EA\u52A8'||m==='\u5546\u54C1\u5B9A\u5411'||m==='\u81EA\u52A8/\u5B9A\u5411'||m==='\u5173\u952E\u8BCD\u7EC4';
+/* 展示用：把粗分桶细化成「自动·紧密匹配 / 定向·类目」等 */
+function matchFine(match,kwText){
+  const t=String(kwText||'').trim();
+  if(match==='\u81EA\u52A8'){
+    const cn=AUTO_EXPR_CN[t.toLowerCase()];
+    if(cn) return '\u81EA\u52A8\u00B7'+cn;
+    if(/^keyword-group/i.test(t)) return '\u5173\u952E\u8BCD\u7EC4';
+    return '\u81EA\u52A8';
+  }
+  if(match==='\u5546\u54C1\u5B9A\u5411'){
+    if(/^asin-expanded/i.test(t)) return '\u5B9A\u5411\u00B7\u62D3\u5C55ASIN';
+    if(/^asin/i.test(t)) return '\u5B9A\u5411\u00B7ASIN';
+    if(/^category/i.test(t)) return '\u5B9A\u5411\u00B7\u7C7B\u76EE';
+    return '\u5546\u54C1\u5B9A\u5411';
+  }
+  return match||'\u2013';
+}
+/* 搜索词与投放词是否同一个词（忽略大小写和多余空格） */
+const sameWord=(a,b)=>{
+  const n=v=>String(v||'').trim().toLowerCase().replace(/\s+/g,' ');
+  const x=n(a), y=n(b);
+  return !!x&&x===y;
+};
+
+/* ---- 搜索语法（全局三个搜索框共用） ----
+   逗号 / 顿号中英 / 竖线 / 分号 分组 = 或；组内空格 = 且。
+   例：「礼好，金中」出两个账号；「克索图 精准，礼好 广泛」出两组条件的并集 */
+function queryGroups(q){
+  return String(q||'').toLowerCase().split(/[|,，;；、]/)
+    .map(g=>g.trim().split(/\s+/).filter(Boolean)).filter(g=>g.length);
+}
+function queryHit(hay,groups){
+  return !groups.length||groups.some(g=>g.every(t=>hay.indexOf(t)>=0));
+}
 
 /* ---- 日期工具 ---- */
 function dateColOf(rows){
@@ -1778,8 +1868,8 @@ const NORM={
       spend:c('spend'),sales:c('sales7d','sales'),ord:c('purchases7d'),
       /* 投放词与匹配方式：SP 搜索词报表里关键词投放叫 keyword，商品/自动定向叫 targeting；
          中文导出常见「投放词 / 关键词 / 匹配方式」。都读，取到哪个算哪个。 */
-      kw:c('keyword','投放词','关键词','keywordText','targeting','targetingExpression','投放'),
-      match:c('matchType','匹配方式','matchTypeName','match')};
+      kw:c('keyword','投放词','关键词','keywordText','targeting','targetingExpression','投放','投放的关键词'),
+      match:c('matchType','匹配方式','matchTypeName','match','关键词匹配类型','keywordMatchType','匹配类型')};
     const out=[];
     for(const r of rows){
       const date=dkey(r[C.date]); if(!date) continue;
@@ -2011,16 +2101,36 @@ function buildModel(from,to){
       site:r.country||r.site||curSite(r.cur),type:r.type,isAsin:r.isAsin,id:termScopeKey(r)}),ref:()=>0});
   for(const o of terms){ o.nCamp=0; }
   {
-    const m=new Map();
-    for(const r of K){ const k=termScopeKey(r); let s=m.get(k); if(!s){s=new Set();m.set(k,s);} s.add(r.camp); }
-    for(const o of terms) o.nCamp=(m.get(o.id)||{size:0}).size;
+    const m=new Map(), km=new Map();
+    for(const r of K){
+      const k=termScopeKey(r);
+      let s=m.get(k); if(!s){s=new Set();m.set(k,s);} s.add(r.camp);
+      /* 来源汇总：匹配方式收集全量（细分标签），投放词只收手动关键词、按花费排序 */
+      let t=km.get(k); if(!t){t={m:new Set(),kw:new Map(),a:0,h:0};km.set(k,t);}
+      const cn=r.match||matchCn('',r.kwid,r.kwText);
+      t.m.add(matchFine(cn,r.kwText));
+      if(isAutoMatch(cn)) t.a=1; else t.h=1;
+      if(r.kwText&&!isAutoMatch(cn)) t.kw.set(r.kwText,(t.kw.get(r.kwText)||0)+(r.spend||0));
+    }
+    for(const o of terms){
+      o.nCamp=(m.get(o.id)||{size:0}).size;
+      const t=km.get(o.id);
+      if(t){
+        const kws=[...t.kw.entries()].sort((a,b)=>b[1]-a[1]).map(x=>x[0]);
+        o.kwSum=kws.join(' / ');
+        o.nKwSrc=kws.length;
+        o.matchSum=[...t.m].sort((a,b)=>matchRank(a)-matchRank(b)).join(' / ');
+        /* 同一个词可能同时被手动关键词和自动/定向带来，类型按全部来源判 */
+        o.type=t.h&&t.a?'\u624B\u52A8+\u81EA\u52A8':(t.h?'\u624B\u52A8/\u5173\u952E\u8BCD':'\u81EA\u52A8/\u5B9A\u5411');
+      }
+    }
   }
 
   /* 广告组层只用搜索词报表聚合指标；推广商品报表只补充 ASIN，避免两份报表重复累加。 */
   const agStats=new Map(), dayAgStats=new Map(), rawTermsByGroup=new Map(), rawTermsByGroupDay=new Map();
   const statPut=(map,k,r)=>{
     let o=map.get(k); if(!o){o={terms:new Set(),kw:new Set()};map.set(k,o);}
-    o.terms.add(r.term); if(r.kwid) o.kw.add(r.kwid);
+    o.terms.add(r.term); if(r.kwid&&!isAutoMatch(r.match)) o.kw.add(r.kwid);
   };
   for(const r of K){
     const k=adGroupScopeKey(r), dk=r.date+'\u0001'+k;
@@ -2065,7 +2175,7 @@ function buildModel(from,to){
     o.acct=o.acct||cm.acct||''; o.country=o.country||cm.country||'';
     o.site=o.country||o.site||cm.site||curSite(o.cur);
     o.nTerm=(tgtStats.get(o.id)||{size:0}).size;
-    o.isAuto=!o.kwid;
+    o.isAuto=!o.kwid||isAutoMatch(o.match);
     if(!o.kwText) o.kwText=o.isAuto?('\u81EA\u52A8/\u5B9A\u5411 \u00B7 '+o.agName):(o.kwid||'\u2013');
   }
   /* 匹配方式效率对比：全局一张，站点筛选由上方筛选条负责 */
@@ -2856,8 +2966,17 @@ function renderChart(){
   const maxR=Math.max(0.02,...D.map(r=>Math.max(r.acos,r.tacos)))*1.25;
   const bw=iw/D.length, wd=Math.min(52,Math.max(4,bw*0.6));
   const X=i=>pl+bw*i+bw/2, Y=v=>pt+ih*(1-v/max), Y2=v=>pt+ih*(1-v/maxR);
-  // 主图 1080 宽，三周以内每天都标得下；更长区间才抽稀，剩下的碰撞交给 labeler
-  const n=D.length, step=Math.max(1,Math.ceil(n/21)), sl=i=>n<=21||i%step===0||i===n-1;
+  /* 抽稀按实际列宽算，不再拍死天数：
+     日期「07-01」约需 34px，周几一个字约 13px ——
+     周几几乎总能每天都标，日期放不下时才隔列抽；
+     柱顶金额更宽（~46px），单独抽稀，碰撞再交给 labeler */
+  const n=D.length;
+  const stepD=Math.max(1,Math.ceil(34/bw)), stepW=Math.max(1,Math.ceil(13/bw)),
+        stepV=Math.max(1,Math.ceil(24/bw)), stepP=Math.max(1,Math.ceil(16/bw));
+  const slD=i=>stepD===1||i%stepD===0||i===n-1;
+  const slW=i=>stepW===1||i%stepW===0||i===n-1;
+  const sl=i=>stepV===1||i%stepV===0||i===n-1;      // 金额标签：宽，但带上下交错避让
+  const slP=i=>stepP===1||i%stepP===0||i===n-1;     // 百分比标签：窄，门槛更低
   let g='',lab='';
   const L=labeler(); L.reserve([0,0,pl-2,H]); L.reserve([W-pr+2,0,W,H]);
   // 周末底色带：先画，压在网格与柱子下面，只提示节奏不抢视线
@@ -2889,7 +3008,7 @@ function renderChart(){
     lab+=L.put(X(i),Y(r.gmv)-5,fmt.$0(r.gmv),{fs:9.5,alts:[0,-11]}); });
   // 蓝色柱段内：广告销售额占比（柱段够高才放得下，白字无描边）
   D.forEach((r,i)=>{
-    if(!sl(i)||r.gmv<=0) return;
+    if(!slP(i)||r.gmv<=0) return;
     const ad=Math.min(r.adSales,r.gmv);
     if(ad<=0) return;
     const yAd=Y(ad), hAd=(pt+ih)-yAd;
@@ -2897,15 +3016,15 @@ function renderChart(){
       {fs:9.5,fill:'#fff',halo:''});
   });
   // 右轴两条线：ACOS 往上让、TACOS 往下让，避免互相压住
-  D.forEach((r,i)=>{ if(sl(i))
+  D.forEach((r,i)=>{ if(slP(i))
     lab+=L.put(X(i),Y2(r.acos)-7,fmt.pct1(r.acos),{fs:9.5,fill:'#C0392B',alts:[0,-13,15,-22]}); });
-  D.forEach((r,i)=>{ if(sl(i))
+  D.forEach((r,i)=>{ if(slP(i))
     lab+=L.put(X(i),Y2(r.tacos)+13,fmt.pct1(r.tacos),{fs:9.5,fill:'#B7791F',alts:[0,-20,8,-28,16]}); });
   g+=lab;
-  D.forEach((r,i)=>{ if(!sl(i)) return;
+  D.forEach((r,i)=>{
     const we=isWeekend(r.date);
-    g+=`<text x="${X(i)}" y="${H-25}" text-anchor="middle" font-size="9.5" fill="${we?'#8A5A00':'#8899AA'}">${r.date.slice(5)}</text>`
-      +`<text x="${X(i)}" y="${H-11}" text-anchor="middle" font-size="9.5" font-weight="${we?700:400}" fill="${we?'#B26A00':'#A8B4C2'}">${wdCN(r.date)}</text>`;});
+    if(slD(i)) g+=`<text x="${X(i)}" y="${H-25}" text-anchor="middle" font-size="9.5" fill="${we?'#8A5A00':'#8899AA'}">${r.date.slice(5)}</text>`;
+    if(slW(i)) g+=`<text x="${X(i)}" y="${H-11}" text-anchor="middle" font-size="9.5" font-weight="${we?700:400}" fill="${we?'#B26A00':'#A8B4C2'}">${wdCN(r.date)}</text>`;});
   $('#chart').innerHTML=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">${g}</svg>`;
   $('#chart').querySelectorAll('.bar').forEach(el=>el.onclick=()=>goDaySites(el.dataset.d));
 }
@@ -2951,7 +3070,7 @@ function groupTermRows(src){
   const rows=groupBy(src,r=>r.term,r=>({id:r.term,term:r.term,cur:r.cur,isAsin:r.isAsin,
     adAsin:r.adAsin,type:r.type,camp:r.camp,ag:r.ag||'',agName:r.agName}));
   const km=new Map();
-  for(const r of src){ let s=km.get(r.term); if(!s){s=new Set();km.set(r.term,s);} if(r.kwid) s.add(r.kwid); }
+  for(const r of src){ let s=km.get(r.term); if(!s){s=new Set();km.set(r.term,s);} if(r.kwid&&!isAutoMatch(r.match)) s.add(r.kwid); }
   for(const o of rows){
     o.nKw=(km.get(o.term)||{size:0}).size;
     o.type=o.nKw?'\u624B\u52A8/\u5173\u952E\u8BCD':'\u81EA\u52A8/\u5B9A\u5411';
@@ -2959,6 +3078,21 @@ function groupTermRows(src){
   return rows;
 }
 
+/* 搜索词来源键：活动 × 广告组 × 投放词（自动/定向按 匹配方式+表达式 归桶） */
+const termSrcKey=r=>r.camp+'\u0001'+(r.ag||'')+'\u0001'
+  +(r.kwid||('~'+(r.match||'')+'\u0001'+(r.kwText||'')));
+function termSrcRows(id){
+  const src=(model&&model.rawTerm||[]).filter(r=>termScopeKey(r)===id);
+  return groupBy(src,termSrcKey,r=>{
+    const cn=r.match||matchCn('',r.kwid,r.kwText);
+    return {srcId:termSrcKey(r),term:r.term,camp:r.camp,campName:r.campName||r.camp,
+      ag:r.ag||'',agName:r.agName||'',kwText:r.kwText||'',match:cn,
+      mFine:matchFine(cn,r.kwText),
+      kwDisp:isAutoMatch(cn)?'\u2014':(r.kwText||r.kwid||'\u2013'),
+      acct:r.acct,country:r.country,cur:r.cur,
+      site:r.country||r.site||curSite(r.cur)};
+  }).sort((a,b)=>(b.spend||0)-(a.spend||0));
+}
 function drillRows(v){
   const M=model;
   switch(v.type){
@@ -3013,6 +3147,10 @@ function drillRows(v){
     case 'termDays':   return groupBy(M.rawTerm.filter(r=>termScopeKey(r)===v.id),
                             r=>r.date,r=>({date:r.date,term:r.term,acct:r.acct,country:r.country,
                               site:r.country||r.site||curSite(r.cur),cur:r.cur})).sort(bySort);
+    /* 同一搜索词的各来源对比：活动 × 广告组 × 投放词 × 匹配方式 各聚合一行 */
+    case 'termCamps':  return termSrcRows(v.id);
+    case 'termSrcDays':return groupBy(M.rawTerm.filter(r=>termScopeKey(r)===v.id&&termSrcKey(r)===v.src),
+                            r=>r.date,r=>({date:r.date,cur:r.cur})).sort(bySort);
     case 'invDays':    return M.byDayInv.filter(r=>r.camp===v.camp).sort(bySort);
   }
   return [];
@@ -3035,7 +3173,8 @@ function drillAlive(v){
     case 'campDays': case 'invDays': return M.camps.some(r=>r.camp===v.camp)||M.invs.some(r=>r.camp===v.camp);
     case 'campDayPlaces': return M.rawPlace.some(r=>r.camp===v.camp&&r.date===v.date);
     case 'placeDays': return M.places.some(r=>r.pl===v.pl);
-    case 'termDays': return M.terms.some(r=>r.id===v.id);
+    case 'termDays': case 'termCamps': return M.terms.some(r=>r.id===v.id);
+    case 'termSrcDays': return M.rawTerm.some(r=>termScopeKey(r)===v.id&&termSrcKey(r)===v.src);
   }
   return false;
 }
@@ -3080,6 +3219,8 @@ function drillLabel(v){
     case 'placeDays': return `${v.pl} \u6BCF\u65E5`;
     case 'dayPlaces': return `${v.date} \u5168\u90E8\u5E7F\u544A\u4F4D`;
     case 'termDays': return `\u641C\u7D22\u8BCD\u300C${cut(String(v.id||'').split('\u0001')[0],26)}\u300D\u6BCF\u65E5`;
+    case 'termCamps': return `\u641C\u7D22\u8BCD\u300C${cut(String(v.id||'').split('\u0001')[0],22)}\u300D\u00B7 \u6765\u6E90\u5BF9\u6BD4`;
+    case 'termSrcDays': return `\u300C${cut(String(v.id||'').split('\u0001')[0],16)}\u300D\u00B7 ${cut(v.kwDisp&&v.kwDisp!=='\u2014'?v.kwDisp:(v.mFine||'\u81EA\u52A8/\u5B9A\u5411'),18)} \u00B7 \u6BCF\u65E5`;
     case 'invDays': return `${cut(nameOfCamp(v.camp),30)} \u00B7 ${v.camp} \u65E0\u6548\u6D41\u91CF\u6BCF\u65E5`;
   }
   return v.type;
@@ -3093,7 +3234,7 @@ const VIEW_ROOT={daySites:'daily',siteDays:'site',siteDayAsins:'site',asinDays:'
   ownerAsins:'owner',pcodeAsins:'pcode',campGroups:'camp',campDays:'camp',campDayPlaces:'camp',
   adGroupDays:'adgroup',adGroupDayTerms:'adgroup',adGroupTermDays:'adgroup',
   targetTerms:'target',targetDays:'target',targetTermDays:'target',
-  placeDays:'place',dayPlaces:'place',termDays:'term',invDays:'inv'};
+  placeDays:'place',dayPlaces:'place',termDays:'term',termCamps:'term',termSrcDays:'term',invDays:'inv'};
 function go(v,keep){
   if(!keep){
     const rt=VIEW_ROOT[v.type];
@@ -3126,6 +3267,10 @@ const goCampDayPlaces=(c,d,k)=>go({type:'campDayPlaces',camp:c,date:d},k);
 const goPlaceDays=(p,k)=>go({type:'placeDays',pl:p},k);
 const goDayPlaces=(d,k)=>go({type:'dayPlaces',date:d},k);
 const goTermDays=(id,k)=>go({type:'termDays',id},k);
+const goTermCamps=(id,k)=>go({type:'termCamps',id},k);
+const goTermSrcDays=(id,src,meta,k)=>go({type:'termSrcDays',id,src,...(meta||{})},k);
+/* 搜索词行点击：多个来源先看来源对比，只有一个来源直接看每日 */
+const goTermSmart=(id,k)=>termSrcRows(id).length>1?goTermCamps(id,k):goTermDays(id,k);
 const goInvDays=(c,k)=>go({type:'invDays',camp:c},k);
 function goTop(){ drill=[]; searchQ=''; tableLimit=TABLE_LIMIT_DEFAULT; afterNav(); }
 function goLevel(i){ drill=drill.slice(0,i+1); searchQ=''; afterNav(); }
@@ -3153,9 +3298,10 @@ function renderCrumb(){
 
 /* ---- 下钻详情面板 ---- */
 const AD_VIEWS=new Set(['campGroups','adGroupDays','adGroupDayTerms','adGroupTermDays',
-  'campDays','campDayPlaces','placeDays','dayPlaces','termDays','invDays']);
+  'campDays','campDayPlaces','placeDays','dayPlaces','termDays','invDays',
+  'targetTerms','targetDays','targetTermDays','termCamps','termSrcDays']);
 const PERDAY_VIEWS=new Set(['siteDays','asinDays','adGroupDays','adGroupTermDays',
-  'campDays','placeDays','termDays','invDays']);
+  'campDays','placeDays','termDays','invDays','targetDays','targetTermDays','termSrcDays']);
 function renderDrillSum(){
   const s=$('#drillsum'), v=drill[drill.length-1];
   $('#trendsec').classList.toggle('hide',!!v);
@@ -3193,16 +3339,44 @@ function renderDrillSum(){
       placeDays:()=>`\u5E7F\u544A\u4F4D\uFF1A${v.pl}`,
       dayPlaces:()=>`${v.date} \u00B7 \u5F53\u65E5\u5168\u90E8\u5E7F\u544A\u4F4D`,
       termDays:()=>`\u641C\u7D22\u8BCD\uFF1A${String(v.id||'').split('\u0001')[0]}`,
+      targetTerms:()=>`\u6295\u653E\u8BCD\u300C${nameOfTarget(v.id)}\u300D\u00B7 \u8DD1\u51FA\u7684\u641C\u7D22\u8BCD`,
+      targetDays:()=>`\u6295\u653E\u8BCD\u6BCF\u65E5\u8868\u73B0\uFF1A${nameOfTarget(v.id)}`,
+      targetTermDays:()=>`\u641C\u7D22\u8BCD\u6BCF\u65E5\u8868\u73B0\uFF1A${v.term}`,
+      termCamps:()=>`\u641C\u7D22\u8BCD\u300C${String(v.id||'').split('\u0001')[0]}\u300D\u00B7 \u5404\u6765\u6E90\u5BF9\u6BD4`,
+      termSrcDays:()=>`\u641C\u7D22\u8BCD\u300C${String(v.id||'').split('\u0001')[0]}\u300D\u00B7 ${(v.kwDisp&&v.kwDisp!=='\u2014')?v.kwDisp:(v.mFine||'\u81EA\u52A8/\u5B9A\u5411')} \u00B7 \u6BCF\u65E5`,
       invDays:()=>`\u65E0\u6548\u6D41\u91CF\uFF1A\u6D3B\u52A8 ${v.camp}`};
     name=(NAME[v.type]||(()=>v.type))();
     sub=(v.type==='campGroups'?`\u5171 ${rows.length} \u4E2A\u5E7F\u544A\u7EC4 \u00B7 \u5DE6\u56FE\u6309\u82B1\u8D39\u3001\u53F3\u56FE\u6309\u70B9\u51FB\u6392\u540D`
       :v.type==='adGroupDayTerms'?`\u5171 ${rows.length} \u4E2A\u641C\u7D22\u8BCD \u00B7 \u5DE6\u56FE\u6309\u82B1\u8D39\u3001\u53F3\u56FE\u6309\u70B9\u51FB\u6392\u540D`
+      :v.type==='targetTerms'?`\u5171 ${rows.length} \u4E2A\u641C\u7D22\u8BCD \u00B7 \u56FE\u8868\u53EA\u5C55\u793A TOP 20\uFF0C\u4E0B\u65B9\u8868\u683C\u4E3A\u5168\u90E8`
+      :v.type==='termCamps'?`\u5171 ${rows.length} \u4E2A\u6765\u6E90\uFF08\u6D3B\u52A8\u00D7\u5E7F\u544A\u7EC4\u00D7\u6295\u653E\u8BCD\u00D7\u5339\u914D\u65B9\u5F0F\uFF09 \u00B7 \u56FE\u8868\u53EA\u5C55\u793A TOP 20 \u00B7 \u70B9\u8868\u683C\u4EFB\u610F\u4E00\u884C\u770B\u8BE5\u6765\u6E90\u9010\u65E5`
       :perDay?`\u533A\u95F4 ${dateRange.from} ~ ${dateRange.to}\uFF08${nDays} \u5929\uFF09`:`\u5171 ${rows.length} \u884C`)
       +(curs.length?` \u00B7 \u5E01\u79CD ${curs.join('/')}`:'')
       +(v.type==='campGroups'?' \u00B7 \u70B9\u4E0B\u65B9\u8868\u683C\u7684\u5E7F\u544A\u7EC4\u67E5\u770B\u6BCF\u65E5\u8868\u73B0':'')
       +(v.type==='adGroupDayTerms'?' \u00B7 \u70B9\u4E0B\u65B9\u8868\u683C\u7684\u641C\u7D22\u8BCD\u67E5\u770B\u6BCF\u65E5\u8D8B\u52BF':'')
       +(v.type==='campDays'?' \u00B7 \u70B9\u8868\u683C\u4EFB\u610F\u4E00\u884C\u53EF\u770B\u5F53\u65E5\u5404\u5E7F\u544A\u4F4D':'')
       +(v.type==='placeDays'?' \u00B7 \u70B9\u8868\u683C\u4EFB\u610F\u4E00\u884C\u53EF\u770B\u5F53\u65E5\u5168\u90E8\u5E7F\u544A\u4F4D':'');
+    /* 投放词视图：补上匹配方式、所属活动/广告组，以及推广的 ASIN + 品名 */
+    if(v.type==='termSrcDays'){
+      const c2=(x,n)=>{x=String(x||'');return x.length>n?x.slice(0,n-1)+'\u2026':x;};
+      if(v.campName) sub+=` \u00B7 \u6D3B\u52A8\uFF1A${esc(c2(v.campName,24))}`;
+      if(v.agName) sub+=` \u00B7 \u5E7F\u544A\u7EC4\uFF1A${esc(c2(v.agName,18))}`;
+      if(v.mFine) sub+=` \u00B7 \u5339\u914D\uFF1A${esc(v.mFine)}`;
+    }
+    if(v.type==='targetTerms'||v.type==='targetDays'||v.type==='targetTermDays'){
+      const tg=(model.targets||[]).find(x=>x.id===v.id);
+      const cut2=(s,n)=>{s=String(s||'');return s.length>n?s.slice(0,n-1)+'\u2026':s;};
+      const raw0=((model.rawTermsByTarget&&model.rawTermsByTarget.get(v.id))||[])[0]||{};
+      const asin=String(raw0.adAsin||(rows[0]&&rows[0].adAsin)||(tg&&tg.adAsin)||'').split(/[ ,]/)[0];
+      const ttl=(a=>{ if(!a) return '';
+        const x=(model.asins||[]).find(y=>y.asin===a)||(model.byDayAsin||[]).find(y=>y.asin===a);
+        return (x&&x.title)?x.title:''; })(asin);
+      if(tg) sub+=` \u00B7 \u5339\u914D\uFF1A${esc((typeof matchFine==='function'?matchFine(tg.match,tg.kwText):tg.match)||'\u2013')}`
+        +(tg.campName?` \u00B7 \u6D3B\u52A8\uFF1A${esc(cut2(tg.campName,22))}`:'')
+        +(tg.agName?` \u00B7 \u5E7F\u544A\u7EC4\uFF1A${esc(cut2(tg.agName,18))}`:'')
+        +(tg.acct?` \u00B7 ${esc(tg.acct)}`:'');
+      if(asin) sub+=` \u00B7 \u63A8\u5E7F\uFF1A${esc(asin)}${ttl?` ${esc(cut2(ttl,26))}`:''}`;
+    }
     cells=[
       ['\u82B1\u8D39',fmt.$2(t.spend),per(fmt.$2(t.spend/nDays)+'/\u5929'),C.cost],
       ['\u5E7F\u544A\u9500\u552E\u989D',fmt.$2(t.adSales),per(fmt.$0(t.adSales/nDays)+'/\u5929'),C.sale],
@@ -3259,12 +3433,27 @@ function renderDrillSum(){
   }
 
   const CH={
-    campGroups:['\u5E7F\u544A\u7EC4\u82B1\u8D39 Top 12','\u5E7F\u544A\u7EC4\u70B9\u51FB Top 12',
+    campGroups:['\u5E7F\u544A\u7EC4\u82B1\u8D39 Top 20','\u5E7F\u544A\u7EC4\u70B9\u51FB Top 20',
       '<span><i style="background:#C0392B"></i>\u82B1\u8D39</span><span>\u6807\u6CE8\uFF1A\u5E7F\u544A\u9500\u552E\u989D / ACOS</span>',
       '<span><i style="background:#146EB4"></i>\u70B9\u51FB</span><span>\u6807\u6CE8\uFF1A\u66DD\u5149 / CTR</span>'],
-    adGroupDayTerms:['\u641C\u7D22\u8BCD\u82B1\u8D39 Top 12','\u641C\u7D22\u8BCD\u70B9\u51FB Top 12',
+    adGroupDayTerms:['\u641C\u7D22\u8BCD\u82B1\u8D39 Top 20','\u641C\u7D22\u8BCD\u70B9\u51FB Top 20',
       '<span><i style="background:#C0392B"></i>\u82B1\u8D39</span><span>\u6807\u6CE8\uFF1A\u5E7F\u544A\u9500\u552E\u989D / ACOS</span>',
       '<span><i style="background:#146EB4"></i>\u70B9\u51FB</span><span>\u6807\u6CE8\uFF1A\u66DD\u5149 / CTR</span>'],
+    targetTerms:['\u641C\u7D22\u8BCD\u82B1\u8D39 Top 20','\u641C\u7D22\u8BCD\u70B9\u51FB Top 20',
+      '<span><i style="background:#C0392B"></i>\u82B1\u8D39</span><span>\u6807\u6CE8\uFF1A\u5E7F\u544A\u9500\u552E\u989D / ACOS</span>',
+      '<span><i style="background:#146EB4"></i>\u70B9\u51FB</span><span>\u6807\u6CE8\uFF1A\u66DD\u5149 / CTR</span>'],
+    targetDays:['\u6BCF\u65E5 \u5E7F\u544A\u9500\u552E\u989D / \u82B1\u8D39 / ACOS','\u6BCF\u65E5 \u66DD\u5149 / \u70B9\u51FB / CTR',
+      '<span><i style="background:#CFE2F5"></i>\u5E7F\u544A\u9500\u552E\u989D</span><span><i style="background:#C0392B"></i>\u82B1\u8D39</span><span><i style="background:#B7791F"></i>ACOS\uFF08\u53F3\u8F74\uFF09</span>',
+      '<span><i style="background:#CFE2F5"></i>\u66DD\u5149</span><span><i style="background:#146EB4"></i>\u70B9\u51FB</span><span><i style="background:#1E7A46"></i>CTR\uFF08\u53F3\u8F74\uFF09</span>'],
+    targetTermDays:['\u6BCF\u65E5 \u5E7F\u544A\u9500\u552E\u989D / \u82B1\u8D39 / ACOS','\u6BCF\u65E5 \u66DD\u5149 / \u70B9\u51FB / CTR',
+      '<span><i style="background:#CFE2F5"></i>\u5E7F\u544A\u9500\u552E\u989D</span><span><i style="background:#C0392B"></i>\u82B1\u8D39</span><span><i style="background:#B7791F"></i>ACOS\uFF08\u53F3\u8F74\uFF09</span>',
+      '<span><i style="background:#CFE2F5"></i>\u66DD\u5149</span><span><i style="background:#146EB4"></i>\u70B9\u51FB</span><span><i style="background:#1E7A46"></i>CTR\uFF08\u53F3\u8F74\uFF09</span>'],
+    termCamps:['\u6765\u6E90\u82B1\u8D39 Top 20','\u6765\u6E90\u70B9\u51FB Top 20',
+      '<span><i style="background:#C0392B"></i>\u82B1\u8D39</span><span>\u6807\u6CE8\uFF1A\u5E7F\u544A\u9500\u552E\u989D / ACOS</span>',
+      '<span><i style="background:#146EB4"></i>\u70B9\u51FB</span><span>\u6807\u6CE8\uFF1A\u66DD\u5149 / CTR</span>'],
+    termSrcDays:['\u6BCF\u65E5 \u5E7F\u544A\u9500\u552E\u989D / \u82B1\u8D39 / ACOS','\u6BCF\u65E5 \u66DD\u5149 / \u70B9\u51FB / CTR',
+      '<span><i style="background:#CFE2F5"></i>\u5E7F\u544A\u9500\u552E\u989D</span><span><i style="background:#C0392B"></i>\u82B1\u8D39</span><span><i style="background:#B7791F"></i>ACOS\uFF08\u53F3\u8F74\uFF09</span>',
+      '<span><i style="background:#CFE2F5"></i>\u66DD\u5149</span><span><i style="background:#146EB4"></i>\u70B9\u51FB</span><span><i style="background:#1E7A46"></i>CTR\uFF08\u53F3\u8F74\uFF09</span>'],
     adGroupDays:['\u6BCF\u65E5 \u5E7F\u544A\u9500\u552E\u989D / \u82B1\u8D39 / ACOS','\u6BCF\u65E5 \u66DD\u5149 / \u70B9\u51FB / CTR',
       '<span><i style="background:#CFE2F5"></i>\u5E7F\u544A\u9500\u552E\u989D</span><span><i style="background:#C0392B"></i>\u82B1\u8D39</span><span><i style="background:#B7791F"></i>ACOS\uFF08\u53F3\u8F74\uFF09</span>',
       '<span><i style="background:#CFE2F5"></i>\u66DD\u5149</span><span><i style="background:#146EB4"></i>\u70B9\u51FB</span><span><i style="background:#1E7A46"></i>CTR\uFF08\u53F3\u8F74\uFF09</span>'],
@@ -3587,32 +3776,35 @@ function drawDrillCharts(v,rows,t){
       {share:r=>div(r.adOrders,r.ordItems||0)});
     return;
   }
-  if(v.type==='campGroups'||v.type==='adGroupDayTerms'){
-    const isGroup=v.type==='campGroups';
+  if(v.type==='campGroups'||v.type==='adGroupDayTerms'||v.type==='targetTerms'||v.type==='termCamps'){
+    const isGroup=v.type==='campGroups', isSrc=v.type==='termCamps';
+    const TOPN=20;                                   // 条形图只取 TOP 20，全部数据看下方表格
     const labelOf=isGroup
       ? (r=>(r.agName||r.ag||'(\u672A\u547D\u540D\u5E7F\u544A\u7EC4)')+(r.adAsin?` \u00B7 ${r.adAsin}`:''))
+      : isSrc
+      ? (r=>`${r.campName||r.camp} \u00B7 ${(r.kwDisp&&r.kwDisp!=='\u2014')?r.kwDisp:r.mFine}`)
       : (r=>r.term||'(\u672A\u547D\u540D\u641C\u7D22\u8BCD)');
-    const byS=[...rows].filter(r=>r.spend>0).sort((a,b)=>b.spend-a.spend).slice(0,12);
-    const byC=[...rows].filter(r=>r.clicks>0).sort((a,b)=>b.clicks-a.clicks).slice(0,12);
+    const byS=[...rows].filter(r=>r.spend>0).sort((a,b)=>b.spend-a.spend).slice(0,TOPN);
+    const byC=[...rows].filter(r=>r.clicks>0).sort((a,b)=>b.clicks-a.clicks).slice(0,TOPN);
     const A=finish(sumAgg(byS)), B=finish(sumAgg(byC));
     const W={lw:190,vw:212,rowH:30,valueGap:18,focusTop:3,rank:true};
     $('#dsc1').innerHTML=hBarStacked(byS,r=>r.spend,()=>0,labelOf,
       r=>`${fmt.$2(r.spend)} \u00B7 \u9500\u552E ${fmt.$0(r.adSales)} \u00B7 ACOS ${r.adSales>0?fmt.pct1(r.acos):'\u2013'}`,
       '#C0392B','#F3D6D2',W);
-    $('#dsf1').innerHTML=chartFoot(`Top ${byS.length} ${isGroup?'\u5E7F\u544A\u7EC4':'\u641C\u7D22\u8BCD'}\u5408\u8BA1`,
+    $('#dsf1').innerHTML=chartFoot(`Top ${byS.length} ${isGroup?'\u5E7F\u544A\u7EC4':(isSrc?'\u6765\u6E90':'\u641C\u7D22\u8BCD')}\u5408\u8BA1`,
       `\u5360\u672C\u5C42\u82B1\u8D39 ${fmt.pct1(div(A.spend,t.spend))}`,
       [['\u82B1\u8D39',fmt.$2(A.spend)],['\u5E7F\u544A\u9500\u552E\u989D',fmt.$2(A.adSales)],
        ['\u5E7F\u544A\u8BA2\u5355',fmt.int(A.adOrders)],['ACOS',A.adSales>0?fmt.pct1(A.acos):'\u2013']]);
     $('#dsc2').innerHTML=hBarStacked(byC,r=>r.clicks,()=>0,labelOf,
       r=>`${fmt.int(r.clicks)} \u70B9\u51FB \u00B7 \u66DD\u5149 ${fmt.k(r.impr)} \u00B7 CTR ${fmt.pct2(r.ctr)}`,
       '#146EB4','#CFE2F5',W);
-    $('#dsf2').innerHTML=chartFoot(`Top ${byC.length} ${isGroup?'\u5E7F\u544A\u7EC4':'\u641C\u7D22\u8BCD'}\u5408\u8BA1`,
+    $('#dsf2').innerHTML=chartFoot(`Top ${byC.length} ${isGroup?'\u5E7F\u544A\u7EC4':(isSrc?'\u6765\u6E90':'\u641C\u7D22\u8BCD')}\u5408\u8BA1`,
       `\u5360\u672C\u5C42\u70B9\u51FB ${fmt.pct1(div(B.clicks,t.clicks))}`,
       [['\u66DD\u5149',fmt.int(B.impr)],['\u70B9\u51FB',fmt.int(B.clicks)],
        ['CTR',fmt.pct2(B.ctr)],['CPC',fmt.$c(B.cpc)]]);
     return;
   }
-  if(v.type==='adGroupDays'||v.type==='adGroupTermDays'||v.type==='campDays'||v.type==='placeDays'||v.type==='termDays'){
+  if(v.type==='adGroupDays'||v.type==='adGroupTermDays'||v.type==='campDays'||v.type==='placeDays'||v.type==='termDays'||v.type==='targetDays'||v.type==='targetTermDays'||v.type==='termSrcDays'){
     $('#dsc1').innerHTML=comboChart(rows,[{get:r=>r.adSales,color:'#CFE2F5',label:'\u5E7F\u544A\u9500\u552E\u989D'},
       {get:r=>r.spend,color:'#C0392B',label:'\u82B1\u8D39',labelColor:'#C0392B'}],
       {get:r=>r.acos,color:'#B7791F',label:'ACOS',fmt:x=>fmt.pct1(x)});
@@ -3712,7 +3904,13 @@ function comboChart(D,bars,line,opt={}){
   const maxL=Math.max(1e-6,...D.map(r=>line.get(r)))*1.15;
   const bw=iw/D.length, gw=Math.min(64,bw*0.7/bars.length);
   const Y=v=>pt+ih*(1-v/(maxB*1.18)), Y2=v=>pt+ih*(1-v/maxL), X=i=>pl+bw*i+bw/2;
-  const n=D.length, step=Math.max(1,Math.ceil(n/12)), sl=i=>n<=12||i%step===0||i===n-1;
+  const n=D.length;
+  const stepD=Math.max(1,Math.ceil(34/bw)), stepW=Math.max(1,Math.ceil(13/bw)),
+        stepV=Math.max(1,Math.ceil(24/bw)), stepP=Math.max(1,Math.ceil(16/bw));
+  const slD=i=>stepD===1||i%stepD===0||i===n-1;
+  const slW=i=>stepW===1||i%stepW===0||i===n-1;
+  const sl=i=>stepV===1||i%stepV===0||i===n-1;
+  const slP=i=>stepP===1||i%stepP===0||i===n-1;
   let g='',lab='';
   const L=labeler(); L.reserve([0,0,pl-2,H]); L.reserve([W-pr+2,0,W,H]);
   for(let i=0;i<=3;i++){
@@ -3732,12 +3930,12 @@ function comboChart(D,bars,line,opt={}){
     const v=b.get(r); if(!sl(i)||!(v>0)) return;
     lab+=L.put(X(i)-gw*bars.length/2+gw*bi+gw*0.45,Y(v)-5,axf(v),{fs:9.5,fill:b.labelColor||'#232F3E',alts:[0,-10,-19]});
   }));
-  D.forEach((r,i)=>{ if(sl(i)) lab+=L.put(X(i),Y2(line.get(r))-7,line.fmt(line.get(r)),{fs:9.5,fill:line.color,alts:[0,13,-15,21]}); });
+  D.forEach((r,i)=>{ if(slP(i)) lab+=L.put(X(i),Y2(line.get(r))-7,line.fmt(line.get(r)),{fs:9.5,fill:line.color,alts:[0,13,-15,21]}); });
   g+=lab;
-  D.forEach((r,i)=>{ if(!sl(i)) return;
+  D.forEach((r,i)=>{
     const we=isWeekend(r.date);
-    g+=`<text x="${X(i)}" y="${H-25}" text-anchor="middle" font-size="9.5" fill="${we?'#8A5A00':'#8899AA'}">${String(r.date||'').slice(5)}</text>`
-      +(wdCN(r.date)?`<text x="${X(i)}" y="${H-11}" text-anchor="middle" font-size="9.5" font-weight="${we?700:400}" fill="${we?'#B26A00':'#A8B4C2'}">${wdCN(r.date)}</text>`:''); });
+    if(slD(i)) g+=`<text x="${X(i)}" y="${H-25}" text-anchor="middle" font-size="9.5" fill="${we?'#8A5A00':'#8899AA'}">${String(r.date||'').slice(5)}</text>`;
+    if(slW(i)&&wdCN(r.date)) g+=`<text x="${X(i)}" y="${H-11}" text-anchor="middle" font-size="9.5" font-weight="${we?700:400}" fill="${we?'#B26A00':'#A8B4C2'}">${wdCN(r.date)}</text>`; });
   return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">${g}</svg>`;
 }
 /* ---- 堆叠柱 + 折线（右轴） ---- */
@@ -3751,7 +3949,13 @@ function stackChart(D,segA,segB,line,opt={}){
   const maxL=Math.max(1e-6,...D.map(r=>line.get(r)))*1.20;
   const bw=iw/D.length, wd=Math.min(96,Math.max(5,bw*0.62));
   const X=i=>pl+bw*i+bw/2, Y=v=>pt+ih*(1-v/max), Y2=v=>pt+ih*(1-v/maxL);
-  const n=D.length, step=Math.max(1,Math.ceil(n/12)), sl=i=>n<=12||i%step===0||i===n-1;
+  const n=D.length;
+  const stepD=Math.max(1,Math.ceil(34/bw)), stepW=Math.max(1,Math.ceil(13/bw)),
+        stepV=Math.max(1,Math.ceil(24/bw)), stepP=Math.max(1,Math.ceil(16/bw));
+  const slD=i=>stepD===1||i%stepD===0||i===n-1;
+  const slW=i=>stepW===1||i%stepW===0||i===n-1;
+  const sl=i=>stepV===1||i%stepV===0||i===n-1;
+  const slP=i=>stepP===1||i%stepP===0||i===n-1;
   const axf=v=>money?fmt.$0(v):fmt.int(v);
   let g='',lab='';
   const L=labeler(); L.reserve([0,0,pl-2,H]); L.reserve([W-pr+2,0,W,H]);
@@ -3777,12 +3981,12 @@ function stackChart(D,segA,segB,line,opt={}){
     if(hA>14&&wd>24) lab+=L.put(X(i),yA+hA/2+3.5,fmt.pct1(shareOf(r)),{fs:9.5,fill:'#fff',halo:''});
   });
   D.forEach((r,i)=>{ const tot=totOf(r); if(sl(i)&&tot>0) lab+=L.put(X(i),Y(tot)-5,axf(tot),{fs:9.5,alts:[0,-11]}); });
-  D.forEach((r,i)=>{ if(sl(i)) lab+=L.put(X(i),Y2(line.get(r))-7,line.fmt(line.get(r)),{fs:9.5,fill:line.color,alts:[0,13,-15,21]}); });
+  D.forEach((r,i)=>{ if(slP(i)) lab+=L.put(X(i),Y2(line.get(r))-7,line.fmt(line.get(r)),{fs:9.5,fill:line.color,alts:[0,13,-15,21]}); });
   g+=lab;
-  D.forEach((r,i)=>{ if(!sl(i)) return;
+  D.forEach((r,i)=>{
     const we=isWeekend(r.date);
-    g+=`<text x="${X(i)}" y="${H-25}" text-anchor="middle" font-size="9.5" fill="${we?'#8A5A00':'#8899AA'}">${String(r.date||'').slice(5)}</text>`
-      +(wdCN(r.date)?`<text x="${X(i)}" y="${H-11}" text-anchor="middle" font-size="9.5" font-weight="${we?700:400}" fill="${we?'#B26A00':'#A8B4C2'}">${wdCN(r.date)}</text>`:''); });
+    if(slD(i)) g+=`<text x="${X(i)}" y="${H-25}" text-anchor="middle" font-size="9.5" fill="${we?'#8A5A00':'#8899AA'}">${String(r.date||'').slice(5)}</text>`;
+    if(slW(i)&&wdCN(r.date)) g+=`<text x="${X(i)}" y="${H-11}" text-anchor="middle" font-size="9.5" font-weight="${we?700:400}" fill="${we?'#B26A00':'#A8B4C2'}">${wdCN(r.date)}</text>`; });
   return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">${g}</svg>`;
 }
 </script>
@@ -3931,8 +4135,14 @@ const COLS={
   campDayPlaces:[txtCol('pl','\u5E7F\u544A\u4F4D','158px'),curCol,...ADO],
   term:[txtCol('term','\u641C\u7D22\u8BCD','216px'),txtCol('acct','\u8D26\u53F7','100px'),
     txtCol('country','\u7AD9\u70B9','82px'),curCol,txtCol('type','\u6295\u653E\u7C7B\u578B','96px'),
+    txtCol('kwSum','\u6295\u653E\u8BCD','170px'),txtCol('matchSum','\u5339\u914D\u65B9\u5F0F','130px'),
     Cc('nCamp','\u6D89\u53CA\u6D3B\u52A8',{f:fmt.int}),...ADO],
   termDays:[dateCol,...ADO],
+  termCamps:[nameCol('campName','\u5e7f\u544a\u6d3b\u52a8\u540d','230px'),
+    txtCol('agName','\u5e7f\u544a\u7ec4\u540d','150px'),
+    txtCol('kwDisp','\u6295\u653e\u8bcd','150px'),txtCol('mFine','\u5339\u914d\u65b9\u5f0f','110px'),
+    txtCol('acct','\u8d26\u53f7','96px'),txtCol('country','\u7ad9\u70b9','62px'),curCol,...ADO],
+  termSrcDays:[dateCol,...ADO],
   inv:[nameCol('campName','\u5E7F\u544A\u6D3B\u52A8\u540D','220px'),txtCol('camp','\u6D3B\u52A8 ID','128px'),
     txtCol('adAsin','\u63A8\u5E7F ASIN','112px'),txtCol('acct','\u8D26\u53F7','100px'),
     txtCol('country','\u7AD9\u70B9','118px'),curCol,
@@ -3954,6 +4164,7 @@ const DEFAULT_SORT={daily:{k:'date',asc:true},site:{k:'gmv',asc:false},asin:{k:'
   term:{k:'spend',asc:false},inv:{k:'invClk',asc:false},
   adgroup:{k:'spend',asc:false},target:{k:'spend',asc:false},
   targetTerms:{k:'spend',asc:false},targetDays:{k:'date',asc:true},targetTermDays:{k:'date',asc:true},
+  termCamps:{k:'spend',asc:false},termSrcDays:{k:'date',asc:true},
   daySites:{k:'gmv',asc:false},siteDays:{k:'date',asc:true},siteDayAsins:{k:'gmv',asc:false},
   asinDays:{k:'date',asc:true},ownerAsins:{k:'gmv',asc:false},
   campGroups:{k:'spend',asc:false},adGroupDays:{k:'date',asc:true},
@@ -3967,14 +4178,15 @@ const sortOf=v=>sortState[v]||(sortState[v]={k:COLS[v][0].k,asc:true});
 /* ================= 表格 ================= */
 const SEARCHABLE=new Set(['asin','siteDayAsins','ownerAsins','term','camp','campGroups',
   'adGroupDayTerms','inv','site','daySites','owner','adgroup','target','targetTerms',
-  'pcode','pcodeAsins']);
+  'termCamps','pcode','pcodeAsins']);
 const SEARCH_PH={term:'\u641C\u7D22\u5173\u952E\u8BCD\u2026',camp:'\u641C\u6D3B\u52A8\u540D / ID / ASIN\u2026',inv:'\u641C\u6D3B\u52A8\u540D / ID / ASIN\u2026',
   campGroups:'\u641C\u5E7F\u544A\u7EC4\u540D / \u63A8\u5E7F ASIN\u2026',adGroupDayTerms:'\u641C\u7D22\u5F53\u65E5\u641C\u7D22\u8BCD\u2026',
   site:'\u641C\u5957\u8D26 / \u56FD\u5BB6\u2026',daySites:'\u641C\u5957\u8D26 / \u56FD\u5BB6\u2026',owner:'\u641C\u8FD0\u8425 / \u4E3B\u7BA1\u2026',
   adgroup:'\u641C\u5E7F\u544A\u7EC4\u540D / \u6D3B\u52A8\u540D / ASIN\u2026',
-  target:'\u641C\u6295\u653E\u8BCD / \u5E7F\u544A\u7EC4 / \u6D3B\u52A8\u2026',targetTerms:'\u641C\u641C\u7D22\u8BCD\u2026'};
+  target:'\u641C\u6295\u653E\u8BCD / \u5E7F\u544A\u7EC4 / \u6D3B\u52A8\u2026',targetTerms:'\u641C\u641C\u7D22\u8BCD\u2026',
+  termCamps:'\u641C\u6D3B\u52A8\u540D / \u5E7F\u544A\u7EC4 / \u6295\u653E\u8BCD / \u5339\u914D\u65B9\u5F0F\u2026'};
 const searchText=r=>[r.title,r.asin,r.sku,r.brand,r.pcode,r.acct,r.country,r.site,r.owner,r.sup,r.term,
-  r.campName,r.camp,r.agName,r.ag,r.adAsin,r.adAsins,r.pl,r.kwText,r.match].filter(Boolean).join(' ').toLowerCase();
+  r.campName,r.camp,r.agName,r.ag,r.adAsin,r.adAsins,r.pl,r.kwText,r.match,r.kwSum,r.matchSum,r.mFine].filter(Boolean).join(' ').toLowerCase();
 
 let dimFilter={};                       // {字段:Set(值)}
 const DIM_OF={camp:[['acct','\u8D26\u53F7'],['country','\u7AD9\u70B9'],['status','\u72B6\u6001']],
@@ -4002,8 +4214,8 @@ function currentRows(view){
     if(s&&s.size) rows=rows.filter(r=>s.has(String(r[f]??'')));
   }
   if(searchQ&&SEARCHABLE.has(view)){
-    const q=searchQ.toLowerCase();
-    rows=rows.filter(r=>searchText(r).includes(q));
+    const G=queryGroups(searchQ);
+    rows=rows.filter(r=>queryHit(searchText(r),G));
   }
   const st=sortOf(view);
   rows=[...rows].sort((a,b)=>{
@@ -4049,7 +4261,7 @@ const DRILL_KEY={daily:'date',daySites:'site',site:'site',siteDays:'date',siteDa
   pcode:'pcode',pcodeAsins:'cid',
   adgroup:'id',target:'id',targetTerms:'term',
   adGroupDays:'date',adGroupDayTerms:'term',campDays:'date',place:'pl',
-  placeDays:'date',dayPlaces:'pl',term:'id',inv:'camp'};
+  placeDays:'date',dayPlaces:'pl',term:'id',termCamps:'srcId',inv:'camp'};
 const TABLE_LIMIT_DEFAULT=500;
 function resetTableLimit(){ tableLimit=TABLE_LIMIT_DEFAULT; }
 function doDrill(view,val){
@@ -4075,7 +4287,9 @@ function doDrill(view,val){
     case 'place': return goPlaceDays(val,false);
     case 'placeDays': return goDayPlaces(val,true);
     case 'dayPlaces': return goPlaceDays(val,true);
-    case 'term': return goTermDays(val,false);
+    case 'term': return goTermSmart(val,false);
+    case 'termCamps': { const row=termSrcRows(v.id).find(x=>x.srcId===val)||{};
+      return goTermSrcDays(v.id,val,{campName:row.campName,kwDisp:row.kwDisp,mFine:row.mFine,agName:row.agName},true); }
     case 'inv': return goInvDays(val,false);
   }
 }
@@ -4104,9 +4318,9 @@ const FREEZE={daily:[1,'96px'],siteDays:[1,'96px'],asinDays:[1,'96px'],
   camp:[1,'270px'],campGroups:[2,'240px','132px'],adGroupDayTerms:[1,'240px'],
   adgroup:[2,'230px','220px'],target:[2,'220px','106px'],targetTerms:[1,'260px'],
   targetDays:[1,'96px'],targetTermDays:[1,'96px'],
-  term:[2,'236px','120px'],inv:[2,'240px','148px']};
+  term:[2,'236px','120px'],termCamps:[1,'250px'],termSrcDays:[1,'96px'],inv:[2,'240px','148px']};
 const PERDAY_TABLE=new Set(['daily','siteDays','asinDays','adGroupDays','adGroupTermDays',
-  'campDays','placeDays','termDays','invDays','targetDays','targetTermDays']);
+  'campDays','placeDays','termDays','invDays','targetDays','targetTermDays','termSrcDays']);
 /* 带「会话 / 页面浏览」的业务视图：这些视图的合计行走详情页去重口径 */
 const SESS_VIEWS=new Set(['daily','site','daySites','siteDays','asin','siteDayAsins',
   'asinDays','ownerAsins','owner','pcode','pcodeAsins']);
@@ -4132,7 +4346,7 @@ function renderTable(){
     let cRows={site:cmpModel.sites,asin:cmpModel.asins,owner:cmpModel.owners,camp:cmpModel.camps,
       place:cmpModel.places,term:cmpModel.terms,inv:cmpModel.invs,daily:cmpModel.daily}[view]||[];
     for(const [f] of (DIM_OF[view]||[])){ const s=dimFilter[f]; if(s&&s.size) cRows=cRows.filter(r=>s.has(String(r[f]??''))); }
-    if(searchQ&&SEARCHABLE.has(view)){ const q=searchQ.toLowerCase(); cRows=cRows.filter(r=>searchText(r).includes(q)); }
+    if(searchQ&&SEARCHABLE.has(view)){ const G=queryGroups(searchQ); cRows=cRows.filter(r=>queryHit(searchText(r),G)); }
     cTot=sumAgg(cRows);
     const cRef=cRows.reduce((s,r)=>s+(r.refGmv||0),0);
     cdTot={...derive({spend:cTot.spend,clicks:cTot.clicks,impr:cTot.impr,orders:cTot.adOrders,
@@ -4158,7 +4372,9 @@ function renderTable(){
   const NONZERO=new Set(['gmv','spend','units','ordItems','sessions','pv','clicks','impr','adSales',
     'adOrders','grossImpr','grossClk','invImpr','invClk','budget','nAsin','nSite','nCamp']);
   const dk=DRILL_KEY[view];
-  const body=shown.map(r=>`<tr${dk?` class="drill" data-v="${esc(r[dk])}"`:''}>`+cols.map(c=>{
+  /* CPC / CVR / 广告客单 / ACOS 四列挂盈亏平衡测算悬停（需行上能定位到单一站点，否则盈亏线取不准） */
+  const BE_KEYS=new Set(['cpc','cvr','aov','acos']);
+  const body=shown.map((r,ri)=>`<tr data-ri="${ri}"${dk?` class="drill" data-v="${esc(r[dk])}"`:''}>`+cols.map(c=>{
     const v=r[c.k];
     let html;
     if(c.pill) html=pill(v,c.f,c.pill[0],c.pill[1]);
@@ -4169,6 +4385,8 @@ function renderTable(){
       const dl=deltaHtml(v,pr?pr[c.k]:0,c.k);
       if(dl) html+=`<div class="cdw">${dl}</div>`;
     }
+    if(BE_KEYS.has(c.k)&&(r.site||r.country)&&(r.clicks>0||r.spend>0))
+      html=`<span class="c-beh">${html}</span>`;
     return `<td${c.left?' class="l"':''}>${html}</td>`;
   }).join('')+'</tr>').join('');
 
@@ -4220,6 +4438,14 @@ function renderTable(){
     renderTable();
   });
   if(dk) $('#tbl').querySelectorAll('tr.drill').forEach(tr=>tr.onclick=()=>doDrill(view,tr.dataset.v));
+  $('#tbl').querySelectorAll('td .c-beh').forEach(el=>{
+    const tr=el.closest('tr'); if(!tr||tr.dataset.ri===undefined) return;
+    const r=shown[+tr.dataset.ri]; if(!r) return;
+    const site=r.site||r.country;
+    el.querySelectorAll('[title]').forEach(x=>x.removeAttribute('title'));  // 避免原生提示叠加
+    el.addEventListener('mouseenter',e=>{ if(typeof actTipShow==='function') actTipShow(site===r.site?r:{...r,site},e); });
+    el.addEventListener('mouseleave',()=>{ if(typeof actTipHide==='function') actTipHide(); });
+  });
 
   renderGroupSum(view,rows,tot,dTot);
 
@@ -4246,7 +4472,7 @@ function renderTable(){
     place:'\u70B9\u4EFB\u610F\u4E00\u884C\u770B\u8BE5\u5E7F\u544A\u4F4D\u6BCF\u65E5\u3002Top of Search / Detail Page / Other / Off Amazon \u4E3A\u4E9A\u9A6C\u900A\u539F\u751F\u5206\u7C7B\u3002',
     placeDays:'\u70B9\u4EFB\u610F\u4E00\u884C\u770B\u5F53\u65E5\u5168\u90E8\u5E7F\u544A\u4F4D\u5BF9\u6BD4\u3002',
     dayPlaces:'\u70B9\u4EFB\u610F\u4E00\u884C\u770B\u8BE5\u5E7F\u544A\u4F4D\u6BCF\u65E5\u8D8B\u52BF\u3002',
-    term:'\u70B9\u4EFB\u610F\u4E00\u884C\u770B\u8BE5\u641C\u7D22\u8BCD\u6BCF\u65E5\u3002\u641C\u7D22\u8BCD\u6309\u300C\u8BCD + \u8D26\u53F7 + \u7AD9\u70B9\u300D\u5206\u5F00\u7EDF\u8BA1\uFF0C\u907F\u514D\u4E0D\u540C\u8D26\u53F7\u6216\u7AD9\u70B9\u7684\u540C\u540D\u8BCD\u6DF7\u7B97\uFF1B\u65E0 keywordId \u7684\u884C\u5F52\u4E3A\u81EA\u52A8/\u5B9A\u5411\u3002',
+    term:'\u70B9\u4EFB\u610F\u4E00\u884C\u4E0B\u94BB\uFF1A\u591A\u4E2A\u6765\u6E90\u7684\u8BCD\u5148\u770B\u5404\u6D3B\u52A8\u00D7\u6295\u653E\u8BCD\u00D7\u5339\u914D\u65B9\u5F0F\u7684\u6765\u6E90\u5BF9\u6BD4\uFF0C\u518D\u70B9\u4E00\u5C42\u770B\u8BE5\u6765\u6E90\u9010\u65E5\uFF1B\u53EA\u6709\u4E00\u4E2A\u6765\u6E90\u7684\u8BCD\u76F4\u63A5\u770B\u6BCF\u65E5\u3002\u641C\u7D22\u8BCD\u6309\u300C\u8BCD + \u8D26\u53F7 + \u7AD9\u70B9\u300D\u5206\u5F00\u7EDF\u8BA1\uFF0C\u907F\u514D\u4E0D\u540C\u8D26\u53F7\u6216\u7AD9\u70B9\u7684\u540C\u540D\u8BCD\u6DF7\u7B97\u3002',
     termDays:'\u8BE5\u641C\u7D22\u8BCD\u5728\u6240\u9009\u533A\u95F4\u5185\u7684\u9010\u65E5\u8868\u73B0\u3002',
     inv:'\u70B9\u4EFB\u610F\u4E00\u884C\u770B\u8BE5\u6D3B\u52A8\u6BCF\u65E5\u65E0\u6548\u6D41\u91CF\u3002\u4E9A\u9A6C\u900A\u4F1A\u8FD4\u8FD8\u65E0\u6548\u70B9\u51FB\u7684\u8D39\u7528\uFF0C\u300C\u4F30\u7B97\u6D6A\u8D39\u300D\u53EA\u7528\u4E8E\u6A2A\u5411\u6392\u5E8F\u3001\u627E\u51FA\u6295\u653E\u73AF\u5883\u6700\u5DEE\u7684\u6D3B\u52A8\u3002',
     invDays:'\u8BE5\u6D3B\u52A8\u9010\u65E5\u7684\u65E0\u6548\u66DD\u5149 / \u65E0\u6548\u70B9\u51FB\u3002',
@@ -4289,6 +4515,7 @@ function renderTable(){
   const searchable=SEARCHABLE.has(view);
   $('#search').classList.toggle('hide',!searchable);
   $('#search').placeholder=SEARCH_PH[view]||'\u641C\u7D22\u6807\u9898 / ASIN / SKU\u2026';
+  $('#search').title='\u7A7A\u683C\u5206\u9694=\u540C\u65F6\u6EE1\u8DB3\uFF1B\u9017\u53F7/\u987F\u53F7\u5206\u9694=\u4EFB\u4E00\u6EE1\u8DB3\uFF08\u53EF\u540C\u65F6\u641C\u4E24\u4E2A\u8D26\u53F7/\u4E24\u4E2A\u54C1\uFF09';
   const info=$('#dfinfo');
   if(info) info.innerHTML=`\u5F53\u524D <b>${rows.length}</b> \u884C \u00B7 \u82B1\u8D39 <b>${fmt.$2(tot.spend)}</b>`
     +(model.T.spend>0?` \u00B7 \u5360\u5168\u76D8\u5E7F\u544A\u8D39 <b>${fmt.pct1(div(tot.spend,model.T.spend))}</b>`:'');
@@ -4393,11 +4620,18 @@ function cfgEffLines(rows){
           cvr:vD>0?vN/vD:adiagCfg.cvr/100};
 }
 let adiagObj='asin', adiagTab='all', adiagSite=null, adiagCollapsed=true, adiagSort={k:'spend',asc:false};
+let adiagQ='';
+/* 漏斗诊断搜索：复用主表的 searchText 字段集，多条件空格分隔、全部命中 */
+function adiagQFilter(rows){
+  const G=queryGroups(adiagQ);
+  if(!G.length) return rows;
+  return rows.filter(r=>queryHit(searchText(r),G));
+}
 const ADG_CATS={bleed:'\u6B62\u8840',listing:'listing\u4F18\u5316',scale:'\u53EF\u653E\u91CF',
   thin:'\u6837\u672C\u8584',data:'\u6570\u636E\u4E0D\u8DB3'};
 
 /* 卡点定位：CTR/CVR 都低于线时，按「距线的相对差距」判断谁是主要短板 */
-function adiagBottleneck(r,ctrL,cvrL,obj){
+function adiagBottleneck(r,ctrL,cvrL,obj,over){
   const lowCtr=r.impr>0&&r.ctr<ctrL, lowCvr=r.cvr<cvrL;
   const A={
     asin:{ctr:'\u6539\u4E3B\u56FE / \u67E5\u4EF7\u683C / \u8865\u8BC4\u4EF7',cvr:'\u4F18\u5316\u8BE6\u60C5\u9875 / \u67E5\u5E93\u5B58\u4E0E Buy Box / \u8865\u8BC4\u4EF7',
@@ -4414,11 +4648,48 @@ function adiagBottleneck(r,ctrL,cvrL,obj){
   }[obj];
   if(lowCtr&&lowCvr){
     const ctrWorse=(r.ctr/ctrL)<=(r.cvr/cvrL);
+    /* 搜索词若本身就是手动投放词，「否定」会与投放词冲突，只能降竞价或暂停 */
+    if(obj==='term'&&String(r.type||'').indexOf('\u624B\u52A8')>=0){
+      return {block:'\u70B9\u51FB+\u8F6C\u5316\u53CC\u4F4E',cls:ctrWorse?'t-ctr':'t-cvr',
+        act:'\u70B9\u51FB\u4E0E\u8F6C\u5316\u53CC\u5DEE\uFF0C\u4F46\u8BE5\u8BCD\u672C\u8EAB\u662F\u6295\u653E\u8BCD\uFF08\u52A0\u5426\u5B9A\u4F1A\u51B2\u7A81\uFF09\uFF1A\u964D\u7ADE\u4EF7\u6216\u76F4\u63A5\u6682\u505C\u8BE5\u5173\u952E\u8BCD',
+        actShort:'\u964D\u4EF7 / \u6682\u505C'};
+    }
     return ctrWorse?{block:'\u70B9\u51FB+\u8F6C\u5316\u53CC\u4F4E',cls:'t-ctr',act:A.both1,actShort:S.both1}
                    :{block:'\u70B9\u51FB+\u8F6C\u5316\u53CC\u4F4E',cls:'t-cvr',act:A.both2,actShort:S.both2};
   }
-  if(lowCvr) return {block:'\u8F6C\u5316\u7387\u4F4E',cls:'t-cvr',act:A.cvr,actShort:S.cvr};
-  if(lowCtr) return {block:'\u70B9\u51FB\u7387\u4F4E',cls:'t-ctr',act:A.ctr,actShort:S.ctr};
+  if(lowCvr){
+    if(obj==='term'){
+      /* 这个分支订单≥3，是「转化低」不是「无转化」；
+         ACOS 达标时否定会砍掉仍在盈利的流量 */
+      const mn=String(r.type||'').indexOf('\u624B\u52A8')>=0;
+      const act=over
+        ? (mn?'\u70B9\u51FB\u4E0D\u5C11\u4F46\u8F6C\u5316\u7387\u504F\u4F4E\uFF0C\u6B63\u5728\u62D6\u9AD8 ACOS\uFF1A\u5148\u964D\u7ADE\u4EF7\u89C2\u5BDF\uFF0C\u6301\u7EED\u4E0D\u6539\u5584\u53EF\u6682\u505C\u8BE5\u5173\u952E\u8BCD\uFF08\u5B83\u662F\u6295\u653E\u8BCD\uFF0C\u52A0\u5426\u5B9A\u4F1A\u51B2\u7A81\uFF09'
+            :'\u70B9\u51FB\u4E0D\u5C11\u4F46\u8F6C\u5316\u7387\u504F\u4F4E\uFF0C\u6B63\u5728\u62D6\u9AD8 ACOS\uFF1A\u5148\u964D\u7ADE\u4EF7\u89C2\u5BDF\uFF0C\u6301\u7EED\u4E0D\u6539\u5584\u518D\u8003\u8651\u5426\u5B9A')
+        : '\u8F6C\u5316\u7387\u504F\u4F4E\u4F46 ACOS \u4ECD\u8FBE\u6807\uFF08CPC \u4FBF\u5B9C\u515C\u4F4F\u4E86\uFF09\uFF1A\u53EF\u5C0F\u5E45\u964D\u7ADE\u4EF7\u8BD5\u63A2\uFF0C\u4E0D\u5EFA\u8BAE\u5426\u5B9A\u5728\u8F6C\u5316\u7684\u8BCD';
+      return {block:'\u8F6C\u5316\u7387\u4F4E',cls:'t-cvr',act,actShort:over?'\u964D\u7ADE\u4EF7':'\u964D\u4EF7\u8BD5\u63A2'};
+    }
+    return {block:'\u8F6C\u5316\u7387\u4F4E',cls:'t-cvr',act:A.cvr,actShort:S.cvr};
+  }
+  if(lowCtr){
+    /* 能走到这里说明 CVR 不低：点进来的流量转化正常，
+       「清投放词 / 否定」会把在转化的流量一起砍掉。
+       按 ACOS 是否超线分两套话：超线主抄成本，达标主抄点击效率。 */
+    if(obj==='camp'){
+      const act=over
+        ? '\u70B9\u51FB\u7387\u4F4E\u4F46 CVR \u6B63\u5E38\uFF0C\u8BCD\u4E0D\u7B97\u8DD1\u504F\uFF1A\u4F18\u5148\u964D\u7ADE\u4EF7 / \u964D\u4F4E\u6548\u5E7F\u544A\u4F4D\u6EA2\u4EF7\u538B ACOS\uFF0C\u540C\u6B65\u4F18\u5316\u4E3B\u56FE\u4E0E\u4EF7\u683C\u63D0\u70B9\u51FB\uFF1B\u53EA\u5BF9\u9AD8\u66DD\u5149\u96F6\u70B9\u51FB\u7684\u4E2A\u522B\u8BCD\u505A\u5426\u5B9A\uFF0C\u4E0D\u8981\u6574\u4F53\u6E05\u8BCD'
+        : '\u70B9\u51FB\u7387\u4F4E\u4F46\u8F6C\u5316\u7387\u5065\u5EB7\u3001ACOS \u8FBE\u6807\uFF1A\u8BCD\u4E0D\u76F8\u5173\u7684\u53EF\u80FD\u6027\u4F4E\uFF0C\u4F18\u5148\u4E3B\u56FE / \u4EF7\u683C\u4E0E\u5E7F\u544A\u4F4D\uFF08\u9876\u90E8\u6EA2\u4EF7\uFF09\u63D0\u70B9\u51FB\u6548\u7387\uFF1B\u4EC5\u5BF9\u9AD8\u66DD\u5149\u96F6\u70B9\u51FB\u7684\u4E2A\u522B\u8BCD\u505A\u5426\u5B9A\uFF0C\u4E0D\u8981\u6574\u4F53\u6E05\u8BCD\uFF08\u4F1A\u628A\u9AD8\u8F6C\u5316\u6D41\u91CF\u4E00\u8D77\u7802\u6389\uFF09';
+      return {block:'\u70B9\u51FB\u7387\u4F4E',cls:'t-ctr',act,
+        actShort:over?'\u964D\u7ADE\u4EF7\u00B7\u63D0\u70B9\u51FB':'\u63D0\u70B9\u51FB\u6548\u7387'};
+    }
+    if(obj==='term'){
+      const act=over
+        ? '\u66DD\u5149\u591A\u70B9\u51FB\u5C11\uFF0C\u4F46\u70B9\u8FDB\u6765\u8F6C\u5316\u6B63\u5E38\uFF1A\u964D\u7ADE\u4EF7\u4E3A\u4E3B\u538B ACOS\uFF0C\u914D\u5408\u4E3B\u56FE / \u4EF7\u683C\u63D0\u70B9\u51FB\uFF1B\u614E\u7528\u5426\u5B9A\uFF08\u4F1A\u628A\u5728\u8F6C\u5316\u7684\u6D41\u91CF\u780D\u6389\uFF09'
+        : '\u66DD\u5149\u591A\u70B9\u51FB\u5C11\uFF0C\u4F46\u70B9\u8FDB\u6765\u8F6C\u5316\u597D\u4E14 ACOS \u8FBE\u6807\uFF1A\u4F18\u5316\u4E3B\u56FE / \u4EF7\u683C\u63D0\u70B9\u51FB\uFF0C\u6216\u9002\u5EA6\u964D\u7ADE\u4EF7\u51CF\u5C11\u4F4E\u6548\u66DD\u5149\uFF1B\u4E0D\u5EFA\u8BAE\u5426\u5B9A';
+      return {block:'\u70B9\u51FB\u7387\u4F4E',cls:'t-ctr',act,
+        actShort:over?'\u964D\u7ADE\u4EF7':'\u63D0\u70B9\u51FB'};
+    }
+    return {block:'\u70B9\u51FB\u7387\u4F4E',cls:'t-ctr',act:A.ctr,actShort:S.ctr};
+  }
   return null;
 }
 function adiagClassify(r,c,obj){
@@ -4434,8 +4705,12 @@ function adiagClassify(r,c,obj){
     const ctrBad=r.impr>0&&r.ctr<ctrL/2;
     const ACT={asin:ctrBad?'\u6682\u505C\u6216\u5927\u5E45\u964D\u7ADE\u4EF7 / \u4E3B\u56FE\u4E0E\u4EF7\u683C\u90FD\u8981\u67E5\uFF08CTR \u4E5F\u4E25\u91CD\u504F\u4F4E\uFF09':'\u6682\u505C\u6216\u5927\u5E45\u964D\u7ADE\u4EF7 / \u6838\u67E5\u8BE6\u60C5\u9875\u4E0E\u4EF7\u683C',
       camp:'\u6682\u505C\u6216\u5927\u5E45\u964D\u9884\u7B97 / \u6838\u67E5\u6295\u653E\u8BCD\u4E0E\u843D\u5730 ASIN',
-      term:'\u76F4\u63A5\u52A0\u5426\u5B9A\u8BCD\uFF08\u7CBE\u51C6\u5426\u5B9A\uFF09'}[obj];
-    const SH={asin:'\u6682\u505C\u6B62\u635F',camp:'\u6682\u505C\u6B62\u635F',term:'\u52A0\u5426\u5B9A\u8BCD'}[obj];
+      term:(String(r.type||'').indexOf('\u624B\u52A8')>=0
+        ? '\u8BE5\u8BCD\u672C\u8EAB\u662F\u6295\u653E\u8BCD\uFF08\u52A0\u5426\u5B9A\u4F1A\u51B2\u7A81\uFF09\uFF1A\u964D\u7ADE\u4EF7\u6216\u6682\u505C\u8BE5\u5173\u952E\u8BCD'
+          +(String(r.type||'').indexOf('+')>=0?'\uFF1B\u81EA\u52A8\u6765\u6E90\u90E8\u5206\u53EF\u52A0\u7CBE\u51C6\u5426\u5B9A':'')
+        : '\u76F4\u63A5\u52A0\u5426\u5B9A\u8BCD\uFF08\u7CBE\u51C6\u5426\u5B9A\uFF09')}[obj];
+    const SH={asin:'\u6682\u505C\u6B62\u635F',camp:'\u6682\u505C\u6B62\u635F',
+      term:(String(r.type||'').indexOf('\u624B\u52A8')>=0?'\u964D\u4EF7 / \u6682\u505C':'\u52A0\u5426\u5B9A\u8BCD')}[obj];
     return {cat:'bleed',block:'\u96F6\u8F6C\u5316',cls:'t-zero',acls:'',act:ACT,actShort:SH,save:r.spend};
   }
   if(ordThin(r)){
@@ -4449,7 +4724,7 @@ function adiagClassify(r,c,obj){
       actShort:lose?'\u5148\u51B3\u53BB\u7559':'\u518D\u89C2\u5BDF',
       save:lose?Math.max(0,r.spend-r.adSales*be):0};
   }
-  const bn=adiagBottleneck(r,ctrL,cvrL,obj);
+  const bn=adiagBottleneck(r,ctrL,cvrL,obj,r.acos>be);
   if(r.acos>be){
     const save=Math.max(0,r.spend-r.adSales*be);
     if(bn) return {cat:'bleed',...bn,acls:'',save};
@@ -4460,10 +4735,15 @@ function adiagClassify(r,c,obj){
   }
   if(bn) return {cat:'listing',...bn,acls:'a-list',save:0};
   const nearGap=Math.max(0.03,be*0.15);
+  const termManual=String(r.type||'').indexOf('\u624B\u52A8')>=0;
   const OKACT={asin:'\u63D0\u7ADE\u4EF7 5~10% / \u52A0\u9884\u7B97\u653E\u91CF',
     camp:'\u63D0\u9884\u7B97 / \u63D0\u5E7F\u544A\u4F4D\u6EA2\u4EF7\u62A2\u9996\u9875',
-    term:'\u5355\u72EC\u5EFA\u7CBE\u51C6\u7EC4\u52A0\u7ADE\u4EF7 / \u52A0\u5230\u624B\u52A8\u6D3B\u52A8'}[obj];
-  const OKSH={asin:'\u63D0\u4EF7\u653E\u91CF',camp:'\u63D0\u9884\u7B97',term:'\u5EFA\u7CBE\u51C6\u7EC4'}[obj];
+    term:termManual
+      ? '\u8BE5\u8BCD\u5DF2\u5728\u624B\u52A8\u6295\u653E\uFF1A\u76F4\u63A5\u63D0\u7ADE\u4EF7\u653E\u91CF'
+        +(String(r.type||'').indexOf('+')>=0?'\uFF1B\u540C\u65F6\u6709\u81EA\u52A8\u6765\u6E90\uFF0C\u53EF\u7ED9\u81EA\u52A8\u7EC4\u964D\u7ADE\u4EF7\u907F\u514D\u4E24\u8FB9\u62A2\u91CF':'')
+      : '\u5355\u72EC\u5EFA\u7CBE\u51C6\u7EC4\u52A0\u7ADE\u4EF7 / \u52A0\u5230\u624B\u52A8\u6D3B\u52A8'}[obj];
+  const OKSH={asin:'\u63D0\u4EF7\u653E\u91CF',camp:'\u63D0\u9884\u7B97',
+    term:termManual?'\u63D0\u7ADE\u4EF7':'\u5EFA\u7CBE\u51C6\u7EC4'}[obj];
   if(r.acos<=be-nearGap) return {cat:'scale',block:'\u8868\u73B0\u5065\u5EB7',cls:'t-ok',acls:'a-ok',act:OKACT,actShort:OKSH,save:0};
   return {cat:'scale',block:'\u63A5\u8FD1\u76C8\u4E8F\u7EBF',cls:'t-near',acls:'a-ok',
     act:'\u5C0F\u6B65\u653E\u91CF / \u76EF\u7D27 ACOS \u53D8\u5316',actShort:'\u5C0F\u6B65\u653E\u91CF',save:0};
@@ -4482,7 +4762,7 @@ const OBJ_META={
           {l:'\u8D26\u53F7',w:'72px',cls:'c-acct',get:r=>r.acct,sk:'acct'},
           {l:'\u7AD9\u70B9',w:'56px',cls:'c-site',get:r=>r.country||r.site,sk:'country',tag:1},
           {l:'\u72B6\u6001',w:'68px',cls:'c-acct',get:r=>r.status,sk:'status'}]},
-  term:{label:'\u641C\u7D22\u8BCD',rows:()=>model.terms,id:r=>r.term,go:r=>goTermDays(r.id,false),need:()=>!!store.term,
+  term:{label:'\u641C\u7D22\u8BCD',rows:()=>model.terms,id:r=>r.term,go:r=>goTermSmart(r.id,false),need:()=>!!store.term,
     lead:[{l:'\u641C\u7D22\u8BCD',w:'',cls:'c-title',get:r=>r.term},
           {l:'\u8D26\u53F7',w:'92px',cls:'c-acct',get:r=>r.acct,sk:'acct'},
           {l:'\u7AD9\u70B9',w:'96px',cls:'c-site',get:r=>r.country||r.site,sk:'country',tag:1},
@@ -4652,8 +4932,11 @@ function renderAdDiag(){
   const avail=Object.keys(OBJ_META).filter(k=>OBJ_META[k].need());
   if(!avail.length){ sec.classList.add('hide'); return; }
   if(!avail.includes(adiagObj)) adiagObj=avail[0];
-  const allRows=adiagRowsAll();
-  if(!allRows.length){ sec.classList.add('hide'); return; }
+  const allRows0=adiagRowsAll();
+  if(!allRows0.length){ sec.classList.add('hide'); return; }
+  const allRows=adiagQFilter(allRows0);
+  { const qn=$('#adg_qn');
+    if(qn) qn.textContent=adiagQ?`\u547D\u4E2D ${allRows.length} / ${allRows0.length} \u884C`:''; }
   const siteStats=adiagSiteStats(allRows);
   if(adiagSite&&!siteStats.some(x=>x.site===adiagSite)) adiagSite=null;   // 换日期后站点可能消失
   const rows=adiagSite?allRows.filter(r=>adiagSiteOf(r)===adiagSite):allRows;
@@ -4731,7 +5014,7 @@ function renderAdDiag(){
   /* 当前范围内如果混着不同阈值的站点，线要按权重折算，否则拿默认线去判整体是错的 */
   const EL=cfgEffLines(rows);
   const mixed=!adiagSite&&new Set(rows.map(r=>cfgFor(adiagSiteOf(r)).margin)).size>1;
-  $('#adg_health').innerHTML=`<span>${adiagSite?esc(adiagSite)+' \u4F53\u68C0':'\u5168\u76D8\u4F53\u68C0'}\uFF08${M.label}\u53E3\u5F84\uFF09\uFF1A</span>`
+  $('#adg_health').innerHTML=`<span>${adiagSite?esc(adiagSite)+' \u4F53\u68C0':(adiagQ?'\u641C\u7D22\u7ED3\u679C\u4F53\u68C0':'\u5168\u76D8\u4F53\u68C0')}\uFF08${M.label}\u53E3\u5F84${adiagQ?' \u00B7 \u5DF2\u6309\u641C\u7D22\u8FC7\u6EE4':''}\uFF09\uFF1A</span>`
     +`<span>${dot(d.ctr<EL.ctr)}CTR <b>${fmt.pct2(d.ctr)}</b></span>`
     +`<span>${dot(d.cvr<EL.cvr)}CVR <b>${fmt.pct1(d.cvr)}</b></span>`
     +`<span>${dot(d.acos>EL.margin)}ACOS <b>${fmt.pct1(d.acos)}</b></span>`
@@ -4838,8 +5121,12 @@ function renderAdDiag(){
     const bad=enough(r)&&r.cvr<cvrL;
     const tip=(L&&L.thin)?thinTip(r,'CVR'):L
       ? `\u76C8\u4E8F\u5E73\u8861 CVR ${fmt.pct1(L.beCvr)}\uFF08= CPC ${fmt.$c(r.cpc)} \u00F7 \uFF08\u6BDB\u5229\u7387 ${(be*100).toFixed(0)}% \u00D7 \u5BA2\u5355 ${fmt.$2(r.aov)}\uFF09\uFF09\n`
-        +`\u5F53\u524D ${fmt.pct1(r.cvr)}\uFF0C\u5355\u9760\u8FD9\u4E00\u9879\u8FBE\u6807\u9700 ${pctChg(L.dCvr)}\n`
-        +`${L.scope} \u4E2D\u4F4D\u6570 ${fmt.pct1(L.B.cvr)}${pctlTxt(L.pCvr)} \u2192 ${feas(L.sCvr)}`
+        +(L.dCvr>0
+          ? `\u5F53\u524D ${fmt.pct1(r.cvr)}\uFF0C\u5355\u9760\u8FD9\u4E00\u9879\u8FBE\u6807\u9700 ${pctChg(L.dCvr)}\n`
+            +`${L.scope} \u4E2D\u4F4D\u6570 ${fmt.pct1(L.B.cvr)}${pctlTxt(L.pCvr)} \u2192 ${feas(L.sCvr)}`
+          : `\u5F53\u524D ${fmt.pct1(r.cvr)}\uFF0C\u5DF2\u4F18\u4E8E\u76C8\u4E8F\u5E73\u8861\uFF1A\u6700\u591A\u53EF\u627F\u53D7 ${pctChg(L.dCvr)} \u7684\u4E0B\u6ED1\u4ECD\u4E0D\u4E8F\n`
+            +`${L.scope} \u4E2D\u4F4D\u6570 ${fmt.pct1(L.B.cvr)}${pctlTxt(L.pCvr)} \u2192 \u5DF2\u8FBE\u76C8\u4E8F\u7EBF`
+            +(r.cvr<L.B.cvr?'\uFF0C\u5411\u4E2D\u4F4D\u6570\u9760\u62E2\u53EF\u518D\u538B ACOS':'\uFF0C\u4E14\u5DF2\u4F18\u4E8E\u540C\u884C\u4E2D\u4F4D\u6570'))
       : '\u8BE5\u884C\u6CA1\u6709\u5E7F\u544A\u8BA2\u5355\uFF0C\u7B97\u4E0D\u51FA\u76C8\u4E8F\u5E73\u8861 CVR';
     return `<td class="num ${bad&&!ordThin(r)?'bad':''}${thinCls(r)}" title="${esc(tip)}">${fmt.pct1(r.cvr)}</td>`;
   };
@@ -4848,8 +5135,11 @@ function renderAdDiag(){
     const L=adiagLevers(r,be,bench);
     const tip=(L&&L.thin)?thinTip(r,'\u5BA2\u5355\u4EF7'):L
       ? `\u76C8\u4E8F\u5E73\u8861\u5BA2\u5355 ${fmt.$2(L.beAov)}\uFF08= CPC ${fmt.$c(r.cpc)} \u00F7 \uFF08\u6BDB\u5229\u7387 ${(be*100).toFixed(0)}% \u00D7 CVR ${fmt.pct1(r.cvr)}\uFF09\uFF09\n`
-        +`\u5F53\u524D ${fmt.$2(r.aov)}\uFF0C\u5355\u9760\u8FD9\u4E00\u9879\u8FBE\u6807\u9700 ${pctChg(L.dAov)}\n`
-        +`${L.scope} \u4E2D\u4F4D\u6570 ${fmt.$2(L.B.aov)}${pctlTxt(L.pAov)} \u2192 ${feas(L.sAov)}`
+        +(L.dAov>0
+          ? `\u5F53\u524D ${fmt.$2(r.aov)}\uFF0C\u5355\u9760\u8FD9\u4E00\u9879\u8FBE\u6807\u9700 ${pctChg(L.dAov)}\n`
+            +`${L.scope} \u4E2D\u4F4D\u6570 ${fmt.$2(L.B.aov)}${pctlTxt(L.pAov)} \u2192 ${feas(L.sAov)}`
+          : `\u5F53\u524D ${fmt.$2(r.aov)}\uFF0C\u5DF2\u4F18\u4E8E\u76C8\u4E8F\u5E73\u8861\uFF1A\u6700\u591A\u53EF\u627F\u53D7 ${pctChg(L.dAov)} \u7684\u4E0B\u6ED1\u4ECD\u4E0D\u4E8F\n`
+            +`${L.scope} \u4E2D\u4F4D\u6570 ${fmt.$2(L.B.aov)}${pctlTxt(L.pAov)} \u2192 \u5DF2\u8FBE\u76C8\u4E8F\u7EBF`)
       : '';
     return `<td class="num${thinCls(r)}"${tip?` title="${esc(tip)}"`:''}>${fmt.$2(r.aov)}</td>`;
   };
@@ -4859,8 +5149,11 @@ function renderAdDiag(){
     const over=L&&!L.thin&&r.cpc>L.beCpc;
     const tip=(L&&L.thin)?thinTip(r,'\u76C8\u4E8F\u5E73\u8861 CPC \u6240\u4F9D\u8D56\u7684 CVR \u4E0E\u5BA2\u5355'):L
       ? `\u76C8\u4E8F\u5E73\u8861 CPC ${fmt.$c(L.beCpc)}\uFF08= \u6BDB\u5229\u7387 ${(be*100).toFixed(0)}% \u00D7 CVR ${fmt.pct1(r.cvr)} \u00D7 \u5BA2\u5355 ${fmt.$2(r.aov)}\uFF09\n`
-        +`\u5F53\u524D ${fmt.$c(r.cpc)}\uFF0C\u5355\u9760\u8FD9\u4E00\u9879\u8FBE\u6807\u9700 ${pctChg(L.dCpc)}\n`
-        +`${L.scope} \u4E2D\u4F4D\u6570 ${fmt.$c(L.B.cpc)}${pctlTxt(L.pCpc)} \u2192 ${feas(L.sCpc)}`
+        +(L.dCpc<0
+          ? `\u5F53\u524D ${fmt.$c(r.cpc)}\uFF0C\u5355\u9760\u8FD9\u4E00\u9879\u8FBE\u6807\u9700 ${pctChg(L.dCpc)}\n`
+            +`${L.scope} \u4E2D\u4F4D\u6570 ${fmt.$c(L.B.cpc)}${pctlTxt(L.pCpc)} \u2192 ${feas(L.sCpc)}`
+          : `\u5F53\u524D ${fmt.$c(r.cpc)}\uFF0C\u5DF2\u4F4E\u4E8E\u76C8\u4E8F\u5E73\u8861\uFF1A\u8FD8\u6709 ${pctChg(L.dCpc)} \u52A0\u4EF7\u7A7A\u95F4\n`
+            +`${L.scope} \u4E2D\u4F4D\u6570 ${fmt.$c(L.B.cpc)}${pctlTxt(L.pCpc)} \u2192 \u5DF2\u8FBE\u76C8\u4E8F\u7EBF\uFF0C\u9700\u8981\u653E\u91CF\u65F6\u53EF\u9002\u5F53\u52A0\u4EF7`)
       : '\u8BE5\u884C\u6CA1\u6709\u5E7F\u544A\u8BA2\u5355\uFF0C\u7B97\u4E0D\u51FA\u76C8\u4E8F\u5E73\u8861 CPC';
     return `<td class="num ${over?'bad':''}" title="${esc(tip)}">${fmt.$c(r.cpc)}</td>`;
   };
@@ -5099,10 +5392,11 @@ $('#adg_cfgreset').onclick=()=>{                     // 清掉当前站点的单
   $('#adg_cfgtitle').dataset.scope='\u0000';         // 强制把输入框刷回默认值
   cfgSaveAll(); renderAdDiag();
 };
+$('#adg_q').oninput=e=>{ adiagQ=String(e.target.value||'').trim().toLowerCase(); renderAdDiag(); };
 $('#adg_export').onclick=()=>{
   if(!model) return;
   const M=OBJ_META[adiagObj];
-  const rows=adiagFilter(adiagRows()).sort((a,b)=>b.spend-a.spend);
+  const rows=adiagFilter(adiagQFilter(adiagRows())).sort((a,b)=>b.spend-a.spend);
   const q=v=>{v=String(v??'');return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;};
   const p2=v=>(v*100).toFixed(2)+'%';
   const exportDays=Math.max(1,spanDays(dateRange.from,dateRange.to));
@@ -5142,7 +5436,7 @@ render=function(){ __base_render(); renderAdDiag(); };
      拓词收割  <- 搜索词报表（自动/定向里跑出来、手动组里还没有的词）
      广告位溢价 <- 广告位报表（活动 × 广告位）
      预算受限   <- 投放报表（逐日花费 vs 当日预算）              */
-let actTab='neg', actSite=null, actCollapsed=true, actSort={};   // actSort[页签]={i,asc}
+let actTab='neg', actSite=null, actCollapsed=true, actSort={}, actQ='';   // actSort[页签]={i,asc}
 
 /* ---- 搜索词按 活动 × 广告组 × 词 聚合 ----
    原来的 model.terms 按「词 + 币种」聚合，丢掉了活动维度，
@@ -5152,9 +5446,13 @@ let _termAgg={m:null,rows:null};
 function termGroups(){
   if(_termAgg.m===model) return _termAgg.rows;
   const K=(model&&model.rawTerm)||[];
-  const key=r=>r.camp+'\u0001'+(r.ag||'')+'\u0001'+r.term+'\u0001'+r.cur;
+  /* 聚合键带上投放词 + 匹配方式：同一个搜索词可能被广泛/词组/精准
+     几个投放词分别带来，拆开才知道该在哪个匹配方式上动手。 */
+  const key=r=>r.camp+'\u0001'+(r.ag||'')+'\u0001'
+    +(r.kwid||('~'+(r.match||'')+'\u0001'+(r.kwText||'')))+'\u0001'+r.term+'\u0001'+r.cur;
   const rows=groupBy(K,key,r=>({camp:r.camp,campName:r.campName,ag:r.ag||'',agName:r.agName,
     term:r.term,cur:r.cur,acct:r.acct,country:r.country,isAsin:r.isAsin,
+    kwid:r.kwid||'',kwText:r.kwText||'',match:r.match||matchCn('',r.kwid,r.kwText),
     site:r.country||r.site||curSite(r.cur),adAsin:r.adAsin,id:key(r)}));
   for(const o of rows){
     const cm=(model.campaignMeta&&model.campaignMeta.get(o.camp))||{};
@@ -5166,19 +5464,31 @@ function termGroups(){
     o.site=o.country||o.site||cm.site||curSite(o.cur);
     if(pa.length) o.adAsin=pa[0].asin+(pa.length>1?` +${pa.length-1}`:'');
   }
-  /* 同一个词在同一广告组里可能来自多个关键词（广泛/词组/精准）。
-     只要有 keywordId 就说明它本身是投放词，动作应该是改竞价而不是加否定。 */
-  const kw=new Map();
-  for(const r of K){ const k=key(r); let st=kw.get(k); if(!st){st=new Set();kw.set(k,st);} if(r.kwid) st.add(r.kwid); }
-  for(const o of rows){ const st=kw.get(o.id)||new Set(); o.nKw=st.size; o.auto=st.size===0; }
+  /* 自动/定向不能只看有没有 keywordId（本报表自动投放也带 ID），
+     以匹配类型为准：自动 / 商品定向 / 无来源信息的都归自动/定向一侧。 */
+  for(const o of rows){
+    o.auto=isAutoMatch(o.match)||(!o.kwid&&!o.kwText);
+    o.nKw=o.auto?0:1;
+    o.mFine=matchFine(o.match,o.kwText);
+  }
   _termAgg={m:model,rows};
   return rows;
 }
 
 /* ---- ① 否定词 ---- */
 function actNeg(){
+  const G=termGroups();
+  /* 每个广告组里的手动投放词集合：用来判断「否定这个搜索词会不会把
+     同组里同名的投放词一起挡掉」。否定作用于整个广告组，不分匹配方式。 */
+  const kwInGroup=new Map();
+  for(const o of G){
+    if(o.auto) continue;
+    const k=o.camp+'\u0001'+(o.ag||'');
+    let s=kwInGroup.get(k); if(!s){s=new Set();kwInGroup.set(k,s);}
+    s.add(String(o.kwText||'').trim().toLowerCase().replace(/\s+/g,' '));
+  }
   const out=[];
-  for(const o of termGroups()){
+  for(const o of G){
     const g=cfgFor(o.site), be=g.margin/100;
     if(o.clicks<g.minClicks) continue;
     let reason,save;
@@ -5187,12 +5497,32 @@ function actNeg(){
     else if(o.acos>be*1.5){ reason='ACOS \u8D85\u7EBF'; save=Math.max(0,o.spend-o.adSales*be); }
     else continue;
     if(save<=0) continue;
-    const negType=o.auto?(o.isAsin?'\u5426\u5B9A\u5546\u54C1':'\u7CBE\u51C6\u5426\u5B9A'):'\u2014';
-    /* 短标签用于表格（同一句话重复几百行会把版面压死），完整说明放悬停与导出 */
-    const actShort=o.auto?(o.isAsin?'\u52A0\u5426\u5B9A\u5546\u54C1':'\u52A0\u7CBE\u51C6\u5426\u5B9A'):'\u964D\u7ADE\u4EF7 / \u6682\u505C';
-    const act=o.auto
-      ? (o.isAsin?'\u52A0\u5426\u5B9A\u5546\u54C1\uFF08ASIN\uFF09':'\u52A0\u7CBE\u51C6\u5426\u5B9A')
-      : '\u964D\u7ADE\u4EF7\u6216\u6682\u505C\u8BE5\u5173\u952E\u8BCD\uFF08\u5B83\u672C\u8EAB\u5C31\u662F\u6295\u653E\u8BCD\uFF0C\u52A0\u5426\u5B9A\u4F1A\u51B2\u7A81\uFF09';
+    /* 三种情形：
+       ① 搜索词本身就是本组投放词（多为精准，或与同组另一投放词同名）
+          —— 加否定会连投放词一起挡掉，应降竞价或暂停该关键词；
+       ② 广泛/词组匹配跑出来的「跑偏词」—— 精准否定该搜索词，不影响投放词本身；
+       ③ 自动/定向跑出来的 —— 精准否定 / 否定商品。 */
+    const gk=o.camp+'\u0001'+(o.ag||'');
+    const termNorm=String(o.term||'').trim().toLowerCase().replace(/\s+/g,' ');
+    /* 精准匹配只会触发投放词本身及其近似变体，否定它等于关掉这个投放词，一律按调竞价处理 */
+    const conflict=!o.auto&&(o.match==='\u7CBE\u51C6'||sameWord(o.term,o.kwText)||(kwInGroup.get(gk)||new Set()).has(termNorm));
+    let negType,actShort,act;
+    if(conflict){
+      negType='\u2014';
+      actShort='\u964D\u7ADE\u4EF7 / \u6682\u505C';
+      act=o.match==='\u7CBE\u51C6'
+        ? `\u7CBE\u51C6\u5339\u914D\u6295\u653E\u8BCD\u300C${o.kwText||o.term}\u300D\u8868\u73B0\u5DEE\uFF1A\u7CBE\u51C6\u53EA\u4F1A\u89E6\u53D1\u672C\u8BCD\u53CA\u8FD1\u4F3C\u53D8\u4F53\uFF0C\u52A0\u5426\u5B9A\u7B49\u4E8E\u5173\u6389\u5B83\uFF0C\u5E94\u964D\u4F4E\u7ADE\u4EF7\u6216\u6682\u505C\u8BE5\u5173\u952E\u8BCD`
+        : `\u641C\u7D22\u8BCD\u4E0E\u672C\u7EC4\u6295\u653E\u8BCD\u76F8\u540C\uFF08${o.kwText||o.term} \u00B7 ${o.match}\uFF09\uFF0C\u52A0\u5426\u5B9A\u4F1A\u628A\u6295\u653E\u8BCD\u4E00\u8D77\u6321\u6389\uFF1A\u5E94\u964D\u4F4E\u7ADE\u4EF7\u6216\u6682\u505C\u8BE5\u5173\u952E\u8BCD`;
+    }else if(o.auto){
+      negType=o.isAsin?'\u5426\u5B9A\u5546\u54C1':'\u7CBE\u51C6\u5426\u5B9A';
+      actShort=o.isAsin?'\u52A0\u5426\u5B9A\u5546\u54C1':'\u52A0\u7CBE\u51C6\u5426\u5B9A';
+      act=(o.isAsin?'\u5728\u8BE5\u5E7F\u544A\u7EC4\u52A0\u5426\u5B9A\u5546\u54C1\uFF08ASIN\uFF09':'\u5728\u8BE5\u5E7F\u544A\u7EC4\u52A0\u7CBE\u51C6\u5426\u5B9A')
+        +`\uFF1B\u6765\u6E90\uFF1A${o.mFine||'\u81EA\u52A8/\u5B9A\u5411'}`;
+    }else{
+      negType=o.isAsin?'\u5426\u5B9A\u5546\u54C1':'\u7CBE\u51C6\u5426\u5B9A';
+      actShort=o.isAsin?'\u52A0\u5426\u5B9A\u5546\u54C1':'\u52A0\u7CBE\u51C6\u5426\u5B9A';
+      act=`\u8BE5\u8BCD\u7531\u6295\u653E\u8BCD\u300C${o.kwText||'\u2013'}\u300D\uFF08${o.match}\u5339\u914D\uFF09\u5E26\u6765\uFF1A\u5728\u8BE5\u5E7F\u544A\u7EC4\u52A0\u7CBE\u51C6\u5426\u5B9A\u8BE5\u641C\u7D22\u8BCD\uFF0C\u4E0D\u5F71\u54CD\u6295\u653E\u8BCD\u672C\u8EAB`;
+    }
     out.push({...o,reason,save,act,actShort,negType});
   }
   return out.sort((a,b)=>b.save-a.save);
@@ -5203,14 +5533,36 @@ function actHarvest(){
   const G=termGroups();
   const done=new Set();                       // 已经在手动组里出现过的词就不算候选了
   for(const o of G) if(!o.auto) done.add(o.term+'\u0001'+o.cur);
-  const out=[];
+  /* 同一个词在同一广告组里可能被 close-match 和 loose-match 分别带来，
+     收割看的是这个词整体的表现，先把多来源合回「活动×广告组×词」，
+     来源匹配方式收进 srcs 一并展示。 */
+  const merged=new Map();
   for(const o of G){
     if(!o.auto) continue;                     // 只收割自动 / 定向跑出来的词
+    const k=o.camp+'\u0001'+(o.ag||'')+'\u0001'+o.term+'\u0001'+o.cur;
+    let m=merged.get(k);
+    if(!m){ m={...o,srcs:new Set()}; merged.set(k,m); }
+    else{
+      m.impr+=o.impr; m.clicks+=o.clicks; m.spend+=o.spend;
+      m.adSales+=o.adSales; m.adOrders+=o.adOrders;
+    }
+    if(o.mFine) m.srcs.add(o.mFine);
+  }
+  const out=[];
+  for(const o of merged.values()){
+    o.acos=div(o.spend,o.adSales); o.cpc=div(o.spend,o.clicks);
     const g=cfgFor(o.site), be=g.margin/100;
     if(o.clicks<g.minClicks||!ordOK(o)) continue;   // 靠 1~2 单就判「值得放量」太冒进
     if(!(o.acos>0&&o.acos<=be)) continue;
     if(done.has(o.term+'\u0001'+o.cur)) continue;
-    out.push({...o,be,
+    const srcList=[...o.srcs];
+    /* 展示用短标签：去掉「自动·」前缀（列名已表明是来源），按固定次序排 */
+    const SRC_RANK=['\u7D27\u5BC6\u5339\u914D','\u5BBD\u6CDB\u5339\u914D','\u540C\u7C7B\u5546\u54C1','\u5173\u8054\u5546\u54C1',
+      '\u5B9A\u5411\u00B7ASIN','\u5B9A\u5411\u00B7\u62D3\u5C55ASIN','\u5B9A\u5411\u00B7\u7C7B\u76EE','\u5546\u54C1\u5B9A\u5411','\u5173\u952E\u8BCD\u7EC4','\u81EA\u52A8','\u81EA\u52A8/\u5B9A\u5411'];
+    const srcTags=srcList.map(s=>s.replace(/^\u81EA\u52A8\u00B7/,''))
+      .sort((a,b)=>{const x=SRC_RANK.indexOf(a),y=SRC_RANK.indexOf(b);return (x<0?99:x)-(y<0?99:y);});
+    out.push({...o,be,srcTags,
+      srcFine:srcList.join(' + ')||'\u81EA\u52A8/\u5B9A\u5411',
       bid:o.cpc*1.2,                          // 参考起始竞价：按实际 CPC 上浮 20%
       actShort:o.isAsin?'\u52A0\u5546\u54C1\u5B9A\u5411':'\u65B0\u5EFA\u7CBE\u51C6\u7EC4',
       act:o.isAsin?'\u52A0\u5230\u5546\u54C1\u5B9A\u5411\uFF08ASIN\uFF09':'\u65B0\u5EFA\u624B\u52A8\u7CBE\u51C6\u7EC4\u6295\u653E'});
@@ -5337,45 +5689,50 @@ const acctc=r=>nm(r.acct||'\u2013');
 const actCvrVal=r=>div(r.adOrders,r.clicks);
 const actCpcVal=r=>div(r.spend,r.clicks);
 const actAovVal=r=>div(r.adSales,r.adOrders);
-const actCvrCell=r=>r.clicks>0?fmt.pct1(actCvrVal(r)):'<span class="dim">\u2013</span>';
-const actCpcCell=r=>r.clicks>0?fmt.$c(actCpcVal(r)):'<span class="dim">\u2013</span>';
-const actAovCell=r=>r.adOrders>0?fmt.$2(actAovVal(r)):'<span class="dim">\u2013</span>';
+const actCvrCell=r=>`<span class="c-be">${r.clicks>0?fmt.pct1(actCvrVal(r)):'<span class="dim">\u2013</span>'}</span>`;
+const actCpcCell=r=>`<span class="c-be">${r.clicks>0?fmt.$c(actCpcVal(r)):'<span class="dim">\u2013</span>'}</span>`;
+const actAovCell=r=>`<span class="c-be">${r.adOrders>0?fmt.$2(actAovVal(r)):'<span class="dim">\u2013</span>'}</span>`;
 const ACT_COLS={
   neg:[
-    ['\u641C\u7D22\u8BCD','10%',r=>nm(r.term),null,null,r=>r.term],
+    ['\u641C\u7D22\u8BCD','9%',r=>nm(r.term),null,null,r=>r.term],
     ['\u7AD9\u70B9','3.5%',r=>stag(r.site),null,null,r=>r.site],
-    ['\u8D26\u53F7','6%',r=>acctc(r),null,r=>r.acct,r=>r.acct],
-    ['\u6295\u653E\u65B9\u5F0F','5.5%',r=>r.auto?'\u81EA\u52A8/\u5B9A\u5411':`\u624B\u52A8\u00B7${r.nKw} \u8BCD`,null,null,r=>r.auto?0:1],
+    ['\u8D26\u53F7','5.5%',r=>acctc(r),null,r=>r.acct,r=>r.acct],
+    ['\u6295\u653E\u8BCD','8%',r=>r.auto?'<span class="dim">\u2014</span>':nm(r.kwText||r.kwid||'\u2013'),null,r=>r.auto?'':(r.kwText||r.kwid||''),r=>r.auto?'':(r.kwText||'')],
+    ['\u5339\u914D\u65B9\u5F0F','6.5%',r=>`<span class="adtag ${r.auto?'t-dim':'t-cvr'}" title="${esc(r.auto?(r.kwText||'\u81EA\u52A8/\u5B9A\u5411'):(r.match||''))}">${esc(r.mFine||r.match||'\u2013')}</span>`,null,r=>r.mFine||r.match||'',r=>matchRank(r.match)],
     ['\u70B9\u51FB','3.5%',r=>fmt.int(r.clicks),null,null,r=>r.clicks],
-    ['\u5E7F\u544A\u82B1\u8D39','5%',r=>fmt.$2(r.spend),null,null,r=>r.spend],
-    ['\u8F6C\u5316\u7387','5%',r=>actCvrCell(r),null,null,r=>actCvrVal(r)],
-    ['CPC','4.5%',r=>actCpcCell(r),null,null,r=>actCpcVal(r)],
+    ['\u5E7F\u544A\u82B1\u8D39','4.5%',r=>fmt.$2(r.spend),null,null,r=>r.spend],
+    ['\u8F6C\u5316\u7387','4.5%',r=>actCvrCell(r),null,null,r=>actCvrVal(r)],
+    ['CPC','4%',r=>actCpcCell(r),null,null,r=>actCpcVal(r)],
     ['\u8BA2\u5355','3.5%',r=>fmt.int(r.adOrders),null,null,r=>r.adOrders],
-    ['\u5E7F\u544A\u9500\u552E\u989D','6%',r=>fmt.$2(r.adSales),null,null,r=>r.adSales],
-    ['\u5E7F\u544A\u5BA2\u5355\u4EF7','5%',r=>actAovCell(r),null,null,r=>actAovVal(r)],
-    ['ACOS','5%',r=>r.adSales>0?`<span class="bad">${fmt.pct1(r.acos)}</span>`:'<span class="dim">\u2013</span>',null,null,r=>r.adSales>0?r.acos:-1],
-    ['\u539F\u56E0','5.5%',r=>`<span class="adtag ${r.reason==='\u96F6\u8F6C\u5316'?'t-zero':'t-acos'}">${r.reason}</span>`,null,null,r=>r.reason],
-    ['\u9884\u8BA1\u53EF\u7701','5.5%',r=>`<span class="bad">${fmt.$2(r.save)}</span>`,null,null,r=>r.save],
-    ['\u5EFA\u8BAE\u52A8\u4F5C','8.5%',r=>aTag(r.actShort,r.act,r.auto?'t-cvr':'t-acos'),null,r=>r.act,r=>r.actShort],
-    ['\u5E7F\u544A\u6D3B\u52A8\u540D','10.5%',r=>campc(r),null,r=>r.campName,r=>r.campName],
-    ['\u5E7F\u544A\u7EC4\u540D','7.5%',r=>agc(r),null,r=>r.agName,r=>r.agName],
+    ['\u5E7F\u544A\u9500\u552E\u989D','5.5%',r=>fmt.$2(r.adSales),null,null,r=>r.adSales],
+    ['\u5E7F\u544A\u5BA2\u5355\u4EF7','4.5%',r=>actAovCell(r),null,null,r=>actAovVal(r)],
+    ['ACOS','4.5%',r=>`<span class="c-be">${r.adSales>0?`<span class="bad">${fmt.pct1(r.acos)}</span>`:'<span class="dim">\u2013</span>'}</span>`,null,null,r=>r.adSales>0?r.acos:-1],
+    ['\u539F\u56E0','5%',r=>`<span class="adtag ${r.reason==='\u96F6\u8F6C\u5316'?'t-zero':'t-acos'}">${r.reason}</span>`,null,null,r=>r.reason],
+    ['\u9884\u8BA1\u53EF\u7701','5%',r=>`<span class="bad">${fmt.$2(r.save)}</span>`,null,null,r=>r.save],
+    ['\u5EFA\u8BAE\u52A8\u4F5C','8%',r=>aTag(r.actShort,r.act,r.actShort.indexOf('\u5426\u5B9A')>=0?'t-cvr':'t-acos'),null,r=>r.act,r=>r.actShort],
+    ['\u5E7F\u544A\u6D3B\u52A8\u540D','8.5%',r=>campc(r),null,r=>r.campName,r=>r.campName],
+    ['\u5E7F\u544A\u7EC4\u540D','6.5%',r=>agc(r),null,r=>r.agName,r=>r.agName],
   ],
   harv:[
-    ['\u641C\u7D22\u8BCD','12%',r=>nm(r.term),null,null,r=>r.term],
+    ['\u641C\u7D22\u8BCD','11.5%',r=>nm(r.term),null,null,r=>r.term],
     ['\u7AD9\u70B9','4%',r=>stag(r.site),null,null,r=>r.site],
-    ['\u8D26\u53F7','7%',r=>acctc(r),null,r=>r.acct,r=>r.acct],
+    ['\u8D26\u53F7','6.5%',r=>acctc(r),null,r=>r.acct,r=>r.acct],
+    ['\u6765\u6E90\u65B9\u5F0F','7.5%',r=>{
+      const t=(r.srcTags&&r.srcTags.length)?r.srcTags:['\u81EA\u52A8/\u5B9A\u5411'];
+      return `<span class="adtag t-dim" title="${esc(r.srcFine||t.join(' + '))}">${esc(t[0])}${t.length>1?` +${t.length-1}`:''}</span>`;
+    },null,r=>r.srcFine||'',r=>(r.srcTags||[]).join('+')],
     ['\u70B9\u51FB','4%',r=>fmt.int(r.clicks),null,null,r=>r.clicks],
-    ['\u5E7F\u544A\u82B1\u8D39','5.5%',r=>fmt.$2(r.spend),null,null,r=>r.spend],
-    ['\u8F6C\u5316\u7387','5%',r=>actCvrCell(r),null,null,r=>actCvrVal(r)],
-    ['CPC','5%',r=>actCpcCell(r),null,null,r=>actCpcVal(r)],
+    ['\u5E7F\u544A\u82B1\u8D39','5%',r=>fmt.$2(r.spend),null,null,r=>r.spend],
+    ['\u8F6C\u5316\u7387','4.5%',r=>actCvrCell(r),null,null,r=>actCvrVal(r)],
+    ['CPC','4.5%',r=>actCpcCell(r),null,null,r=>actCpcVal(r)],
     ['\u8BA2\u5355','4%',r=>fmt.int(r.adOrders),null,null,r=>r.adOrders],
-    ['\u5E7F\u544A\u9500\u552E\u989D','6%',r=>fmt.$2(r.adSales),null,null,r=>r.adSales],
-    ['\u5E7F\u544A\u5BA2\u5355\u4EF7','5.5%',r=>actAovCell(r),null,null,r=>actAovVal(r)],
-    ['ACOS','5%',r=>`<span class="ok">${fmt.pct1(r.acos)}</span>`,null,null,r=>r.acos],
-    ['\u53C2\u8003\u8D77\u59CB\u7ADE\u4EF7','7%',r=>`<b>${fmt.$c(r.bid)}</b>`,null,null,r=>r.bid],
-    ['\u5EFA\u8BAE\u52A8\u4F5C','10%',r=>aTag(r.actShort,r.act,'t-ok'),null,r=>r.act,r=>r.actShort],
-    ['\u6765\u81EA\u6D3B\u52A8','10%',r=>campc(r),null,r=>r.campName,r=>r.campName],
-    ['\u5E7F\u544A\u7EC4\u540D','10%',r=>agc(r),null,r=>r.agName,r=>r.agName],
+    ['\u5E7F\u544A\u9500\u552E\u989D','5.5%',r=>fmt.$2(r.adSales),null,null,r=>r.adSales],
+    ['\u5E7F\u544A\u5BA2\u5355\u4EF7','5%',r=>actAovCell(r),null,null,r=>actAovVal(r)],
+    ['ACOS','4.5%',r=>`<span class="c-be"><span class="ok">${fmt.pct1(r.acos)}</span></span>`,null,null,r=>r.acos],
+    ['\u53C2\u8003\u8D77\u59CB\u7ADE\u4EF7','6.5%',r=>`<b>${fmt.$c(r.bid)}</b>`,null,null,r=>r.bid],
+    ['\u5EFA\u8BAE\u52A8\u4F5C','9%',r=>aTag(r.actShort,r.act,'t-ok'),null,r=>r.act,r=>r.actShort],
+    ['\u6765\u81EA\u6D3B\u52A8','9.5%',r=>campc(r),null,r=>r.campName,r=>r.campName],
+    ['\u5E7F\u544A\u7EC4\u540D','8.5%',r=>agc(r),null,r=>r.agName,r=>r.agName],
   ],
   place:[
     ['\u5E7F\u544A\u6D3B\u52A8\u540D','10%',r=>campc(r),null,r=>r.campName,r=>r.campName],
@@ -5424,9 +5781,13 @@ const ACT_VAL={
   bud:{f:r=>r.gain||0,l:'\u4F30\u7B97\u589E\u91CF'},
 };
 const ACT_NOTE={
-  neg:'\u53EA\u5217\u51FA\u70B9\u51FB\u6570\u8FBE\u5230\u300C\u6700\u5C11\u70B9\u51FB\u300D\u7684\u8BCD\uFF1A\u96F6\u8F6C\u5316\u7684\u53EF\u7701\u91D1\u989D = \u5168\u90E8\u82B1\u8D39\uFF1BACOS \u8D85\u7EBF 1.5 \u500D\u7684\u53EF\u7701 = \u82B1\u8D39 \u2212 \u5E7F\u544A\u9500\u552E\u00D7\u6BDB\u5229\u7387\u3002'
-    +'\u5DF2\u662F\u6295\u653E\u8BCD\uFF08\u6709 keywordId\uFF09\u7684\u884C\u4E0D\u5EFA\u8BAE\u52A0\u5426\u5B9A\uFF0C\u5426\u5219\u4F1A\u4E0E\u81EA\u5DF1\u7684\u5173\u952E\u8BCD\u51B2\u7A81\uFF0C\u5E94\u8BE5\u964D\u7ADE\u4EF7\u6216\u6682\u505C\u3002',
+  neg:'\u6BCF\u884C = \u641C\u7D22\u8BCD \u00D7 \u6765\u6E90\u6295\u653E\u8BCD \u00D7 \u5339\u914D\u65B9\u5F0F\uFF1A\u540C\u4E00\u4E2A\u641C\u7D22\u8BCD\u82E5\u88AB\u5E7F\u6CDB\u548C\u8BCD\u7EC4\u5206\u522B\u5E26\u6765\uFF0C\u4F1A\u62C6\u6210\u4E24\u884C\uFF0C\u5206\u522B\u770B\u54EA\u79CD\u5339\u914D\u5728\u70E7\u94B1\u3002'
+    +'\u53EA\u5217\u51FA\u70B9\u51FB\u6570\u8FBE\u5230\u300C\u6700\u5C11\u70B9\u51FB\u300D\u7684\u884C\uFF1A\u96F6\u8F6C\u5316\u7684\u53EF\u7701\u91D1\u989D = \u5168\u90E8\u82B1\u8D39\uFF1BACOS \u8D85\u7EBF 1.5 \u500D\u7684\u53EF\u7701 = \u82B1\u8D39 \u2212 \u5E7F\u544A\u9500\u552E\u00D7\u6BDB\u5229\u7387\u3002'
+    +'\u641C\u7D22\u8BCD\u4E0E\u672C\u7EC4\u6295\u653E\u8BCD\u540C\u540D\u65F6\u4E0D\u5EFA\u8BAE\u52A0\u5426\u5B9A\uFF08\u5426\u5B9A\u4F5C\u7528\u4E8E\u6574\u4E2A\u5E7F\u544A\u7EC4\uFF0C\u4F1A\u628A\u6295\u653E\u8BCD\u4E00\u8D77\u6321\u6389\uFF09\uFF0C\u5E94\u964D\u7ADE\u4EF7\u6216\u6682\u505C\uFF1B'
+    +'\u5E7F\u6CDB/\u8BCD\u7EC4\u8DD1\u51FA\u6765\u7684\u8DD1\u504F\u8BCD\u53EF\u76F4\u63A5\u7CBE\u51C6\u5426\u5B9A\uFF0C\u4E0D\u5F71\u54CD\u6295\u653E\u8BCD\u672C\u8EAB\uFF1B\u81EA\u52A8/\u5B9A\u5411\u6765\u6E90\u4F1A\u6807\u6CE8\u5177\u4F53\u5339\u914D\uFF08\u7D27\u5BC6/\u5BBD\u6CDB/\u540C\u7C7B/\u5173\u8054\uFF09\u3002'
+    +'\u62A5\u8868\u91CC\u65E0\u6295\u653E\u8BCD\u4FE1\u606F\u7684\u884C\uFF08\u5982 SB/SD\uFF09\u5F52\u5165\u81EA\u52A8/\u5B9A\u5411\u4E00\u4FA7\u3002',
   harv:'\u53EA\u770B\u81EA\u52A8/\u5B9A\u5411\u7EC4\u8DD1\u51FA\u6765\u3001\u4E14\u624B\u52A8\u7EC4\u91CC\u8FD8\u6CA1\u6709\u7684\u8BCD\uFF1B\u9700\u81F3\u5C11 2 \u5355\u3001ACOS \u4F4E\u4E8E\u76C8\u4E8F\u5E73\u8861\u7EBF\u3002'
+    +'\u300C\u6765\u6E90\u65B9\u5F0F\u300D\u5217\u51FA\u8BE5\u8BCD\u662F\u88AB\u54EA\u79CD\u81EA\u52A8\u5339\u914D/\u5B9A\u5411\u8DD1\u51FA\u6765\u7684\uFF08\u540C\u8BCD\u591A\u6765\u6E90\u5DF2\u5408\u5E76\u7EDF\u8BA1\uFF09\u3002'
     +'\u53C2\u8003\u8D77\u59CB\u7ADE\u4EF7 = \u5B9E\u9645 CPC \u00D7 1.2\uFF08\u62A5\u8868\u91CC\u6CA1\u6709\u7ADE\u4EF7\u5B57\u6BB5\uFF0C\u8FD9\u662F\u4F30\u503C\uFF0C\u4E0A\u65B0\u540E\u8981\u770B\u5B9E\u9645\u66DD\u5149\u518D\u8C03\uFF09\u3002',
   place:'\u6EA2\u4EF7\u662F\u5728\u540C\u4E00\u4E2A\u6D3B\u52A8\u5185\u90E8\u91CD\u65B0\u5206\u914D\u9884\u7B97\uFF0C\u6240\u4EE5\u57FA\u51C6\u662F\u300C\u540C\u6D3B\u52A8\u7684\u5176\u4ED6\u5E7F\u544A\u4F4D\u300D\uFF08\u4E0D\u542B\u81EA\u5DF1\uFF09\uFF0C'
     +'\u800C\u4E0D\u662F\u6D3B\u52A8\u6574\u4F53\u2014\u2014\u542B\u81EA\u5DF1\u7684\u8BDD\uFF0C\u82B1\u8D39\u5360\u6BD4\u5927\u7684\u4F4D\u7F6E\u4F1A\u628A\u5747\u503C\u62C9\u5411\u81EA\u5DF1\uFF0C\u504F\u79BB\u5EA6\u88AB\u4F4E\u4F30\u3002'
@@ -5453,6 +5814,231 @@ function actSorted(rows,tab){
   });
 }
 function actAvail(){ return ACT_TABS.filter(t=>t.need()); }
+/* 搜索过滤：ASIN / 品名（活动、广告组名里通常带品名）/ 匹配方式 / 搜索词 / 账号，
+   多个条件用空格分隔、需全部命中 */
+function actFilter(rows){
+  const G=queryGroups(actQ);
+  if(!G.length) return rows;
+  const hay=r=>[r.term,r.adAsin,r.campName,r.agName,r.acct,r.kwText,r.match,r.mFine,
+    r.srcFine,r.plName,r.site].filter(Boolean).join('\u0001').toLowerCase();
+  return rows.filter(r=>queryHit(hay(r),G));
+}
+
+/* ---- 盈亏平衡测算悬停 ----
+   ACOS = CPC ÷（转化率 × 客单价）。把盈亏线（毛利率）代进去反解，
+   就得到三个「打平需要做到多少」的基准：
+     盈亏平衡 CPC   = 盈亏线 × 转化率 × 客单价（转化不变时最多出多少钱一次点击）
+     盈亏平衡转化率 = CPC ÷（盈亏线 × 客单价）
+     盈亏平衡客单价 = CPC ÷（盈亏线 × 转化率）
+   零成交的词没有转化率/客单价基线，退一步给「每次点击需产出的销售额 = CPC ÷ 盈亏线」。 */
+function actBeTip(r){
+  const g=cfgFor(r.site), be=g.margin/100;
+  const cpc=div(r.spend,r.clicks), cvr=div(r.adOrders,r.clicks),
+        aov=div(r.adSales,r.adOrders), acos=div(r.spend,r.adSales),
+        rpc=div(r.adSales,r.clicks), needRpc=be>0?cpc/be:0;
+  const L=[];
+  L.push(`<div class="tt-h">\u76C8\u4E8F\u5E73\u8861\u6D4B\u7B97 \u00B7 \u76C8\u4E8F\u7EBF ${fmt.pct1(be)}\uFF08\u6BDB\u5229\u7387\u53E3\u5F84\uFF09</div>`);
+  L.push(`ACOS = CPC \u00F7\uFF08\u8F6C\u5316\u7387 \u00D7 \u5BA2\u5355\u4EF7\uFF09\uFF0C\u5F53\u524D ${r.adSales>0?`<b class="${acos>be?'tt-bad':'tt-ok'}">${fmt.pct1(acos)}</b>`:'<b class="tt-bad">\u96F6\u8F6C\u5316</b>'}`);
+  L.push(`\u6BCF\u6B21\u70B9\u51FB\u9700\u4EA7\u51FA\u9500\u552E \u2265 CPC\u00F7\u76C8\u4E8F\u7EBF = <b>${fmt.$c(needRpc)}</b>\uFF08\u5F53\u524D ${fmt.$c(rpc)}\uFF09`);
+  if(cvr>0&&aov>0){
+    const beCpc=be*cvr*aov;
+    L.push(`\u76C8\u4E8F\u5E73\u8861 CPC = <b>${fmt.$c(beCpc)}</b>\uFF08\u5F53\u524D ${fmt.$c(cpc)}\uFF0C${cpc>beCpc
+      ?`<span class="tt-bad">\u9700\u964D ${Math.round((1-beCpc/cpc)*100)}%</span>`
+      :`<span class="tt-ok">\u8FD8\u6709 ${Math.round((beCpc/cpc-1)*100)}% \u52A0\u4EF7\u7A7A\u95F4</span>`}\uFF09`);
+  }
+  if(aov>0){
+    const beCvr=cpc/(be*aov);
+    L.push(`\u76C8\u4E8F\u5E73\u8861\u8F6C\u5316\u7387 = <b>${fmt.pct1(beCvr)}</b>\uFF08\u5F53\u524D ${cvr>0?fmt.pct1(cvr):'0%'}${cvr>0&&beCvr>0?`\uFF0C${cvr>=beCvr?'<span class="tt-ok">\u5DF2\u8FBE\u6807</span>':`\u9700\u63D0\u81F3 ${(beCvr/cvr).toFixed(1)} \u500D`}`:''}\uFF09`);
+  }
+  if(cvr>0){
+    const beAov=cpc/(be*cvr);
+    L.push(`\u76C8\u4E8F\u5E73\u8861\u5BA2\u5355\u4EF7 = <b>${fmt.$2(beAov)}</b>\uFF08\u5F53\u524D ${r.adOrders>0?fmt.$2(aov):'\u2013'}\uFF09`);
+  }
+  if(!(r.adOrders>0))
+    L.push(`\u8BE5\u8BCD\u96F6\u6210\u4EA4\uFF0C\u6CA1\u6709\u8F6C\u5316\u7387/\u5BA2\u5355\u4EF7\u57FA\u7EBF\uFF1A\u5148\u770B\u4E0A\u9762\u300C\u6BCF\u70B9\u51FB\u9700\u4EA7\u51FA\u300D\u4E00\u6761\u5373\u53EF`);
+  return L.join('<br>');
+}
+function actTipEl(){
+  let el=document.getElementById('acttip');
+  if(!el){ el=document.createElement('div'); el.id='acttip'; document.body.appendChild(el); }
+  return el;
+}
+function actTipShow(r,e){
+  const el=actTipEl();
+  el.innerHTML=actBeTip(r);
+  el.style.display='block';
+  const w=el.offsetWidth, h=el.offsetHeight;
+  let x=e.clientX+14, y=e.clientY+12;
+  if(x+w>window.innerWidth-8) x=Math.max(8,e.clientX-w-14);
+  if(y+h>window.innerHeight-8) y=Math.max(8,e.clientY-h-12);
+  el.style.left=x+'px'; el.style.top=y+'px';
+}
+function actTipHide(){ const el=document.getElementById('acttip'); if(el) el.style.display='none'; }
+
+/* 纯文本提示的智能高亮：金额/百分比/倍数加粗，
+   需降·需提·没空间等结论标红，可行·已达标等标绿，首行作标题 */
+function tipRich(t){
+  let h=esc(String(t||''));
+  // 红：需要动手/没有空间的结论（连同紧跟的数值一起染色）
+  h=h.replace(/(需降|需提至|需提到|需提|达标需|拉回需)\s*([−+\-]?[\d.,]+\s*[%倍]?)/g,'<span class="tt-bad">$1 $2</span>');
+  h=h.replace(/(这条路没空间|没空间|偏难|零转化|ACOS 超线|正在失血|在烧)/g,'<span class="tt-bad">$1</span>');
+  h=h.replace(/(勉强)/g,'<span class="tt-warn">$1</span>');
+  // 绿：已达标/有余量/结论性推荐
+  h=h.replace(/(已优于盈亏平衡|已低于盈亏平衡|已达盈亏线|已达标|加价空间|可行|最省力|且已优于同行中位数|表现健康)/g,'<span class="tt-ok">$1</span>');
+  // 粗：金额、百分比、倍数（避开已在 span 里的）
+  h=h.replace(/(^|[^>\w])([$€£¥]\s?[\d,]+\.?\d*)/g,'$1<b>$2</b>');
+  h=h.replace(/(^|[^>\w.,$€£¥])([−+\-]?\d[\d.,]*\s?%)/g,'$1<b>$2</b>');
+  h=h.replace(/(\d[\d.]*)\s?(倍)/g,'<b>$1 $2</b>');
+  // 首行作标题（多行时）
+  const i=h.indexOf('\n');
+  if(i>0) h=`<div class="tt-h">${h.slice(0,i)}</div>`+h.slice(i+1);
+  return h.replace(/\n/g,'<br>');
+}
+
+/* ---- 弹层通用指标行（首列自定义：日期 / 广告位名） ---- */
+const POP_HEAD='<tr><th>%L%</th><th>\u66DD\u5149</th><th>\u70B9\u51FB</th><th>CTR</th>'
+  +'<th>\u5E7F\u544A\u82B1\u8D39</th><th>CPC</th><th>\u8BA2\u5355</th><th>\u5E7F\u544A\u9500\u552E\u989D</th>'
+  +'<th>\u8F6C\u5316\u7387</th><th>ACOS</th></tr>';
+function popRow(first,d,maxSp,be,cls){
+  const ctr=div(d.clicks,d.impr), cvr=div(d.adOrders,d.clicks),
+        cpc=div(d.spend,d.clicks), acos=div(d.spend,d.adSales);
+  return `<tr${cls?` class="${cls}"`:''}><td>${first}</td>`
+    +`<td>${fmt.int(d.impr)}</td><td>${fmt.int(d.clicks)}</td>`
+    +`<td>${d.impr>0?fmt.pct1(ctr):'\u2013'}</td>`
+    +`<td>${maxSp>0?`<span class="sbar" style="width:${Math.round((d.spend||0)/maxSp*46)}px"></span>`:''}${fmt.$2(d.spend)}</td>`
+    +`<td>${d.clicks>0?fmt.$c(cpc):'\u2013'}</td>`
+    +`<td>${fmt.int(d.adOrders)}</td><td>${fmt.$2(d.adSales)}</td>`
+    +`<td>${d.clicks>0?fmt.pct1(cvr):'\u2013'}</td>`
+    +`<td>${d.adSales>0?`<span class="${acos>be?'bad':'ok'}">${fmt.pct1(acos)}</span>`:'\u2013'}</td></tr>`;
+}
+
+/* ---- 广告位下钻 ----
+   第一层：该活动的所有广告位横向对比（当前行的位置高亮）；
+   第二层：点任一广告位，看它的逐日表现，可返回第一层。 */
+function actPopPlace(r){
+  const CP=((model&&model.campPlace)||[]).filter(x=>x.camp===r.camp)
+    .sort((a,b)=>(b.spend||0)-(a.spend||0));
+  const be=cfgFor(r.site).margin/100;
+  const el=actPopEl();
+  el.querySelector('.pp-t').textContent=`\u6D3B\u52A8\u300C${r.campName||r.camp}\u300D\u00B7 \u5E7F\u544A\u4F4D\u8868\u73B0\u5BF9\u6BD4`;
+  el.querySelector('.pp-s').innerHTML=[esc(r.site||''),esc(r.acct||''),
+    '\u70B9\u4EFB\u4E00\u5E7F\u544A\u4F4D\u53EF\u770B\u5B83\u7684\u9010\u65E5\u8868\u73B0'].filter(Boolean).join(' \u00B7 ');
+  const maxSp=Math.max(1e-9,...CP.map(d=>d.spend||0));
+  const sum={impr:0,clicks:0,spend:0,adSales:0,adOrders:0};
+  for(const x of CP){ sum.impr+=x.impr||0; sum.clicks+=x.clicks||0; sum.spend+=x.spend||0;
+    sum.adSales+=x.adSales||0; sum.adOrders+=x.adOrders||0; }
+  el.querySelector('.pp-b').innerHTML=`<table><thead>${POP_HEAD.replace('%L%','\u5E7F\u544A\u4F4D')}</thead><tbody>`
+    +CP.map(x=>popRow(esc(PL_META(x.pl).l),x,maxSp,be,'plclk'+(x.pl===r.pl?' plcur':''))).join('')
+    +(CP.length>1?popRow('\u5408\u8BA1 \u00B7 '+CP.length+' \u4E2A\u4F4D\u7F6E',sum,0,be,'sumrow'):'')
+    +'</tbody></table>';
+  el.querySelectorAll('tr.plclk').forEach((tr,i)=>tr.onclick=()=>actPopPlaceDays(r,CP[i]));
+  el.classList.add('on');
+}
+function actPopPlaceDays(r,cp){
+  const be=cfgFor(r.site).margin/100;
+  const days=groupBy(((model&&model.rawPlace)||[]).filter(x=>x.camp===cp.camp&&x.pl===cp.pl),
+    x=>x.date,x=>({date:x.date})).sort((a,b)=>a.date<b.date?-1:1);
+  const sum={impr:0,clicks:0,spend:0,adSales:0,adOrders:0};
+  for(const d of days){ sum.impr+=d.impr||0; sum.clicks+=d.clicks||0; sum.spend+=d.spend||0;
+    sum.adSales+=d.adSales||0; sum.adOrders+=d.adOrders||0; }
+  const maxSp=Math.max(1e-9,...days.map(d=>d.spend||0));
+  const el=actPopEl();
+  el.querySelector('.pp-t').innerHTML=`<span class="pp-back">\u2190 \u8FD4\u56DE\u5E7F\u544A\u4F4D\u5BF9\u6BD4</span>`
+    +esc(`\u300C${PL_META(cp.pl).l}\u300D\u00B7 \u9010\u65E5\u8868\u73B0`);
+  el.querySelector('.pp-s').innerHTML=[esc(`\u6D3B\u52A8\uFF1A${r.campName||r.camp}`),
+    esc(r.site||''),esc(r.acct||'')].filter(Boolean).join(' \u00B7 ');
+  el.querySelector('.pp-b').innerHTML=`<table><thead>${POP_HEAD.replace('%L%','\u65E5\u671F')}</thead><tbody>`
+    +days.map(d=>popRow(esc(d.date)+' '+(typeof wdCN==='function'?wdCN(d.date):''),d,maxSp,be,'')).join('')
+    +(days.length>1?popRow('\u5408\u8BA1 \u00B7 '+days.length+' \u5929',sum,0,be,'sumrow'):'')
+    +'</tbody></table>';
+  const bk=el.querySelector('.pp-back'); if(bk) bk.onclick=e=>{ e.stopPropagation(); actPopPlace(r); };
+  el.classList.add('on');
+}
+
+/* ---- 原生 title 升级为统一深色浮层（漏斗诊断 + 投放优化 + 弹层内） ---- */
+(function(){
+  let cur=null;
+  document.addEventListener('mouseover',e=>{
+    const t=e.target&&e.target.closest?e.target.closest('[title],[data-tip]'):null;
+    if(!t) return;
+    if(!t.closest('#adiag')&&!t.closest('#adact')&&!t.closest('#actpop')) return;
+    if(e.target.closest('.c-be')) return;              // 盈亏平衡测算有自己的浮层内容
+    if(t.hasAttribute('title')){ const v0=t.getAttribute('title')||''; t.removeAttribute('title'); if(v0) t.setAttribute('data-tip',v0); }
+    const v=t.getAttribute('data-tip'); if(!v||cur===t) return;
+    cur=t;
+    const el=actTipEl();
+    el.innerHTML=tipRich(v);
+    el.style.display='block';
+    const w0=el.offsetWidth,h0=el.offsetHeight;
+    let x=e.clientX+14,y=e.clientY+12;
+    if(x+w0>window.innerWidth-8) x=Math.max(8,e.clientX-w0-14);
+    if(y+h0>window.innerHeight-8) y=Math.max(8,e.clientY-h0-12);
+    el.style.left=x+'px'; el.style.top=y+'px';
+  });
+  document.addEventListener('mouseout',e=>{
+    if(!cur) return;
+    const rt=e.relatedTarget;
+    if(rt&&(cur===rt||cur.contains(rt))) return;
+    if(cur===e.target||cur.contains(e.target)){ cur=null; actTipHide(); }
+  });
+  document.addEventListener('scroll',actTipHide,true);
+})();
+
+/* ---- 搜索词逐日下钻 ----
+   点烧钱词/拓词收割里的任意一行，弹层展示该行「同一来源口径」的逐日表现：
+   烧钱词按 活动×广告组×投放词×匹配方式×搜索词 过滤（和表格行完全同口径）；
+   拓词收割一行合并了同词的多个自动/定向来源，下钻也合并同样的来源。 */
+function actPopEl(){
+  let el=document.getElementById('actpop');
+  if(el) return el;
+  el=document.createElement('div'); el.id='actpop';
+  el.innerHTML='<div class="pp"><span class="pp-x" title="\u5173\u95ED">\u2715</span>'
+    +'<div class="pp-h"><div class="pp-t"></div><div class="pp-s"></div></div>'
+    +'<div class="pp-b"></div></div>';
+  document.body.appendChild(el);
+  el.onclick=e=>{ if(e.target===el||e.target.classList.contains('pp-x')) el.classList.remove('on'); };
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape') el.classList.remove('on'); });
+  return el;
+}
+function actPop(r,tab){
+  const K=(model&&model.rawTerm)||[];
+  const mOf=x=>x.match||matchCn('',x.kwid,x.kwText);
+  const sameSrc=tab==='harv'
+    ? x=>isAutoMatch(mOf(x))||(!x.kwid&&!x.kwText)
+    : (r.kwid ? x=>x.kwid===r.kwid
+              : x=>!x.kwid&&mOf(x)===(r.match||'')&&(x.kwText||'')===(r.kwText||''));
+  const src=K.filter(x=>x.camp===r.camp&&(x.ag||'')===(r.ag||'')
+    &&x.term===r.term&&x.cur===r.cur&&sameSrc(x));
+  const days=groupBy(src,x=>x.date,x=>({date:x.date})).sort((a,b)=>a.date<b.date?-1:1);
+  const tot=groupBy(src,()=>1,()=>({}))[0]||{impr:0,clicks:0,spend:0,adSales:0,adOrders:0};
+  const maxSp=Math.max(1e-9,...days.map(d=>d.spend||0));
+  const cell=(d,sum)=>{
+    const ctr=div(d.clicks,d.impr), cvr=div(d.adOrders,d.clicks),
+          cpc=div(d.spend,d.clicks), acos=div(d.spend,d.adSales);
+    return `<tr${sum?' class="sumrow"':''}><td>${sum?'\u5408\u8BA1 \u00B7 '+days.length+' \u5929'
+        :esc(d.date)+' '+(typeof wdCN==='function'?wdCN(d.date):'')}</td>`
+      +`<td>${fmt.int(d.impr)}</td><td>${fmt.int(d.clicks)}</td>`
+      +`<td>${d.impr>0?fmt.pct1(ctr):'\u2013'}</td>`
+      +`<td>${sum?'':`<span class="sbar" style="width:${Math.round((d.spend||0)/maxSp*46)}px"></span>`}${fmt.$2(d.spend)}</td>`
+      +`<td>${d.clicks>0?fmt.$c(cpc):'\u2013'}</td>`
+      +`<td>${fmt.int(d.adOrders)}</td><td>${fmt.$2(d.adSales)}</td>`
+      +`<td>${d.clicks>0?fmt.pct1(cvr):'\u2013'}</td>`
+      +`<td>${d.adSales>0?`<span class="${acos>((cfgFor(r.site).margin/100))?'bad':'ok'}">${fmt.pct1(acos)}</span>`:'\u2013'}</td></tr>`;
+  };
+  const el=actPopEl();
+  el.querySelector('.pp-t').textContent=`\u641C\u7D22\u8BCD\u300C${r.term}\u300D\u00B7 \u9010\u65E5\u8868\u73B0`;
+  const srcTxt=tab==='harv'
+    ? `\u6765\u6E90\uFF1A${r.srcFine||'\u81EA\u52A8/\u5B9A\u5411'}`
+    : (r.auto?`\u6765\u6E90\uFF1A${r.mFine||'\u81EA\u52A8/\u5B9A\u5411'}`
+             :`\u6295\u653E\u8BCD\uFF1A${r.kwText||r.kwid||'\u2013'} \u00B7 ${r.mFine||r.match||''}`);
+  el.querySelector('.pp-s').innerHTML=[esc(r.site||''),esc(r.acct||''),esc(srcTxt),
+    esc(r.campName||r.camp||''),esc(r.agName||r.ag||'')].filter(Boolean).join(' \u00B7 ');
+  el.querySelector('.pp-b').innerHTML=`<table><thead><tr><th>\u65E5\u671F</th><th>\u66DD\u5149</th>`
+    +`<th>\u70B9\u51FB</th><th>CTR</th><th>\u5E7F\u544A\u82B1\u8D39</th><th>CPC</th><th>\u8BA2\u5355</th>`
+    +`<th>\u5E7F\u544A\u9500\u552E\u989D</th><th>\u8F6C\u5316\u7387</th><th>ACOS</th></tr></thead>`
+    +`<tbody>${days.map(d=>cell(d,false)).join('')}${days.length>1?cell(tot,true):''}</tbody></table>`;
+  el.classList.add('on');
+}
 function actRows(){
   const t=ACT_TABS.find(x=>x.k===actTab);
   return t&&t.need()?t.rows():[];
@@ -5491,7 +6077,11 @@ function renderAdAct(){
     actTab=el.dataset.k; renderAdAct(); });
 
   /* 按站点拆：同一份榜单里各市场混排，条数一多就完全没有重点 */
-  const all=lists[actTab]||[], V=ACT_VAL[actTab];
+  const all0=lists[actTab]||[], V=ACT_VAL[actTab];
+  /* 搜索：多个词用空格分隔，全部命中才算（可混搜 ASIN + 匹配方式等） */
+  const all=actFilter(all0);
+  const qn=$('#act_qn');
+  if(qn) qn.textContent=actQ?`\u547D\u4E2D ${all.length} / ${all0.length} \u6761`:'';
   const sm=new Map();
   for(const r of all){
     const k=r.site||'\u2013';
@@ -5529,7 +6119,9 @@ function renderAdAct(){
     return `<th class="l${c[5]?' s':''}"${c[5]?` data-i="${i}"`:''}>${c[0]}`
       +(on?`<span class="arr">${so.asc?'\u25B2':'\u25BC'}</span>`:'')+`</th>`;
   }).join('');
-  const body=shown.map(r=>'<tr>'+cols.map(c=>`<td class="l ${c[3]||''}">${c[2](r)}</td>`).join('')+'</tr>').join('');
+  const clk=(actTab==='neg'||actTab==='harv'), clkP=(actTab==='place');
+  const body=shown.map((r,i)=>`<tr data-ri="${i}"${(clk||clkP)?' class="rowclk"':''}>`
+    +cols.map(c=>`<td class="l ${c[3]||''}">${c[2](r)}</td>`).join('')+'</tr>').join('');
   const empty=`<tr><td class="l" colspan="${cols.length}" style="color:var(--muted);height:60px">`
     +'\u5F53\u524D\u6761\u4EF6\u4E0B\u6CA1\u6709\u9700\u8981\u5904\u7406\u7684\u9879\u2014\u2014\u8FD9\u662F\u597D\u4E8B</td></tr>';
   const cut=rows.length>shown.length
@@ -5542,15 +6134,34 @@ function renderAdAct(){
     actSort[actTab]=(cur&&cur.i===i)?{i,asc:!cur.asc}:{i,asc:false};   // 首次点击按降序
     renderAdAct();
   });
+  if(clk||clkP){
+    const tab=actTab;
+    $('#act_tbl').querySelectorAll('tr.rowclk').forEach(el=>el.onclick=e=>{
+      if(e.target.closest('a')) return;
+      const r=shown[+el.dataset.ri];
+      clkP?actPopPlace(r):actPop(r,tab);
+    });
+  }
+  $('#act_tbl').querySelectorAll('tr[data-ri] .c-be').forEach(el=>{
+    const tr=el.closest('tr'); if(!tr||tr.dataset.ri===undefined) return;
+    const r=shown[+tr.dataset.ri];
+    el.addEventListener('mouseenter',e=>actTipShow(r,e));
+    el.addEventListener('mouseleave',actTipHide);
+  });
+  actTipHide();   // 重渲染后清掉残留的悬浮层
   renderNote('act_note',esc(ACT_NOTE[actTab]||'')
+    +' \u60AC\u505C CPC / \u8F6C\u5316\u7387 / \u5BA2\u5355\u4EF7 / ACOS \u53EF\u770B\u76C8\u4E8F\u5E73\u8861\u6D4B\u7B97\uFF08\u6253\u5E73\u9700\u8981\u7684 CPC\u3001\u8F6C\u5316\u7387\u3001\u5BA2\u5355\u4EF7\uFF09\u3002'
+    +(clk?' \u70B9\u51FB\u4EFB\u610F\u4E00\u884C\u53EF\u5F39\u51FA\u8BE5\u641C\u7D22\u8BCD\u7684\u9010\u65E5\u8868\u73B0\uFF08\u4E0E\u8BE5\u884C\u540C\u4E00\u6765\u6E90\u53E3\u5F84\uFF09\u3002':'')
+    +(clkP?' \u70B9\u51FB\u4EFB\u610F\u4E00\u884C\u53EF\u5F39\u51FA\u8BE5\u6D3B\u52A8\u5168\u90E8\u5E7F\u544A\u4F4D\u7684\u5BF9\u6BD4\uFF0C\u518D\u70B9\u5177\u4F53\u5E7F\u544A\u4F4D\u53EF\u770B\u9010\u65E5\u8868\u73B0\u3002':'')
     +(so?'':' \u70B9\u8868\u5934\u53EF\u6392\u5E8F\uFF0C\u9ED8\u8BA4\u6309\u91D1\u989D\u4ECE\u5927\u5230\u5C0F\u3002'),
     '\u7B5B\u9009\u89C4\u5219\u4E0E\u8BA1\u7B97\u8BF4\u660E');
 }
 
+$('#act_q').oninput=e=>{ actQ=String(e.target.value||'').trim().toLowerCase(); renderAdAct(); };
 $('#act_export').onclick=()=>{
   if(!model) return;
   const cols=ACT_COLS[actTab];
-  let rows=actRows();
+  let rows=actFilter(actRows());
   if(actSite) rows=rows.filter(r=>(r.site||'\u2013')===actSite);
   rows=actSorted(rows,actTab);
   if(!rows.length) return;
@@ -5954,8 +6565,8 @@ function targetRowsForMatch(){
     if(st&&st.size) rows=rows.filter(r=>st.has(String(r[f]??'')));
   }
   if(searchQ&&SEARCHABLE.has('target')){
-    const q=searchQ.toLowerCase();
-    rows=rows.filter(r=>searchText(r).includes(q));
+    const G=queryGroups(searchQ);
+    rows=rows.filter(r=>queryHit(searchText(r),G));
   }
   return rows;
 }
