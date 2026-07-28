@@ -5448,7 +5448,7 @@ function renderAdDiag(){
     const L=adiagLevers(r,be,bench);
     const bad=enough(r)&&r.cvr<cvrL;
     const tip=(L&&L.thin)?thinTip(r,'CVR'):L
-      ? `\u76C8\u4E8F\u5E73\u8861 CVR \u6700\u4F4E\u8981\u6C42 ${fmt.pct1(L.beCvr)}\uFF08= CPC ${fmt.$c(r.cpc)} \u00F7 \uFF08\u6BDB\u5229\u7387 ${(be*100).toFixed(0)}% \u00D7 \u5BA2\u5355 ${fmt.$2(r.aov)}\uFF09\uFF09\n`
+      ? `\u76C8\u4E8F\u5E73\u8861 CVR \u6700\u4F4E\u8981\u6C42 ${fmt.pct1(L.beCvr)}\uFF08= CPC ${fmt.$c(r.cpc)} \u00F7 \uFF08\u6BDB\u5229\u7387 ${fmt.pct1(be)} \u00D7 \u5BA2\u5355 ${fmt.$2(r.aov)}\uFF09\uFF09\n`
         +(L.dCvr>0
           ? `\u5F53\u524D ${fmt.pct1(r.cvr)}\uFF0C\u5355\u9760\u8FD9\u4E00\u9879\u8FBE\u6807\u9700 ${pctChg(L.dCvr)}\n`
             +`${L.scope}\u5F53\u524D\u6570\u636E\u5185\u90E8\u4E2D\u4F4D\u6570 ${fmt.pct1(L.B.cvr)}${pctlTxt(L.pCvr)} \u2192 ${feas(L.sCvr)}`
@@ -5462,7 +5462,7 @@ function renderAdDiag(){
     if(!(r.adOrders>0)) return `<td class="num">${NA}</td>`;
     const L=adiagLevers(r,be,bench);
     const tip=(L&&L.thin)?thinTip(r,'\u5BA2\u5355\u4EF7'):L
-      ? `\u76C8\u4E8F\u5E73\u8861\u5BA2\u5355\u6700\u4F4E\u8981\u6C42 ${fmt.$2(L.beAov)}\uFF08= CPC ${fmt.$c(r.cpc)} \u00F7 \uFF08\u6BDB\u5229\u7387 ${(be*100).toFixed(0)}% \u00D7 CVR ${fmt.pct1(r.cvr)}\uFF09\uFF09\n`
+      ? `\u76C8\u4E8F\u5E73\u8861\u5BA2\u5355\u6700\u4F4E\u8981\u6C42 ${fmt.$2(L.beAov)}\uFF08= CPC ${fmt.$c(r.cpc)} \u00F7 \uFF08\u6BDB\u5229\u7387 ${fmt.pct1(be)} \u00D7 CVR ${fmt.pct1(r.cvr)}\uFF09\uFF09\n`
         +(L.dAov>0
           ? `\u5F53\u524D ${fmt.$2(r.aov)}\uFF0C\u5355\u9760\u8FD9\u4E00\u9879\u8FBE\u6807\u9700 ${pctChg(L.dAov)}\n`
             +`${L.scope}\u5F53\u524D\u6570\u636E\u5185\u90E8\u4E2D\u4F4D\u6570 ${fmt.$2(L.B.aov)}${pctlTxt(L.pAov)} \u2192 ${feas(L.sAov)}`
@@ -5476,7 +5476,7 @@ function renderAdDiag(){
     const L=adiagLevers(r,be,bench);
     const over=L&&!L.thin&&r.cpc>L.beCpc;
     const tip=(L&&L.thin)?thinTip(r,'\u76C8\u4E8F\u5E73\u8861 CPC \u6240\u4F9D\u8D56\u7684 CVR \u4E0E\u5BA2\u5355'):L
-      ? `\u76C8\u4E8F\u5E73\u8861 CPC \u4E0A\u9650 ${fmt.$c(L.beCpc)}\uFF08= \u6BDB\u5229\u7387 ${(be*100).toFixed(0)}% \u00D7 CVR ${fmt.pct1(r.cvr)} \u00D7 \u5BA2\u5355 ${fmt.$2(r.aov)}\uFF09\n`
+      ? `\u76C8\u4E8F\u5E73\u8861 CPC \u4E0A\u9650 ${fmt.$c(L.beCpc)}\uFF08= \u6BDB\u5229\u7387 ${fmt.pct1(be)} \u00D7 CVR ${fmt.pct1(r.cvr)} \u00D7 \u5BA2\u5355 ${fmt.$2(r.aov)}\uFF09\n`
         +(L.dCpc<0
           ? `\u5F53\u524D ${fmt.$c(r.cpc)}\uFF0C\u5355\u9760\u8FD9\u4E00\u9879\u8FBE\u6807\u9700 ${pctChg(L.dCpc)}\n`
             +`${L.scope}\u5F53\u524D\u6570\u636E\u5185\u90E8\u4E2D\u4F4D\u6570 ${fmt.$c(L.B.cpc)}${pctlTxt(L.pCpc)} \u2192 ${feas(L.sCpc)}`
