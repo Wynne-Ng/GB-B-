@@ -4887,24 +4887,50 @@ function adiagAsinCtrAdvice(r,ctrL,bench){
   const P=adiagPeerPrice(r,bench), priceHigh=P&&P.ratio>=1.05;
   const gapTxt=`CTR ${fmt.pct2(r.ctr)} \u6BD4\u76EE\u6807 ${fmt.pct2(ctrL)} \u4F4E ${(gap*100).toFixed(0)}%`;
   const priceTxt=P
-    ? `\u5F53\u524D${P.source} ${fmt.$2(P.price)}\uFF0C${P.scope}\u5185\u90E8\u4E2D\u4F4D\u6570 ${fmt.$2(P.med)}${priceHigh?`\uFF08\u9AD8 ${((P.ratio-1)*100).toFixed(0)}%\uFF09`:'\uFF08\u672A\u660E\u663E\u504F\u9AD8\uFF09'}`
-    : '\u5F53\u524D\u6570\u636E\u6CA1\u6709\u8DB3\u591F\u7684\u53EF\u6BD4\u4EF7\u683C\u57FA\u51C6';
+    ? `\u5F53\u524D${P.source} ${fmt.$2(P.price)}\uFF0C\u4E0E\u5F53\u524D\u5DF2\u5BFC\u5165\u6570\u636E\u4E2D\u7684${P.scope}\u5DF2\u51FA\u5355\u5BF9\u8C61\u5185\u90E8\u4E2D\u4F4D\u6570 ${fmt.$2(P.med)} \u76F8\u6BD4${priceHigh?`\u9AD8 ${((P.ratio-1)*100).toFixed(0)}%`:'\u672A\u660E\u663E\u504F\u9AD8'}\u3002\u8FD9\u53EA\u662F\u5185\u90E8\u4EE3\u7406\u503C\uFF0C\u4E0D\u4EE3\u8868\u540C\u7C7B\u76EE / \u540C\u89C4\u683C\u7ADE\u54C1\u7684\u5E02\u573A\u552E\u4EF7`
+    : '\u5F53\u524D\u5DF2\u5BFC\u5165\u6570\u636E\u6CA1\u6709\u8DB3\u591F\u7684\u5185\u90E8\u4EF7\u683C\u53C2\u7167\uFF0C\u65E0\u6CD5\u636E\u6B64\u5224\u65AD\u771F\u5B9E\u5E02\u573A\u4EF7\u683C\u7ADE\u4E89\u529B';
   if(mild){
     const act=priceHigh
-      ? `${gapTxt}\uFF0C\u53EA\u662F\u8F7B\u5FAE\u504F\u4F4E\uFF1B${priceTxt}\u3002\u5148\u6838\u5BF9\u540C\u89C4\u683C\u7ADE\u54C1\u552E\u4EF7\u3001Coupon\u3001\u914D\u9001\u8D39 / \u65F6\u6548\u548C\u5BB9\u91CF\u5DEE\u5F02\uFF0C\u4EF7\u683C\u4E0E\u5C55\u793A\u6761\u4EF6\u5BF9\u9F50\u540E CTR \u4ECD\u4F4E\uFF0C\u518D\u5C0F\u6D41\u91CF A/B \u6D4B\u8BD5\u4E3B\u56FE / \u6807\u9898\uFF0C\u4E0D\u8981\u76F4\u63A5\u5224\u201C\u4E3B\u56FE\u5DEE\u201D`
-      : `${gapTxt}\uFF0C\u53EA\u662F\u8F7B\u5FAE\u504F\u4F4E\uFF1B${priceTxt}\u3002\u4E0D\u8DB3\u4EE5\u76F4\u63A5\u5F52\u56E0\u4E3B\u56FE\uFF0C\u5148\u67E5\u540C\u89C4\u683C\u552E\u4EF7 / Coupon\u3001\u8BC4\u5206\u8BC4\u8BBA\u3001\u914D\u9001\u65F6\u6548\u3001\u5E7F\u544A\u4F4D\u4E0E\u641C\u7D22\u8BCD\u76F8\u5173\u6027\uFF1B\u8FD9\u4E9B\u6B63\u5E38\u540E\u518D A/B \u6D4B\u4E3B\u56FE`;
+      ? `${gapTxt}\uFF0C\u53EA\u662F\u8F7B\u5FAE\u504F\u4F4E\uFF1B${priceTxt}\u3002\u5185\u90E8\u4EE3\u7406\u503C\u53EA\u7528\u6765\u63D0\u9192\u201C\u5148\u6838\u4EF7\u201D\uFF0C\u4E0D\u76F4\u63A5\u5224\u5B9A\u552E\u4EF7\u8FC7\u9AD8\u3002\u8BF7\u518D\u6838\u5BF9\u540C\u7AD9\u70B9\u540C\u89C4\u683C\u7ADE\u54C1\u552E\u4EF7\u3001Coupon\u3001\u914D\u9001\u8D39 / \u65F6\u6548\u548C\u5BB9\u91CF\u5DEE\u5F02\uFF1B\u6761\u4EF6\u5BF9\u9F50\u540E CTR \u4ECD\u4F4E\uFF0C\u518D\u5C0F\u6D41\u91CF A/B \u6D4B\u8BD5\u4E3B\u56FE / \u6807\u9898`
+      : `${gapTxt}\uFF0C\u53EA\u662F\u8F7B\u5FAE\u504F\u4F4E\uFF1B${priceTxt}\u3002\u5185\u90E8\u4EE3\u7406\u503C\u672A\u504F\u9AD8\uFF0C\u4E5F\u4E0D\u80FD\u8BC1\u660E\u771F\u5B9E\u5E02\u573A\u4EF7\u6709\u7ADE\u4E89\u529B\u3002\u5148\u67E5\u540C\u7AD9\u70B9\u540C\u89C4\u683C\u552E\u4EF7 / Coupon\u3001\u8BC4\u5206\u8BC4\u8BBA\u3001\u914D\u9001\u65F6\u6548\u3001\u5E7F\u544A\u4F4D\u4E0E\u641C\u7D22\u8BCD\u76F8\u5173\u6027\uFF1B\u8FD9\u4E9B\u6B63\u5E38\u540E\u518D A/B \u6D4B\u4E3B\u56FE`;
     return {block:'CTR\u7565\u4F4E',cls:'t-ctr',act,actShort:priceHigh?'\u5148\u6838\u5BF9\u4EF7\u683C':'\u5148\u67E5\u4EF7\u683C / \u5C55\u793A'};
   }
   const act=priceHigh
-    ? `${gapTxt}\uFF0C\u5DEE\u8DDD\u5DF2\u660E\u663E\uFF1B${priceTxt}\u3002\u5148\u5904\u7406\u4EF7\u683C / Coupon \u4E0E\u914D\u9001\u7ADE\u4E89\u529B\uFF0C\u518D\u8054\u5408\u68C0\u67E5\u4E3B\u56FE\u3001\u6807\u9898\u548C\u641C\u7D22\u8BCD\u76F8\u5173\u6027`
-    : `${gapTxt}\uFF0C\u5DEE\u8DDD\u5DF2\u660E\u663E\uFF1B${priceTxt}\u3002\u4EF7\u683C\u672A\u660E\u663E\u504F\u9AD8\u65F6\uFF0C\u4F18\u5148\u68C0\u67E5\u4E3B\u56FE / \u6807\u9898\u3001\u8BC4\u5206\u8BC4\u8BBA\u3001\u5E7F\u544A\u4F4D\u4E0E\u641C\u7D22\u8BCD\u76F8\u5173\u6027`;
+    ? `${gapTxt}\uFF0C\u5DEE\u8DDD\u5DF2\u660E\u663E\uFF1B${priceTxt}\u3002\u5148\u6838\u67E5\u771F\u5B9E\u540C\u7AD9\u70B9\u540C\u89C4\u683C\u7ADE\u54C1\u552E\u4EF7\u3001Coupon \u4E0E\u914D\u9001\u7ADE\u4E89\u529B\uFF1B\u786E\u8BA4\u4EF7\u683C\u7AEF\u786E\u6709\u5DEE\u8DDD\u518D\u8C03\u6574\uFF0C\u540C\u65F6\u68C0\u67E5\u4E3B\u56FE\u3001\u6807\u9898\u548C\u641C\u7D22\u8BCD\u76F8\u5173\u6027`
+    : `${gapTxt}\uFF0C\u5DEE\u8DDD\u5DF2\u660E\u663E\uFF1B${priceTxt}\u3002\u4E0D\u4F7F\u7528\u5185\u90E8\u4EE3\u7406\u503C\u5355\u72EC\u6392\u9664\u4EF7\u683C\u95EE\u9898\uFF1B\u6838\u5BF9\u771F\u5B9E\u540C\u89C4\u683C\u5E02\u573A\u4EF7\u540E\uFF0C\u518D\u7ED3\u5408\u4E3B\u56FE / \u6807\u9898\u3001\u8BC4\u5206\u8BC4\u8BBA\u3001\u5E7F\u544A\u4F4D\u4E0E\u641C\u7D22\u8BCD\u76F8\u5173\u6027\u5224\u65AD`;
   return {block:severe?'CTR\u4E25\u91CD\u504F\u4F4E':'CTR\u504F\u4F4E',cls:'t-ctr',act,
     actShort:priceHigh?'\u5148\u6838\u5BF9\u4EF7\u683C':'\u67E5\u4E3B\u56FE / \u76F8\u5173\u6027'};
 }
 
 /* 卡点定位：CTR/CVR 都低于线时，按「距线的相对差距」判断谁是主要短板 */
+/* CTR 的证据量来自曝光，不复用 CVR 的「最少点击」。
+   只有 Wilson 95% 上界仍低于目标线时，才把 CTR 判为卡点。 */
+function adiagCtrLow(r,ctrL){
+  const n=Number(r.impr)||0, x=Number(r.clicks)||0;
+  if(!(n>0&&ctrL>0)||x<0||x>n) return false;
+  const p=x/n, z=1.96, z2=z*z, den=1+z2/n;
+  const upper=(p+z2/(2*n)+z*Math.sqrt((p*(1-p)+z2/(4*n))/n))/den;
+  return p<ctrL&&upper<ctrL;
+}
+/* 零转化要同时满足：相对目标 CVR 已积累到约 95% 的点击证据；
+   能取得商品客单代理值时，花费还需至少达到一次盈亏平衡 CPA。 */
+function adiagZeroGate(r,c){
+  const p=Math.min(0.95,Math.max(0.001,(Number(c.cvr)||0)/100));
+  const needClicks=Math.max(Number(c.minClicks)||1,Math.ceil(Math.log(0.05)/Math.log(1-p)));
+  let ticket=Number(r.aur)||Number(r.aov)||0;
+  if(!(ticket>0)&&model&&Array.isArray(model.asins)){
+    const raw=String(r.adAsin||r.asin||'').toUpperCase();
+    const m=raw.match(/\b[A-Z0-9]{10}\b/);
+    if(m){ const x=model.asins.find(a=>String(a.asin||'').toUpperCase()===m[0]);
+      if(x) ticket=Number(x.aur)||Number(x.aov)||0; }
+  }
+  const maxCpa=ticket>0?ticket*(Number(c.margin)||0)/100:0;
+  const clickOk=(Number(r.clicks)||0)>=needClicks;
+  const spendOk=!(maxCpa>0)||(Number(r.spend)||0)>=maxCpa;
+  return {pass:clickOk&&spendOk,needClicks,maxCpa,clickOk,spendOk};
+}
 function adiagBottleneck(r,ctrL,cvrL,obj,over,bench){
-  const lowCtr=r.impr>0&&r.ctr<ctrL, lowCvr=r.cvr<cvrL;
+  const lowCtr=adiagCtrLow(r,ctrL), lowCvr=cvrL>0&&r.cvr<cvrL;
   const A={
     asin:{ctr:'\u5148\u6838\u5BF9\u4EF7\u683C / \u4F18\u60E0 / \u5C55\u793A\uFF0C\u518D\u6D4B\u4E3B\u56FE',cvr:'\u4F18\u5316\u8BE6\u60C5\u9875 / \u67E5\u5E93\u5B58\u4E0E Buy Box / \u8865\u8BC4\u4EF7',
       both1:'\u5148\u6539\u4E3B\u56FE\u4E0E\u4EF7\u683C\u63D0\u70B9\u51FB\uFF0C\u518D\u4F18\u5316\u8BE6\u60C5',both2:'\u5148\u4F18\u5316\u8BE6\u60C5\u4E0E\u8BC4\u4EF7\u63D0\u8F6C\u5316\uFF0C\u518D\u770B\u4E3B\u56FE'},
@@ -4919,6 +4945,14 @@ function adiagBottleneck(r,ctrL,cvrL,obj,over,bench){
     term:{ctr:'\u5EFA\u8BAE\u5426\u5B9A',cvr:'\u964D\u7ADE\u4EF7',both1:'\u52A0\u5426\u5B9A',both2:'\u964D\u7ADE\u4EF7'},
   }[obj];
   if(lowCtr&&lowCvr){
+    if(over){
+      const act={
+        asin:'先按 CPC / CVR / 客单价定位并控制亏损；CTR 仅辅助核查价格、展示与相关性，不把 ACOS 超线归因成主图问题',
+        camp:'先下钻搜索词、投放对象与广告位，按 CPC / CVR 控制亏损；CTR 仅作为相关性与展示效率的辅助信号',
+        term:'先降竞价控制 ACOS，并核查搜索词与落地商品的转化匹配；CTR 只辅助判断相关性'
+      }[obj];
+      return {block:'转化偏低·CTR亦低',cls:'t-cvr',act,actShort:obj==='asin'?'先控成本与转化':(obj==='camp'?'先下钻控亏损':'降竞价·查转化')};
+    }
     const ctrMild=(r.ctr/ctrL)>=0.80;
     const ctrWorse=!ctrMild&&(r.ctr/ctrL)<=(r.cvr/cvrL);
     /* 搜索词若本身就是手动投放词，「否定」会与投放词冲突，只能降竞价或暂停 */
@@ -4968,15 +5002,26 @@ function adiagBottleneck(r,ctrL,cvrL,obj,over,bench){
 }
 function adiagClassify(r,c,obj,bench){
   const be=c.margin/100, ctrL=c.ctr/100, cvrL=c.cvr/100;
-  if(r.clicks<c.minClicks)
+  if(r.clicks<c.minClicks){
+    /* 点击不足时不判断 CVR；但曝光证据充分且 CTR 显著低时，仍可单独提示点击端。 */
+    const ctrOnly=adiagBottleneck(r,ctrL,0,obj,false,bench);
+    if(ctrOnly) return {cat:'listing',...ctrOnly,acls:'a-list',save:0};
     return {cat:'data',block:'\u6570\u636E\u4E0D\u8DB3',cls:'t-dim',acls:'a-dim',
-      act:'\u7EE7\u7EED\u89C2\u5BDF / \u6512\u591F\u70B9\u51FB\u518D\u5224\u65AD',actShort:'\u518D\u89C2\u5BDF',save:0};
+      act:'\u7EE7\u7EED\u89C2\u5BDF / \u6512\u591F\u70B9\u51FB\u518D\u5224\u65AD\u8F6C\u5316\uFF1BCTR \u4F1A\u6309\u66DD\u5149\u91CF\u5355\u72EC\u5224\u65AD',actShort:'\u518D\u89C2\u5BDF',save:0};
+  }
   /* 0 单是有效信号（确实没转化），照常报零转化。
      1~2 单则是「样本薄」：亏没亏是确定的，但定位不到哪一环，
      而且这时判「可放量」同样危险 —— 靠两单就加预算是最常见的翻车方式。
      所以不论 ACOS 高低，整体拨到独立分类，因为它要做的是「去留」决策，不是调优。 */
   if(r.adOrders===0){
-    const ctrBad=r.impr>0&&r.ctr<ctrL/2;
+    const zg=adiagZeroGate(r,c);
+    if(!zg.pass){
+      const need=zg.maxCpa>0?`\u70B9\u51FB\u9700\u2265 ${zg.needClicks}\u4E14\u82B1\u8D39\u9700\u2265 ${fmt.$2(zg.maxCpa)}`:`\u70B9\u51FB\u9700\u2265 ${zg.needClicks}`;
+      return {cat:'data',block:'\u96F6\u5355\u00B7\u8BC1\u636E\u4E0D\u8DB3',cls:'t-dim',acls:'a-dim',
+        act:`\u5DF2\u6709 ${fmt.int(r.clicks)} \u6B21\u70B9\u51FB\u4F46\u5C1A\u4E0D\u8DB3\u4EE5\u76F4\u63A5\u6682\u505C / \u5426\u5B9A\uFF08${need}\uFF09\uFF1B\u5148\u6838\u67E5\u76F8\u5173\u6027\u4E0E\u8BE6\u60C5\uFF0C\u7EE7\u7EED\u79EF\u7D2F\u8BC1\u636E`,
+        actShort:'\u7EE7\u7EED\u89C2\u5BDF',save:0};
+    }
+    const ctrBad=adiagCtrLow(r,ctrL)&&r.ctr<ctrL/2;
     const ACT={asin:ctrBad?'\u6682\u505C\u6216\u5927\u5E45\u964D\u7ADE\u4EF7 / \u4E3B\u56FE\u4E0E\u4EF7\u683C\u90FD\u8981\u67E5\uFF08CTR \u4E5F\u4E25\u91CD\u504F\u4F4E\uFF09':'\u6682\u505C\u6216\u5927\u5E45\u964D\u7ADE\u4EF7 / \u6838\u67E5\u8BE6\u60C5\u9875\u4E0E\u4EF7\u683C',
       camp:'\u6682\u505C\u6216\u5927\u5E45\u964D\u9884\u7B97 / \u6838\u67E5\u6295\u653E\u8BCD\u4E0E\u843D\u5730 ASIN',
       term:(String(r.type||'').indexOf('\u624B\u52A8')>=0
@@ -5018,14 +5063,14 @@ function adiagClassify(r,c,obj,bench){
   if(bn) return {cat:'listing',...bn,acls:'a-list',save:0};
   const nearGap=Math.max(0.03,be*0.15);
   const termManual=String(r.type||'').indexOf('\u624B\u52A8')>=0;
-  const OKACT={asin:'\u63D0\u7ADE\u4EF7 5~10% / \u52A0\u9884\u7B97\u653E\u91CF',
-    camp:'\u63D0\u9884\u7B97 / \u63D0\u5E7F\u544A\u4F4D\u6EA2\u4EF7\u62A2\u9996\u9875',
+  const OKACT={asin:'\u653E\u91CF\u5019\u9009\uFF1A\u5148\u4E0B\u94BB\u5230\u5177\u4F53\u5E7F\u544A\u6D3B\u52A8 / \u641C\u7D22\u8BCD\uFF0C\u786E\u8BA4\u5B58\u5728\u9884\u7B97\u53D7\u9650\u6216\u7A33\u5B9A\u6269\u91CF\u8BCD\uFF0C\u4E14\u8FB9\u9645 ACOS \u8FBE\u6807\u540E\uFF0C\u518D\u5C0F\u5E45\u63D0\u7ADE\u4EF7 5~10% / \u52A0\u9884\u7B97',
+    camp:'\u653E\u91CF\u5019\u9009\uFF1A\u5148\u786E\u8BA4\u9884\u7B97\u7ECF\u5E38\u8017\u5C3D\u3001\u641C\u7D22\u8BCD / \u5E7F\u544A\u4F4D\u4ECD\u6709\u6269\u91CF\u7A7A\u95F4\uFF0C\u4E14\u8FD1\u671F\u8FB9\u9645 ACOS \u8FBE\u6807\uFF0C\u518D\u5C0F\u5E45\u63D0\u9884\u7B97 / \u7ADE\u4EF7',
     term:termManual
-      ? '\u8BE5\u8BCD\u5DF2\u5728\u624B\u52A8\u6295\u653E\uFF1A\u76F4\u63A5\u63D0\u7ADE\u4EF7\u653E\u91CF'
+      ? '\u653E\u91CF\u5019\u9009\uFF1A\u8BE5\u8BCD\u5DF2\u5728\u624B\u52A8\u6295\u653E\uFF0C\u5148\u786E\u8BA4\u8FD1\u671F\u8F6C\u5316\u7A33\u5B9A\u4E14\u8FB9\u9645 ACOS \u8FBE\u6807\uFF0C\u518D\u5C0F\u5E45\u63D0\u7ADE\u4EF7'
         +(String(r.type||'').indexOf('+')>=0?'\uFF1B\u540C\u65F6\u6709\u81EA\u52A8\u6765\u6E90\uFF0C\u53EF\u7ED9\u81EA\u52A8\u7EC4\u964D\u7ADE\u4EF7\u907F\u514D\u4E24\u8FB9\u62A2\u91CF':'')
-      : '\u5355\u72EC\u5EFA\u7CBE\u51C6\u7EC4\u52A0\u7ADE\u4EF7 / \u52A0\u5230\u624B\u52A8\u6D3B\u52A8'}[obj];
-  const OKSH={asin:'\u63D0\u4EF7\u653E\u91CF',camp:'\u63D0\u9884\u7B97',
-    term:termManual?'\u63D0\u7ADE\u4EF7':'\u5EFA\u7CBE\u51C6\u7EC4'}[obj];
+      : '\u653E\u91CF\u5019\u9009\uFF1A\u5148\u6838\u5BF9\u8BCD\u4E49\u76F8\u5173\u6027\u4E0E\u8FD1\u671F\u7A33\u5B9A\u6027\uFF0C\u786E\u8BA4\u8FB9\u9645 ACOS \u8FBE\u6807\u540E\uFF0C\u518D\u5355\u72EC\u5EFA\u7CBE\u51C6\u7EC4\u5C0F\u5E45\u6D4B\u8BD5'}[obj];
+  const OKSH={asin:'\u653E\u91CF\u524D\u68C0\u67E5',camp:'\u653E\u91CF\u524D\u68C0\u67E5',
+    term:'\u653E\u91CF\u524D\u68C0\u67E5'}[obj];
   if(r.acos<=be-nearGap) return {cat:'scale',block:'\u8868\u73B0\u5065\u5EB7',cls:'t-ok',acls:'a-ok',act:OKACT,actShort:OKSH,save:0};
   return {cat:'scale',block:'\u63A5\u8FD1\u76C8\u4E8F\u7EBF',cls:'t-near',acls:'a-ok',
     act:'\u5C0F\u6B65\u653E\u91CF / \u76EF\u7D27 ACOS \u53D8\u5316',actShort:'\u5C0F\u6B65\u653E\u91CF',save:0};
@@ -5065,7 +5110,7 @@ const ADG_CAMP_NUMCO=[['block','\u5361\u70B9','84px'],['clicks','\u70B9\u51FB','
   ['daily','\u65E5\u5747\u8868\u73B0 <span class="daily-head-sub">\u8D39 / \u5355 / \u9500</span>','160px'],
   ['save','\u53EF\u7701\u4F30\u7B97','72px']];
 const ADG_TIP={
-  clicks:'\u5E7F\u544A\u70B9\u51FB\u6570\u3002\u4F4E\u4E8E\u300C\u6700\u5C11\u70B9\u51FB\u300D\u9608\u503C\u65F6\u6570\u5B57\u4F1A\u53D8\u7070\uFF0C\u8BF4\u660E\u53F3\u8FB9\u7684\u6BD4\u7387\u7C7B\u6307\u6807\u4E0D\u53EF\u4FE1',
+  clicks:'\u5E7F\u544A\u70B9\u51FB\u6570\u3002\u4F4E\u4E8E\u300C\u6700\u5C11\u70B9\u51FB\u300D\u65F6\uFF0CCVR \u53CA\u8BA2\u5355\u7C7B\u8BCA\u65AD\u4E0D\u4E0B\u7ED3\u8BBA\uFF1BCTR \u7684\u8BC1\u636E\u91CF\u6765\u81EA\u66DD\u5149\uFF0C\u4F1A\u7528 95% \u7F6E\u4FE1\u4E0A\u754C\u5355\u72EC\u5224\u65AD',
   ctr:'\u70B9\u51FB \u00F7 \u66DD\u5149\u3002\u504F\u4F4E\u53EA\u8BF4\u660E\u300C\u66DD\u5149\u2192\u70B9\u51FB\u300D\u504F\u5F31\uFF0C\u4E0D\u80FD\u76F4\u63A5\u5F52\u56E0\u4E3B\u56FE\uFF1B\u9700\u7ED3\u5408\u8DDD\u76EE\u6807\u7EBF\u7684\u5DEE\u8DDD\u3001\u4EF7\u683C / Coupon\u3001\u8BC4\u5206\u8BC4\u8BBA\u3001\u5E7F\u544A\u4F4D\u548C\u641C\u7D22\u8BCD\u76F8\u5173\u6027\u5224\u65AD\u3002CTR \u4E0D\u76F4\u63A5\u8FDB\u5165 ACOS \u516C\u5F0F',
   cvr:'\u5E7F\u544A\u8BA2\u5355 \u00F7 \u70B9\u51FB\u3002\u504F\u4F4E = \u5361\u5728\u300C\u70B9\u51FB\u2192\u4E0B\u5355\u300D\uFF08\u8BE6\u60C5\u9875 / \u5E93\u5B58 / Buy Box / \u8BC4\u4EF7\uFF09\u3002'
      +'\u5E7F\u544A\u8BA2\u5355\u4E0D\u8DB3 3 \u5355\u65F6\u6570\u5B57\u53D8\u7070\uFF1A\u8FD9\u65F6 CVR \u662F\u4E00\u4E24\u5355\u7B97\u51FA\u6765\u7684\uFF0C\u4E0D\u4F5C\u4E3A\u5361\u70B9\u4F9D\u636E\u3002'
@@ -5076,7 +5121,7 @@ const ADG_TIP={
   cpc:'\u5E73\u5747\u70B9\u51FB\u6210\u672C\u3002\u60AC\u505C\u5355\u5143\u683C\u53EF\u770B\u8BE5\u884C\u7684\u76C8\u4E8F\u5E73\u8861 CPC\uFF0C\u8D85\u8FC7\u4F1A\u6807\u7EA2',
   acos:'ACOS = CPC \u00F7 \uFF08CVR \u00D7 \u5BA2\u5355\u4EF7\uFF09\u3002\u5DE6\u8FB9\u4E09\u5217\u5C31\u662F\u5B83\u7684\u4E09\u4E2A\u56E0\u5B50\u3002'
       +'\u60AC\u505C\u5E26\u865A\u7EBF\u7684\u6570\u5B57\uFF0C\u4F1A\u5217\u51FA\u4E09\u6761\u8DEF\u5404\u81EA\u8981\u505A\u5230\u591A\u5C11\u3001\u53CA\u5176\u5BF9\u7167\u540C\u884C\u4E2D\u4F4D\u6570\u662F\u5426\u53EF\u884C',
-  save:'\u628A ACOS \u62C9\u56DE\u76C8\u4E8F\u5E73\u8861\u7EBF\u540E\u80FD\u7701\u4E0B\u7684\u5E7F\u544A\u8D39\u4F30\u7B97',
+  save:'\u8BA1\u7B97\uFF1A\u5E7F\u544A\u82B1\u8D39 \u2212 \u5E7F\u544A\u9500\u552E\u989D \u00D7 \u6BDB\u5229\u7387\u3002\u8868\u793A\u5F53\u524D\u8D85\u51FA\u76C8\u4E8F\u5E73\u8861\u7EBF\u7684\u82B1\u8D39\u5DEE\u989D\uFF0C\u4E0D\u7B49\u4E8E\u5B9E\u9645\u53EF\u8282\u7701\u91D1\u989D\uFF1B\u5B83\u5047\u8BBE\u8C03\u6574\u5E7F\u544A\u540E\u9500\u552E\u989D\u4E0D\u53D8\uFF0C\u5B9E\u9645\u7ED3\u679C\u53EF\u80FD\u66F4\u9AD8\u6216\u66F4\u4F4E',
 };
 /* 广告报表带账号与站点时优先使用真实站点；旧报表缺字段时才退回币种推断 */
 const adiagSiteOf=r=>r.country||r.site||'\u2013';
@@ -5201,8 +5246,8 @@ function adiagLevers(r,be,bench){
     pCvr:pctlOf(B.raw&&B.raw.cvr,r.cvr,true),
     pAov:pctlOf(B.raw&&B.raw.aov,r.aov,true)};
 }
-const feas=v=>v>=1?'\u53EF\u884C':(v>=0.8?'\u52C9\u5F3A':'\u504F\u96BE');
-const pctlTxt=p=>p===null?'':`\uFF0C\u4F60\u5728\u540C\u884C\u7B2C ${Math.round(p*100)} \u767E\u5206\u4F4D`;
+const feas=v=>v>=1?'\u5728\u5185\u90E8\u53C2\u7167\u8303\u56F4\u5185':(v>=0.8?'\u63A5\u8FD1\u5185\u90E8\u53C2\u7167':'\u504F\u79BB\u5185\u90E8\u53C2\u7167');
+const pctlTxt=p=>p===null?'':`\uFF0C\u5728\u5F53\u524D\u5185\u90E8\u7EC4\u7B2C ${Math.round(p*100)} \u767E\u5206\u4F4D`;
 const pctChg=v=>`${v>=0?'+':'\u2212'}${Math.abs(v*100).toFixed(0)}%`;
 
 const adiagFilter=rows=>adiagTab==='all'?rows
@@ -5403,13 +5448,13 @@ function renderAdDiag(){
     const L=adiagLevers(r,be,bench);
     const bad=enough(r)&&r.cvr<cvrL;
     const tip=(L&&L.thin)?thinTip(r,'CVR'):L
-      ? `\u76C8\u4E8F\u5E73\u8861 CVR ${fmt.pct1(L.beCvr)}\uFF08= CPC ${fmt.$c(r.cpc)} \u00F7 \uFF08\u6BDB\u5229\u7387 ${(be*100).toFixed(0)}% \u00D7 \u5BA2\u5355 ${fmt.$2(r.aov)}\uFF09\uFF09\n`
+      ? `\u76C8\u4E8F\u5E73\u8861 CVR \u6700\u4F4E\u8981\u6C42 ${fmt.pct1(L.beCvr)}\uFF08= CPC ${fmt.$c(r.cpc)} \u00F7 \uFF08\u6BDB\u5229\u7387 ${(be*100).toFixed(0)}% \u00D7 \u5BA2\u5355 ${fmt.$2(r.aov)}\uFF09\uFF09\n`
         +(L.dCvr>0
           ? `\u5F53\u524D ${fmt.pct1(r.cvr)}\uFF0C\u5355\u9760\u8FD9\u4E00\u9879\u8FBE\u6807\u9700 ${pctChg(L.dCvr)}\n`
-            +`${L.scope} \u4E2D\u4F4D\u6570 ${fmt.pct1(L.B.cvr)}${pctlTxt(L.pCvr)} \u2192 ${feas(L.sCvr)}`
-          : `\u5F53\u524D ${fmt.pct1(r.cvr)}\uFF0C\u5DF2\u4F18\u4E8E\u76C8\u4E8F\u5E73\u8861\uFF1A\u6700\u591A\u53EF\u627F\u53D7 ${pctChg(L.dCvr)} \u7684\u4E0B\u6ED1\u4ECD\u4E0D\u4E8F\n`
-            +`${L.scope} \u4E2D\u4F4D\u6570 ${fmt.pct1(L.B.cvr)}${pctlTxt(L.pCvr)} \u2192 \u5DF2\u8FBE\u76C8\u4E8F\u7EBF`
-            +(r.cvr<L.B.cvr?'\uFF0C\u5411\u4E2D\u4F4D\u6570\u9760\u62E2\u53EF\u518D\u538B ACOS':'\uFF0C\u4E14\u5DF2\u4F18\u4E8E\u540C\u884C\u4E2D\u4F4D\u6570'))
+            +`${L.scope}\u5F53\u524D\u6570\u636E\u5185\u90E8\u4E2D\u4F4D\u6570 ${fmt.pct1(L.B.cvr)}${pctlTxt(L.pCvr)} \u2192 ${feas(L.sCvr)}`
+          : `\u5F53\u524D ${fmt.pct1(r.cvr)}\uFF0C\u9AD8\u4E8E\u8BE5\u884C\u76C8\u4E8F\u5E73\u8861 CVR \u7684\u6700\u4F4E\u8981\u6C42 ${fmt.pct1(L.beCvr)}\uFF1B\u5728 CPC \u548C\u5BA2\u5355\u4E0D\u53D8\u65F6\uFF0C\u7406\u8BBA\u53EF\u4E0B\u6ED1 ${Math.abs(L.dCvr*100).toFixed(0)}% \u540E\u624D\u89E6\u7EBF\n`
+            +`${L.scope}\u5F53\u524D\u6570\u636E\u5185\u90E8\u4E2D\u4F4D\u6570 ${fmt.pct1(L.B.cvr)}${pctlTxt(L.pCvr)} \u2192 \u672C\u9879\u5DF2\u5728\u7406\u8BBA\u5B89\u5168\u8303\u56F4\u5185`
+            +(r.cvr<L.B.cvr?'\uFF0C\u5411\u5185\u90E8\u4E2D\u4F4D\u6570\u9760\u62E2\u53EF\u518D\u538B ACOS':'\uFF0C\u4E14\u5DF2\u9AD8\u4E8E\u5F53\u524D\u6570\u636E\u5185\u90E8\u4E2D\u4F4D\u6570'))
       : '\u8BE5\u884C\u6CA1\u6709\u5E7F\u544A\u8BA2\u5355\uFF0C\u7B97\u4E0D\u51FA\u76C8\u4E8F\u5E73\u8861 CVR';
     return `<td class="num ${bad&&!ordThin(r)?'bad':''}${thinCls(r)}" title="${esc(tip)}">${fmt.pct1(r.cvr)}</td>`;
   };
@@ -5417,12 +5462,12 @@ function renderAdDiag(){
     if(!(r.adOrders>0)) return `<td class="num">${NA}</td>`;
     const L=adiagLevers(r,be,bench);
     const tip=(L&&L.thin)?thinTip(r,'\u5BA2\u5355\u4EF7'):L
-      ? `\u76C8\u4E8F\u5E73\u8861\u5BA2\u5355 ${fmt.$2(L.beAov)}\uFF08= CPC ${fmt.$c(r.cpc)} \u00F7 \uFF08\u6BDB\u5229\u7387 ${(be*100).toFixed(0)}% \u00D7 CVR ${fmt.pct1(r.cvr)}\uFF09\uFF09\n`
+      ? `\u76C8\u4E8F\u5E73\u8861\u5BA2\u5355\u6700\u4F4E\u8981\u6C42 ${fmt.$2(L.beAov)}\uFF08= CPC ${fmt.$c(r.cpc)} \u00F7 \uFF08\u6BDB\u5229\u7387 ${(be*100).toFixed(0)}% \u00D7 CVR ${fmt.pct1(r.cvr)}\uFF09\uFF09\n`
         +(L.dAov>0
           ? `\u5F53\u524D ${fmt.$2(r.aov)}\uFF0C\u5355\u9760\u8FD9\u4E00\u9879\u8FBE\u6807\u9700 ${pctChg(L.dAov)}\n`
-            +`${L.scope} \u4E2D\u4F4D\u6570 ${fmt.$2(L.B.aov)}${pctlTxt(L.pAov)} \u2192 ${feas(L.sAov)}`
-          : `\u5F53\u524D ${fmt.$2(r.aov)}\uFF0C\u5DF2\u4F18\u4E8E\u76C8\u4E8F\u5E73\u8861\uFF1A\u6700\u591A\u53EF\u627F\u53D7 ${pctChg(L.dAov)} \u7684\u4E0B\u6ED1\u4ECD\u4E0D\u4E8F\n`
-            +`${L.scope} \u4E2D\u4F4D\u6570 ${fmt.$2(L.B.aov)}${pctlTxt(L.pAov)} \u2192 \u5DF2\u8FBE\u76C8\u4E8F\u7EBF`)
+            +`${L.scope}\u5F53\u524D\u6570\u636E\u5185\u90E8\u4E2D\u4F4D\u6570 ${fmt.$2(L.B.aov)}${pctlTxt(L.pAov)} \u2192 ${feas(L.sAov)}`
+          : `\u5F53\u524D ${fmt.$2(r.aov)}\uFF0C\u9AD8\u4E8E\u8BE5\u884C\u76C8\u4E8F\u5E73\u8861\u5BA2\u5355\u7684\u6700\u4F4E\u8981\u6C42 ${fmt.$2(L.beAov)}\uFF1B\u5728 CPC \u548C CVR \u4E0D\u53D8\u65F6\uFF0C\u7406\u8BBA\u53EF\u4E0B\u6ED1 ${Math.abs(L.dAov*100).toFixed(0)}% \u540E\u624D\u89E6\u7EBF\n`
+            +`${L.scope}\u5F53\u524D\u6570\u636E\u5185\u90E8\u4E2D\u4F4D\u6570 ${fmt.$2(L.B.aov)}${pctlTxt(L.pAov)} \u2192 \u672C\u9879\u5DF2\u5728\u7406\u8BBA\u5B89\u5168\u8303\u56F4\u5185`)
       : '';
     return `<td class="num${thinCls(r)}"${tip?` title="${esc(tip)}"`:''}>${fmt.$2(r.aov)}</td>`;
   };
@@ -5431,12 +5476,12 @@ function renderAdDiag(){
     const L=adiagLevers(r,be,bench);
     const over=L&&!L.thin&&r.cpc>L.beCpc;
     const tip=(L&&L.thin)?thinTip(r,'\u76C8\u4E8F\u5E73\u8861 CPC \u6240\u4F9D\u8D56\u7684 CVR \u4E0E\u5BA2\u5355'):L
-      ? `\u76C8\u4E8F\u5E73\u8861 CPC ${fmt.$c(L.beCpc)}\uFF08= \u6BDB\u5229\u7387 ${(be*100).toFixed(0)}% \u00D7 CVR ${fmt.pct1(r.cvr)} \u00D7 \u5BA2\u5355 ${fmt.$2(r.aov)}\uFF09\n`
+      ? `\u76C8\u4E8F\u5E73\u8861 CPC \u4E0A\u9650 ${fmt.$c(L.beCpc)}\uFF08= \u6BDB\u5229\u7387 ${(be*100).toFixed(0)}% \u00D7 CVR ${fmt.pct1(r.cvr)} \u00D7 \u5BA2\u5355 ${fmt.$2(r.aov)}\uFF09\n`
         +(L.dCpc<0
           ? `\u5F53\u524D ${fmt.$c(r.cpc)}\uFF0C\u5355\u9760\u8FD9\u4E00\u9879\u8FBE\u6807\u9700 ${pctChg(L.dCpc)}\n`
-            +`${L.scope} \u4E2D\u4F4D\u6570 ${fmt.$c(L.B.cpc)}${pctlTxt(L.pCpc)} \u2192 ${feas(L.sCpc)}`
-          : `\u5F53\u524D ${fmt.$c(r.cpc)}\uFF0C\u5DF2\u4F4E\u4E8E\u76C8\u4E8F\u5E73\u8861\uFF1A\u8FD8\u6709 ${pctChg(L.dCpc)} \u52A0\u4EF7\u7A7A\u95F4\n`
-            +`${L.scope} \u4E2D\u4F4D\u6570 ${fmt.$c(L.B.cpc)}${pctlTxt(L.pCpc)} \u2192 \u5DF2\u8FBE\u76C8\u4E8F\u7EBF\uFF0C\u9700\u8981\u653E\u91CF\u65F6\u53EF\u9002\u5F53\u52A0\u4EF7`)
+            +`${L.scope}\u5F53\u524D\u6570\u636E\u5185\u90E8\u4E2D\u4F4D\u6570 ${fmt.$c(L.B.cpc)}${pctlTxt(L.pCpc)} \u2192 ${feas(L.sCpc)}`
+          : `\u5F53\u524D ${fmt.$c(r.cpc)}\uFF0C\u4F4E\u4E8E\u8BE5\u884C\u76C8\u4E8F\u5E73\u8861 CPC \u4E0A\u9650 ${fmt.$c(L.beCpc)}\uFF1B\u5728 CVR \u548C\u5BA2\u5355\u4E0D\u53D8\u65F6\uFF0C\u7406\u8BBA\u5B89\u5168\u4F59\u91CF ${Math.abs(L.dCpc*100).toFixed(0)}%\uFF0C\u8FD9\u4E0D\u662F\u63D0\u7ADE\u4EF7\u5EFA\u8BAE\n`
+            +`${L.scope}\u5F53\u524D\u6570\u636E\u5185\u90E8\u4E2D\u4F4D\u6570 ${fmt.$c(L.B.cpc)}${pctlTxt(L.pCpc)} \u2192 \u672C\u9879\u5DF2\u5728\u7406\u8BBA\u5B89\u5168\u8303\u56F4\u5185\uFF1B\u662F\u5426\u63D0\u7ADE\u4EF7\u4ECD\u9700\u770B\u9884\u7B97\u53D7\u9650\u3001\u6D41\u91CF\u7A7A\u95F4\u548C\u8FB9\u9645 ACOS`)
       : '\u8BE5\u884C\u6CA1\u6709\u5E7F\u544A\u8BA2\u5355\uFF0C\u7B97\u4E0D\u51FA\u76C8\u4E8F\u5E73\u8861 CPC';
     return `<td class="num ${over?'bad':''}" title="${esc(tip)}">${fmt.$c(r.cpc)}</td>`;
   };
@@ -5497,20 +5542,20 @@ function renderAdDiag(){
       const cand=opts.filter(o=>o.atMed!==null&&isFinite(o.atMed)&&o.atMed>0);
       const best=cand.length?[...cand].sort((a,b)=>a.atMed-b.atMed)[0]:null;
       const seg=o=>o.atMed===null
-        ? '\u4F60\u5DF2\u4F18\u4E8E\u540C\u884C\u4E2D\u4F4D\u6570\uFF0C\u8FD9\u6761\u8DEF\u6CA1\u7A7A\u95F4'
+        ? '\u5F53\u524D\u503C\u5DF2\u4F18\u4E8E\u540C\u7EC4\u5185\u90E8\u4E2D\u4F4D\u6570\uFF0C\u8FD9\u6761\u8DEF\u7684\u5185\u90E8\u5BF9\u7167\u7A7A\u95F4\u6709\u9650'
         : `\u5149\u505A\u5230\u4E2D\u4F4D\u6C34\u5E73 ACOS \u5C31\u964D\u5230 ${fmt.pct1(o.atMed)}`;
       tip=`\u8981\u628A ACOS \u4ECE ${fmt.pct1(r.acos)} \u62C9\u5230\u76C8\u4E8F\u7EBF ${fmt.pct1(be)}\uFF0C\u5355\u72EC\u52A8\u4E00\u9879\u9700\u8981\uFF1A\n`
-        +opts.map(o=>`\u30FB${o.k} \u5230 ${o.to}\uFF08${pctChg(o.d)}\uFF09\uFF5C${L.scope} \u4E2D\u4F4D\u6570 ${o.b}${pctlTxt(o.p)}\n`
+        +opts.map(o=>`\u30FB${o.k} \u5230 ${o.to}\uFF08${pctChg(o.d)}\uFF09\uFF5C${L.scope}\u5F53\u524D\u6570\u636E\u5185\u90E8\u4E2D\u4F4D\u6570 ${o.b}${pctlTxt(o.p)}\n`
           +`\u3000\u3000\u2192 ${seg(o)}`).join('\n')
         +'\n'
         +(best
           ? (best.atMed<=be
-              ? `\u6700\u7701\u529B\uFF1A${best.k} \u2014\u2014 \u505A\u5230\u540C\u884C\u4E2D\u4F4D\u6C34\u5E73\u5373\u53EF\u8FBE\u6807\uFF08ACOS ${fmt.pct1(best.atMed)}\uFF09`
-              : `\u6700\u7701\u529B\uFF1A${best.k} \u2014\u2014 \u505A\u5230\u540C\u884C\u4E2D\u4F4D\u6C34\u5E73\u80FD\u628A ACOS \u964D\u5230 ${fmt.pct1(best.atMed)}\uFF0C`
+              ? `\u5185\u90E8\u5BF9\u7167\u4E0B\u4F18\u5148\uFF1A${best.k} \u2014\u2014 \u505A\u5230\u5F53\u524D\u6570\u636E\u540C\u7EC4\u5185\u90E8\u4E2D\u4F4D\u6C34\u5E73\u65F6\u53EF\u8FBE\u6807\uFF08ACOS ${fmt.pct1(best.atMed)}\uFF09`
+              : `\u5185\u90E8\u5BF9\u7167\u4E0B\u4F18\u5148\uFF1A${best.k} \u2014\u2014 \u505A\u5230\u5F53\u524D\u6570\u636E\u540C\u7EC4\u5185\u90E8\u4E2D\u4F4D\u6C34\u5E73\u65F6\uFF0CACOS \u7EA6\u4E3A ${fmt.pct1(best.atMed)}\uFF0C`
                 +`\u8DDD\u76C8\u4E8F\u7EBF\u8FD8\u5DEE ${((best.atMed-be)*100).toFixed(1)}pp\uFF0C\u9700\u8981\u518D\u914D\u5408\u53E6\u4E00\u6761`)
-          : '\u6700\u7701\u529B\uFF1A\u4E09\u9879\u90FD\u5DF2\u4F18\u4E8E\u6216\u6301\u5E73\u4E8E\u540C\u884C\u4E2D\u4F4D\u6570\uFF0C\u5355\u9760\u5E7F\u544A\u7AEF\u8C03\u4F18\u7A7A\u95F4\u6709\u9650\uFF0C\u8003\u8651\u6682\u505C\u6216\u91CD\u505A\u8BE5\u54C1')
+          : '\u5185\u90E8\u5BF9\u7167\uFF1A\u4E09\u9879\u90FD\u5DF2\u4F18\u4E8E\u6216\u6301\u5E73\u4E8E\u5F53\u524D\u6570\u636E\u540C\u7EC4\u5185\u90E8\u4E2D\u4F4D\u6570\uFF0C\u5E7F\u544A\u7AEF\u7684\u5185\u90E8\u5BF9\u7167\u7A7A\u95F4\u6709\u9650\uFF1B\u8FD9\u4E0D\u4EE3\u8868\u5DF2\u8FBE\u771F\u5B9E\u5E02\u573A\u6700\u4F18\u6C34\u5E73')
         +`\n\uFF08\u6CE8\uFF1ACPC \u9700\u8981\u7684\u767E\u5206\u6BD4\u5929\u7136\u6BD4\u53E6\u4E24\u9879\u5C0F\uFF0C\u5B83\u603B\u663E\u5F97\u201C\u6700\u5BB9\u6613\u201D\uFF0C`
-        +`\u6240\u4EE5\u8FD9\u91CC\u6309\u201C\u505A\u5230\u540C\u884C\u4E2D\u4F4D\u6C34\u5E73\u80FD\u6539\u5584\u591A\u5C11\u201D\u6765\u6BD4\uFF0C\u4E0D\u770B\u767E\u5206\u6BD4\uFF09`;
+        +`\u6240\u4EE5\u8FD9\u91CC\u6309\u201C\u505A\u5230\u5F53\u524D\u6570\u636E\u540C\u7EC4\u5185\u90E8\u4E2D\u4F4D\u6C34\u5E73\u80FD\u6539\u5584\u591A\u5C11\u201D\u6765\u6BD4\uFF0C\u4E0D\u770B\u767E\u5206\u6BD4\u3002\u8FD9\u662F\u5185\u90E8\u65B9\u5411\u6027\u4EE3\u7406\uFF0C\u4E0D\u4EE3\u8868\u540C\u7C7B\u76EE / \u540C\u89C4\u683C\u7ADE\u54C1\u7684\u5E02\u573A\u57FA\u51C6\uFF09`;
     }
     return `<td class="num ${bad?'bad':''}"${tip?` title="${esc(tip)}"`:''}><span class="hv">${fmt.pct1(r.acos)}</span></td>`;
   };
@@ -5581,8 +5626,8 @@ function renderAdDiag(){
     return `<tr class="drill" data-i="${esc(M.id(r))}" data-k="${esc(r.id||M.id(r))}">
       ${lead}
       <td class="l"><span class="adtag ${g.cls}">${g.block}</span></td>
-      <td class="num${enough(r)?'':' thin'}" title="${enough(r)?'':`\u4E0D\u8DB3\u6700\u5C11\u70B9\u51FB ${c.minClicks} \u6B21\uFF0C\u6BD4\u7387\u7C7B\u6307\u6807\u4E0D\u53EF\u4FE1`}">${fmt.int(r.clicks)}</td>
-      <td class="num ${enough(r)&&r.ctr<ctrL?'bad':''}">${r.impr>0?fmt.pct2(r.ctr):'<span class=dim>\u2013</span>'}</td>
+      <td class="num${enough(r)?'':' thin'}" title="${enough(r)?'':`\u4E0D\u8DB3\u6700\u5C11\u70B9\u51FB ${c.minClicks} \u6B21\uFF0CCVR \u53CA\u8BA2\u5355\u7C7B\u8BCA\u65AD\u6682\u4E0D\u4E0B\u7ED3\u8BBA\uFF1BCTR \u4ECD\u6309\u66DD\u5149\u91CF\u5355\u72EC\u5224\u65AD`}">${fmt.int(r.clicks)}</td>
+      <td class="num ${adiagCtrLow(r,ctrL)?'bad':''}">${r.impr>0?fmt.pct2(r.ctr):'<span class=dim>\u2013</span>'}</td>
       ${cvrCell(r)}
       ${aovCell(r)}
       ${cpcCell(r)}
@@ -5646,11 +5691,11 @@ function renderAdDiag(){
   }else if($('#adg_recon')) $('#adg_recon').classList.add('hide');
   renderNote('adg_note',
     `\u8BCA\u65AD\u53E3\u5F84\uFF08\u5F53\u524D\u5BF9\u8C61\uFF1A<b>${M.label}</b>\uFF0C${OBJNOTE}\uFF09\uFF1A`
-    +`\u2460 \u70B9\u51FB &lt; ${c.minClicks} \u2192 <b>\u6570\u636E\u4E0D\u8DB3</b>\uFF0C\u4E0D\u4E0B\u7ED3\u8BBA\uFF1B`
+    +`\u2460 CVR / \u96F6\u8F6C\u5316\u6309\u70B9\u51FB\u6837\u672C\u5224\u65AD\uFF1BCTR \u6309\u66DD\u5149\u91CF\u7684 95% \u7F6E\u4FE1\u4E0A\u754C\u5355\u72EC\u5224\u65AD\u3002\u96F6\u8F6C\u5316\u53EA\u5728\u8FBE\u5230\u76EE\u6807 CVR \u5BF9\u5E94\u7684\u7EA6 95% \u70B9\u51FB\u8BC1\u636E\u3001\u4E14\u6709\u5BA2\u5355\u4EE3\u7406\u503C\u65F6\u82B1\u8D39\u4E5F\u8FBE\u5230\u4E00\u6B21\u76C8\u4E8F\u5E73\u8861 CPA \u540E\uFF0C\u624D\u5EFA\u8BAE\u6682\u505C / \u5426\u5B9A\uFF1B`
     +`\u2461 ACOS &gt; \u6BDB\u5229\u7387 ${c.margin}%\uFF08\u76C8\u4E8F\u5E73\u8861\uFF09\u2192 <b>\u6B62\u8840</b>\uFF1A\u5148\u6309 CPC / CVR / \u5BA2\u5355\u4EF7\u5B9A\u4F4D\u76C8\u5229\u7AEF\u539F\u56E0\uFF1BCTR \u4E0D\u76F4\u63A5\u8FDB\u5165 ACOS \u516C\u5F0F\uFF0C\u53EA\u4F5C\u4E3A\u4EF7\u683C\u7ADE\u4E89\u529B / \u5C55\u793A\u6548\u7387\u7684\u6B21\u7EA7\u4FE1\u53F7\uFF0C\u4E0D\u76F4\u63A5\u5F52\u56E0\u4E3B\u56FE\uFF1B`
     +`\u2462 ACOS \u8FBE\u6807\u4F46 CTR/CVR \u4F4E\u4E8E\u7EBF \u2192 <b>\u5F85\u4F18\u5316</b>\uFF1BCTR \u8DDD\u76EE\u6807\u7EBF\u4E0D\u8D85\u8FC7 20% \u65F6\u6807\u300CCTR\u7565\u4F4E\u300D\uFF0C\u5148\u6838\u5BF9\u4EF7\u683C / \u4F18\u60E0 / \u5C55\u793A\uFF0C\u4EF7\u683C\u6B63\u5E38\u4E14\u5DEE\u8DDD\u660E\u663E\u65F6\u518D\u4F18\u5148\u6D4B\u4E3B\u56FE\uFF1B`
-    +`\u2463 \u6307\u6807\u5168\u90E8\u5065\u5EB7 \u2192 <b>\u53EF\u653E\u91CF</b>\uFF08ACOS \u8DDD\u76C8\u4E8F\u7EBF\u4E0D\u8DB3 max(3\u4E2A\u767E\u5206\u70B9, \u76C8\u4E8F\u7EBF\u00D715%) \u65F6\u6807\u300C\u63A5\u8FD1\u76C8\u4E8F\u7EBF\u300D\uFF0C\u53EA\u5C0F\u6B65\u653E\u91CF\uFF09\u3002`
-    +`\u300C\u53EF\u7701\u300D= \u82B1\u8D39 \u2212 \u5E7F\u544A\u9500\u552E\u989D \u00D7 \u6BDB\u5229\u7387\uFF0C\u5373\u8D85\u51FA\u76C8\u4E8F\u5E73\u8861\u7684\u90A3\u90E8\u5206\u82B1\u8D39\u3002\u6570\u636E\u53D6\u81EA\u5F53\u524D\u6240\u9009\u65E5\u671F\u533A\u95F4\uFF0C\u91D1\u989D\u5DF2\u7EDF\u4E00\u6298\u7B97\u4E3A ${dispCur}\u3002`
+    +`\u2463 \u6307\u6807\u5168\u90E8\u5065\u5EB7 \u2192 <b>\u653E\u91CF\u5019\u9009</b>\uFF1A\u5148\u4E0B\u94BB\u6838\u5BF9\u9884\u7B97\u53D7\u9650\u3001\u53EF\u6269\u91CF\u8BCD / \u5E7F\u544A\u4F4D\u4E0E\u8FB9\u9645 ACOS\uFF0C\u786E\u8BA4\u6709\u589E\u91CF\u7A7A\u95F4\u540E\u624D\u5C0F\u6B65\u653E\u91CF\u3002`
+    +`\u300C\u53EF\u7701\u4F30\u7B97\u300D= \u82B1\u8D39 \u2212 \u5E7F\u544A\u9500\u552E\u989D \u00D7 \u6BDB\u5229\u7387\uFF0C\u53EA\u662F\u8D85\u51FA\u76C8\u4E8F\u7EBF\u7684\u82B1\u8D39\u5DEE\u989D\uFF0C\u4E0D\u662F\u4FDD\u8BC1\u53EF\u8282\u7701\u91D1\u989D\uFF1B\u60AC\u505C\u8868\u5934\u53EF\u770B\u5B8C\u6574\u5047\u8BBE\u3002\u91D1\u989D\u5DF2\u7EDF\u4E00\u6298\u7B97\u4E3A ${dispCur}\u3002`
     +(adiagObj==='camp'?`\u300C\u65E5\u5747\u8868\u73B0\u300D\u4E2D\u7684\u8D39 / \u5355 / \u9500\u5206\u522B\u4E3A\u65E5\u5747\u5E7F\u544A\u82B1\u8D39\u3001\u65E5\u5747\u5E7F\u544A\u8BA2\u5355\u3001\u65E5\u5747\u5E7F\u544A\u9500\u552E\u989D\uFF0C\u7EDF\u4E00\u6309\u5F53\u524D\u7B5B\u9009\u65E5\u671F\u7684 ${avgDays} \u4E2A\u81EA\u7136\u65E5\u8BA1\u7B97\u3002`:'')
     +(adiagObj==='asin'&&store.site?'\u4E0A\u65B9\u300C\u5E7F\u544A\u82B1\u8D39\uFF08\u7AD9\u70B9\u6C47\u603B\uFF09\u300D\u6765\u81EA\u7AD9\u70B9\u65E5\u62A5\uFF1B\u672C\u8868\u53EA\u8BCA\u65AD\u5DF2\u5F52\u5C5E\u5230\u5177\u4F53 ASIN \u7684\u82B1\u8D39\uFF0C\u672A\u5F52\u5C5E\u5DEE\u989D\u53EA\u505A\u63D0\u793A\uFF0C\u4E0D\u5F3A\u884C\u5206\u644A\u5230\u67D0\u4E2A ASIN\u3002':'')
     +(adiagObj==='asin'&&model.covBad.length?` <b style="color:var(--red)">\u26A0 ${model.covBad.length} \u4E2A\u7AD9\u70B9 ASIN \u660E\u7EC6\u4E0D\u5B8C\u6574\uFF0C\u5176 ASIN \u8BCA\u65AD\u7ED3\u679C\u4E0D\u53EF\u4FE1\uFF0C\u8BF7\u5148\u770B\u300C\u6570\u636E\u8986\u76D6\u4F53\u68C0\u300D\u3002</b>`:''),'诊断口径说明');
@@ -5775,7 +5820,10 @@ function actNeg(){
     const g=cfgFor(o.site), be=g.margin/100;
     if(o.clicks<g.minClicks) continue;
     let reason,save;
-    if(o.adOrders===0){ reason='\u96F6\u8F6C\u5316'; save=o.spend; }
+    if(o.adOrders===0){
+      if(!adiagZeroGate(o,g).pass) continue;
+      reason='\u96F6\u8F6C\u5316'; save=o.spend;
+    }
     else if(!ordOK(o)&&o.acos>be*1.5){ reason='\u6837\u672C\u8584\u00B7\u8D1F\u4EA7\u51FA'; save=Math.max(0,o.spend-o.adSales*be); }
     else if(o.acos>be*1.5){ reason='ACOS \u8D85\u7EBF'; save=Math.max(0,o.spend-o.adSales*be); }
     else continue;
@@ -5888,6 +5936,7 @@ function actPlace(){
     const meta=PL_META(o.pl);
     let reason,pct,save=0;
     if(o.adOrders===0&&o.spend>0){
+      if(!adiagZeroGate(o,g).pass) continue;
       reason='\u96F6\u8F6C\u5316'; pct=-1; save=o.spend;
     }else if(!(other>0)||!(o.acos>0)){
       continue;
@@ -6125,17 +6174,17 @@ function actBeTip(r){
   L.push(`\u6BCF\u6B21\u70B9\u51FB\u9700\u4EA7\u51FA\u9500\u552E \u2265 CPC\u00F7\u76C8\u4E8F\u7EBF = <b>${fmt.$c(needRpc)}</b>\uFF08\u5F53\u524D ${fmt.$c(rpc)}\uFF09`);
   if(cvr>0&&aov>0){
     const beCpc=be*cvr*aov;
-    L.push(`\u76C8\u4E8F\u5E73\u8861 CPC = <b>${fmt.$c(beCpc)}</b>\uFF08\u5F53\u524D ${fmt.$c(cpc)}\uFF0C${cpc>beCpc
+    L.push(`\u76C8\u4E8F\u5E73\u8861 CPC \u4E0A\u9650 = <b>${fmt.$c(beCpc)}</b>\uFF08\u5F53\u524D ${fmt.$c(cpc)}\uFF0C${cpc>beCpc
       ?`<span class="tt-bad">\u9700\u964D ${Math.round((1-beCpc/cpc)*100)}%</span>`
-      :`<span class="tt-ok">\u8FD8\u6709 ${Math.round((beCpc/cpc-1)*100)}% \u52A0\u4EF7\u7A7A\u95F4</span>`}\uFF09`);
+      :`<span class="tt-ok">\u7406\u8BBA\u5B89\u5168\u4F59\u91CF ${Math.round((beCpc/cpc-1)*100)}%</span>\uFF0C\u4E0D\u4EE3\u8868\u5E94\u76F4\u63A5\u63D0\u7ADE\u4EF7`}\uFF09`);
   }
   if(aov>0){
     const beCvr=cpc/(be*aov);
-    L.push(`\u76C8\u4E8F\u5E73\u8861\u8F6C\u5316\u7387 = <b>${fmt.pct1(beCvr)}</b>\uFF08\u5F53\u524D ${cvr>0?fmt.pct1(cvr):'0%'}${cvr>0&&beCvr>0?`\uFF0C${cvr>=beCvr?'<span class="tt-ok">\u5DF2\u8FBE\u6807</span>':`\u9700\u63D0\u81F3 ${(beCvr/cvr).toFixed(1)} \u500D`}`:''}\uFF09`);
+    L.push(`\u76C8\u4E8F\u5E73\u8861\u8F6C\u5316\u7387\u6700\u4F4E\u8981\u6C42 = <b>${fmt.pct1(beCvr)}</b>\uFF08\u5F53\u524D ${cvr>0?fmt.pct1(cvr):'0%'}${cvr>0&&beCvr>0?`\uFF0C${cvr>=beCvr?'<span class="tt-ok">\u9AD8\u4E8E\u6700\u4F4E\u8981\u6C42</span>':`\u9700\u63D0\u81F3 ${(beCvr/cvr).toFixed(1)} \u500D`}`:''}\uFF09`);
   }
   if(cvr>0){
     const beAov=cpc/(be*cvr);
-    L.push(`\u76C8\u4E8F\u5E73\u8861\u5BA2\u5355\u4EF7 = <b>${fmt.$2(beAov)}</b>\uFF08\u5F53\u524D ${r.adOrders>0?fmt.$2(aov):'\u2013'}\uFF09`);
+    L.push(`\u76C8\u4E8F\u5E73\u8861\u5BA2\u5355\u6700\u4F4E\u8981\u6C42 = <b>${fmt.$2(beAov)}</b>\uFF08\u5F53\u524D ${r.adOrders>0?fmt.$2(aov):'\u2013'}${r.adOrders>0&&aov>=beAov?'\uFF0C<span class="tt-ok">\u9AD8\u4E8E\u6700\u4F4E\u8981\u6C42</span>':''}\uFF09`);
   }
   if(!(r.adOrders>0))
     L.push(`\u8BE5\u8BCD\u96F6\u6210\u4EA4\uFF0C\u6CA1\u6709\u8F6C\u5316\u7387/\u5BA2\u5355\u4EF7\u57FA\u7EBF\uFF1A\u5148\u770B\u4E0A\u9762\u300C\u6BCF\u70B9\u51FB\u9700\u4EA7\u51FA\u300D\u4E00\u6761\u5373\u53EF`);
@@ -6167,7 +6216,7 @@ function tipRich(t){
   h=h.replace(/(这条路没空间|没空间|偏难|零转化|ACOS 超线|正在失血|在烧)/g,'<span class="tt-bad">$1</span>');
   h=h.replace(/(勉强)/g,'<span class="tt-warn">$1</span>');
   // 绿：已达标/有余量/结论性推荐
-  h=h.replace(/(已优于盈亏平衡|已低于盈亏平衡|已达盈亏线|已达标|加价空间|可行|最省力|且已优于同行中位数|表现健康)/g,'<span class="tt-ok">$1</span>');
+  h=h.replace(/(理论安全余量|高于最低要求|理论安全范围|在内部参照范围内|内部对照下优先|表现健康)/g,'<span class="tt-ok">$1</span>');
   // 粗：金额、百分比、倍数（避开已在 span 里的）
   h=h.replace(/(^|[^>\w])([$€£¥]\s?[\d,]+\.?\d*)/g,'$1<b>$2</b>');
   h=h.replace(/(^|[^>\w.,$€£¥])([−+\-]?\d[\d.,]*\s?%)/g,'$1<b>$2</b>');
