@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>亚马逊运营看板</title>
+<title>亚马逊运营看板 · 账号折叠版</title>
 <style>
 :root{
   --blue:#146EB4; --navy:#232F3E; --sky:#E9F2FA; --yellow:#FF9900;
@@ -756,6 +756,14 @@ select{border:1px solid var(--line);border-radius:6px;padding:4px 8px;font-size:
 .ds-split .sp-head{padding:7px 12px;background:var(--sky);color:var(--navy);font-size:12px;font-weight:600;
   border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .ds-split .sp-note{font-size:11px;color:var(--muted);font-weight:400}
+.ds-acct .sp-toggle{display:flex;align-items:center;gap:8px;flex:1;min-width:0;border:0;background:transparent;
+  padding:0;color:inherit;font:inherit;font-weight:600;text-align:left;cursor:pointer}
+.ds-acct .sp-toggle:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:4px}
+.ds-acct .sp-caret{display:inline-block;color:var(--blue);font-size:13px;transition:transform .16s ease;transform-origin:center}
+.ds-acct .sp-state{margin-left:auto;color:var(--blue);font-size:11px;font-weight:600;white-space:nowrap}
+.ds-acct.collapsed .sp-body{display:none}
+.ds-acct.collapsed .sp-head{border-bottom:0}
+.ds-acct:not(.collapsed) .sp-caret{transform:rotate(90deg)}
 .ds-split .sp-wrap{overflow-x:auto}
 .ds-split .sp-tbl{width:100%;min-width:940px;font-size:12px;white-space:nowrap;
   border-collapse:separate;border-spacing:0;table-layout:fixed}
@@ -1264,7 +1272,7 @@ select{border:1px solid var(--line);border-radius:6px;padding:4px 8px;font-size:
     <section id="adiag" class="hide">
       <div class="sechead" id="adg_head" title="点击展开 / 收起">
         <span class="seq">②</span><h3><span id="adg_caret">▾</span> 广告漏斗诊断</h3>
-        <span class="note desc">用广告漏斗的三层——<b>曝光 → 点击 → 转化</b>——给每个对象定位卡点：CTR 低说明卡在曝光转点击（主图 / 价格 / 相关性），CVR 低说明卡在点击转下单（详情页 / 库存 / Buy Box / 评价），两者都过线但 ACOS 超过盈亏线则是出价问题。同一棵决策树跑在 ASIN / 广告活动 / 搜索词三种对象上，按卡点分类、按花费排序，点一行看该对象的每日走势。注意判据全部取自广告数据，所以「数据不足」那一类不是没问题，是点击太少还判不了。</span>
+        <span class="note desc">用广告漏斗的三层——<b>曝光 → 点击 → 转化</b>——给每个对象定位卡点：CTR 低只说明曝光转点击偏弱，需先结合偏离幅度、价格 / 优惠、广告位与相关性判断，不能直接归因主图；CVR 低说明卡在点击转下单（详情页 / 库存 / Buy Box / 评价）。ACOS 超过盈亏线时按 CPC、CVR、客单价归因，CTR 仅作次级信号。同一棵决策树跑在 ASIN / 广告活动 / 搜索词三种对象上，按卡点分类、按花费排序，点一行看该对象的每日走势。注意判据全部取自广告数据，所以「数据不足」那一类不是没问题，是点击太少还判不了。</span>
         <span class="note" id="adg_fold_sum"></span>
         <div class="right">
           <button class="btn" id="adg_export">导出诊断清单 CSV</button>
@@ -1334,7 +1342,7 @@ select{border:1px solid var(--line);border-radius:6px;padding:4px 8px;font-size:
     <section id="organic" class="hide">
       <div class="sechead" id="org_head" title="点击展开 / 收起">
         <h3><span id="org_caret">▸</span> 自然表现 · 广告依赖度</h3>
-        <span class="note desc">把广告拆出去，只看自然销售额 / 自然订单 / 自然会话的周走势 —— 自然线掉，通常比 ACOS 早一两周</span>
+        <span class="note desc">把广告拆出去，只看自然销售额 / 自然订单 / 自然访问次数的周走势 —— 自然线掉，通常比 ACOS 早一两周</span>
         <span class="note" id="org_sum"></span>
         <div class="right">
           <button class="btn" id="org_export">导出 CSV</button>
@@ -2954,8 +2962,8 @@ function render(){
       fmt.$0(T.spend),`\u70B9\u51FB ${fmt.k(T.clicks)} \u00B7 \u66DD\u5149 ${fmt.k(T.impr)}`,'#C0392B',DL(T.spend,cT&&cT.spend,'spend')],
     ['ACOS',fmt.pct1(d.acos),`ROAS ${d.roas>0?d.roas.toFixed(2):'\u2013'} \u00B7 \u82B1\u8D39\u00F7\u5E7F\u544A\u9500\u552E\u989D`,'#E67E22',DL(d.acos,cD&&cD.acos,'acos')],
     ['TACOS',fmt.pct1(d.tacos),'\u82B1\u8D39 \u00F7 \u603B\u9500\u552E\u989D','#E67E22',DL(d.tacos,cD&&cD.tacos,'tacos')],
-    ['\u4F1A\u8BDD\u6570 Sessions',fmt.k(T.sessions),`\u9875\u9762\u6D4F\u89C8 ${fmt.k(T.pv)} \u00B7 ${fmt.n1(d.pvPerSess)} PV/\u4F1A\u8BDD`+sessNote,'#0B7285',DL(T.sessions,cT&&cT.sessions,'sessions')],
-    ['\u8BA2\u5355\u8F6C\u5316\u7387',fmt.pct1(d.ordCvr),`\u8BA2\u5355\u5546\u54C1\u6570 ${fmt.int(T.ordItems)} \u00F7 \u4F1A\u8BDD`,'#1E7A46',DL(d.ordCvr,cD&&cD.ordCvr,'ordCvr')],
+    ['\u8BBF\u5BA2\u6570 Sessions',fmt.k(T.sessions),`\u9875\u9762\u6D4F\u89C8 ${fmt.k(T.pv)} \u00B7 ${fmt.n1(d.pvPerSess)} PV/\u4F4D\u8BBF\u5BA2`+sessNote,'#0B7285',DL(T.sessions,cT&&cT.sessions,'sessions')],
+    ['\u8BA2\u5355\u8F6C\u5316\u7387',fmt.pct1(d.ordCvr),`\u8BA2\u5355\u5546\u54C1\u6570 ${fmt.int(T.ordItems)} \u00F7 \u8BBF\u5BA2\u6570`,'#1E7A46',DL(d.ordCvr,cD&&cD.ordCvr,'ordCvr')],
     /* --- (2) 广告面 --- */
     ['\u5E7F\u544A\u9500\u552E\u989D',fmt.$0(T.adSales),`\u5E7F\u544A\u8BA2\u5355 ${fmt.int(T.adOrders)} \u5355`,'#146EB4',DL(T.adSales,cT&&cT.adSales,'adSales')],
     ['\u5E7F\u544A\u9500\u552E\u989D\u5360\u6BD4',fmt.pct1(d.adSalesPct),'\u5E7F\u544A\u9500\u552E\u989D \u00F7 \u603B\u9500\u552E\u989D','#B7791F',DL(d.adSalesPct,cD&&cD.adSalesPct,'adSalesPct')],
@@ -2966,8 +2974,8 @@ function render(){
     /* --- (3) 商品面与风险 --- */
     ['\u9500\u91CF',fmt.int(T.units),unitSub,'#146EB4',DL(T.units,cT&&cT.units,'units')],
     ['\u5E73\u5747\u552E\u4EF7',fmt.$2(d.aur),'\u603B\u9500\u552E\u989D \u00F7 \u9500\u91CF','#146EB4',DL(d.aur,cD&&cD.aur,'aur')],
-    ['\u5355\u4F4D\u8F6C\u5316\u7387',fmt.pct1(d.unitCvr),`\u9500\u91CF ${fmt.int(T.units)} \u00F7 \u4F1A\u8BDD`,'#1E7A46',DL(d.unitCvr,cD&&cD.unitCvr,'unitCvr')],
-    ['\u5E7F\u544A\u70B9\u51FB\u5360\u6BD4',fmt.pct1(d.adClickPct),`\u5E7F\u544A\u70B9\u51FB ${fmt.k(T.clicks)} \u00F7 \u4F1A\u8BDD ${fmt.k(T.sessions)}`,'#B7791F',DL(d.adClickPct,cD&&cD.adClickPct,'adClickPct')],
+    ['\u5355\u4F4D\u8F6C\u5316\u7387',fmt.pct1(d.unitCvr),`\u9500\u91CF ${fmt.int(T.units)} \u00F7 \u8BBF\u5BA2\u6570`,'#1E7A46',DL(d.unitCvr,cD&&cD.unitCvr,'unitCvr')],
+    ['\u5E7F\u544A\u70B9\u51FB\u5360\u6BD4',fmt.pct1(d.adClickPct),`\u5E7F\u544A\u70B9\u51FB ${fmt.k(T.clicks)} \u00F7 \u8BBF\u5BA2\u6570 ${fmt.k(T.sessions)}`,'#B7791F',DL(d.adClickPct,cD&&cD.adClickPct,'adClickPct')],
   ];
   if(T.grossClk>0) cards.push(['\u65E0\u6548\u70B9\u51FB\u7387',fmt.pct1(T.invClkRate),
     `\u65E0\u6548\u70B9\u51FB ${fmt.int(T.invClk)} \u6B21 \u00B7 \u4F30\u6D6A\u8D39 ${fmt.$0(T.invWaste)}`,'#C0392B',
@@ -3200,7 +3208,7 @@ function renderChart(){
 function oneDayPanel(r){
   const cells=[['\u603B\u9500\u552E\u989D',fmt.$2(r.gmv)],['\u5E7F\u544A\u9500\u552E\u989D',fmt.$2(r.adSales)],
     ['\u5E7F\u544A\u82B1\u8D39',fmt.$2(r.spend)],['ACOS',fmt.pct1(r.acos)],['TACOS',fmt.pct1(r.tacos)],
-    ['\u4F1A\u8BDD',fmt.int(r.sessions)],['\u8BA2\u5355\u8F6C\u5316\u7387',fmt.pct1(r.ordCvr)],['CPC',fmt.$c(r.cpc)]];
+    ['\u8BBF\u5BA2\u6570',fmt.int(r.sessions)],['\u8BA2\u5355\u8F6C\u5316\u7387',fmt.pct1(r.ordCvr)],['CPC',fmt.$c(r.cpc)]];
   return `<div class="gs-grid">`+cells.map(([l,v])=>
     `<div class="gs-cell"><div class="l">${l}</div><div class="v">${v}</div></div>`).join('')+`</div>`;
 }
@@ -3472,6 +3480,19 @@ const AD_VIEWS=new Set(['campGroups','adGroupDays','adGroupDayTerms','adGroupTer
   'targetTerms','targetDays','targetTermDays','termCamps','termSrcDays']);
 const PERDAY_VIEWS=new Set(['siteDays','asinDays','adGroupDays','adGroupTermDays',
   'campDays','placeDays','termDays','invDays','targetDays','targetTermDays','termSrcDays']);
+function bindAcctCollapse(root){
+  const box=root&&root.querySelector('.ds-acct'), btn=box&&box.querySelector('.sp-toggle');
+  if(!btn) return;
+  const sync=()=>{
+    const closed=box.classList.contains('collapsed');
+    btn.setAttribute('aria-expanded',closed?'false':'true');
+    const st=btn.querySelector('.sp-state');
+    if(st) st.textContent=closed?'展开账号明细':'收起账号明细';
+  };
+  btn.onclick=e=>{e.stopPropagation();box.classList.toggle('collapsed');sync();};
+  sync();
+}
+
 function renderDrillSum(){
   const s=$('#drillsum'), v=drill[drill.length-1];
   $('#trendsec').classList.toggle('hide',!!v);
@@ -3586,10 +3607,10 @@ function renderDrillSum(){
       ['\u9500\u552E\u989D',fmt.$2(t.gmv),per(fmt.$0(t.gmv/nDays)+'/\u5929'),C.sale],
       ['\u9500\u91CF',fmt.int(t.units),per((t.units/nDays).toFixed(1)+' \u4EF6/\u5929'),C.sale],
       ['\u8BA2\u5355\u5546\u54C1\u6570',fmt.int(t.ordItems),per((t.ordItems/nDays).toFixed(1)+' /\u5929'),C.sale],
-      ['\u4F1A\u8BDD Sessions',fmt.int(t.sessions),per(Math.round(t.sessions/nDays)+'/\u5929'),C.flow],
-      ['\u9875\u9762\u6D4F\u89C8 PV',fmt.int(t.pv),`${fmt.n1(d.pvPerSess)} PV/\u4F1A\u8BDD`,C.flow],
-      ['\u8BA2\u5355\u8F6C\u5316\u7387',fmt.pct1(d.ordCvr),'\u8BA2\u5355\u5546\u54C1\u6570 \u00F7 \u4F1A\u8BDD',C.eff],
-      ['\u5355\u4F4D\u8F6C\u5316\u7387',fmt.pct1(d.unitCvr),'\u9500\u91CF \u00F7 \u4F1A\u8BDD',C.eff],
+      ['\u8BBF\u5BA2\u6570 Sessions',fmt.int(t.sessions),per(Math.round(t.sessions/nDays)+'/\u5929'),C.flow],
+      ['\u9875\u9762\u6D4F\u89C8 PV',fmt.int(t.pv),`${fmt.n1(d.pvPerSess)} PV/\u6B21`,C.flow],
+      ['\u8BA2\u5355\u8F6C\u5316\u7387',fmt.pct1(d.ordCvr),'\u8BA2\u5355\u5546\u54C1\u6570 \u00F7 \u8BBF\u5BA2\u6570',C.eff],
+      ['\u5355\u4F4D\u8F6C\u5316\u7387',fmt.pct1(d.unitCvr),'\u9500\u91CF \u00F7 \u8BBF\u5BA2\u6570',C.eff],
       ['\u5E73\u5747\u552E\u4EF7',fmt.$2(d.aur),`\u5BA2\u5355\u4EF7 ${fmt.$2(d.aovAll)}`,C.price],
       ['\u5E7F\u544A\u8D39',fmt.$2(t.spend),per(fmt.$2(t.spend/nDays)+'/\u5929'),C.cost],
       ['\u5E7F\u544A\u9500\u552E\u989D',fmt.$2(t.adSales),per(fmt.$0(t.adSales/nDays)+'/\u5929'),C.sale],
@@ -3633,8 +3654,8 @@ function renderDrillSum(){
     daySites:['\u9500\u552E\u989D Top 12 \u7AD9\u70B9','\u5E7F\u544A\u8D39 Top 12 \u7AD9\u70B9',
       '<span><i style="background:#146EB4"></i>\u5E7F\u544A\u9500\u552E\u989D</span><span><i style="background:#CFE2F5"></i>\u81EA\u7136\u9500\u552E\u989D</span>',
       '<span><i style="background:#C0392B"></i>\u5E7F\u544A\u8D39</span><span>\u6807\u6CE8\u4E3A ACOS</span>'],
-    siteDays:['\u6BCF\u65E5 \u9500\u552E\u989D / \u5E7F\u544A\u8D39 / \u4F1A\u8BDD','\u6BCF\u65E5 \u5E7F\u544A\u9500\u552E\u989D / \u81EA\u7136\u9500\u552E\u989D / TACOS',
-      '<span><i style="background:#CFE2F5"></i>\u9500\u552E\u989D</span><span><i style="background:#C0392B"></i>\u5E7F\u544A\u8D39</span><span><i style="background:#0B7285"></i>\u4F1A\u8BDD\uFF08\u53F3\u8F74\uFF09</span>',
+    siteDays:['\u6BCF\u65E5 \u9500\u552E\u989D / \u5E7F\u544A\u8D39 / \u8BBF\u5BA2\u6570','\u6BCF\u65E5 \u5E7F\u544A\u9500\u552E\u989D / \u81EA\u7136\u9500\u552E\u989D / TACOS',
+      '<span><i style="background:#CFE2F5"></i>\u9500\u552E\u989D</span><span><i style="background:#C0392B"></i>\u5E7F\u544A\u8D39</span><span><i style="background:#0B7285"></i>\u8BBF\u5BA2\u6570\uFF08\u53F3\u8F74\uFF09</span>',
       '<span><i style="background:#146EB4"></i>\u5E7F\u544A\u9500\u552E\u989D</span><span><i style="background:#CFE2F5"></i>\u81EA\u7136\u9500\u552E\u989D</span><span><i style="background:#B7791F"></i>TACOS\uFF08\u53F3\u8F74\uFF09</span>'],
     siteDayAsins:['\u9500\u552E\u989D Top 12 ASIN','\u5E7F\u544A\u8D39 Top 12 ASIN',
       '<span><i style="background:#146EB4"></i>\u5E7F\u544A\u9500\u552E\u989D</span><span><i style="background:#CFE2F5"></i>\u81EA\u7136\u9500\u552E\u989D</span>',
@@ -3642,8 +3663,8 @@ function renderDrillSum(){
     ownerAsins:['\u9500\u552E\u989D Top 12 ASIN','\u5E7F\u544A\u8D39 Top 12 ASIN',
       '<span><i style="background:#146EB4"></i>\u5E7F\u544A\u9500\u552E\u989D</span><span><i style="background:#CFE2F5"></i>\u81EA\u7136\u9500\u552E\u989D</span>',
       '<span><i style="background:#C0392B"></i>\u5E7F\u544A\u8D39</span><span>\u6807\u6CE8\u4E3A ACOS</span>'],
-    asinDays:['\u6BCF\u65E5 \u9500\u552E\u989D / \u5E7F\u544A\u8D39 / \u4F1A\u8BDD','\u6BCF\u65E5 \u5E7F\u544A\u9500\u91CF\u7ED3\u6784 / \u5E73\u5747\u552E\u4EF7',
-      '<span><i style="background:#CFE2F5"></i>\u9500\u552E\u989D</span><span><i style="background:#C0392B"></i>\u5E7F\u544A\u8D39</span><span><i style="background:#0B7285"></i>\u4F1A\u8BDD\uFF08\u53F3\u8F74\uFF09</span>',
+    asinDays:['\u6BCF\u65E5 \u9500\u552E\u989D / \u5E7F\u544A\u8D39 / \u8BBF\u5BA2\u6570','\u6BCF\u65E5 \u5E7F\u544A\u9500\u91CF\u7ED3\u6784 / \u5E73\u5747\u552E\u4EF7',
+      '<span><i style="background:#CFE2F5"></i>\u9500\u552E\u989D</span><span><i style="background:#C0392B"></i>\u5E7F\u544A\u8D39</span><span><i style="background:#0B7285"></i>\u8BBF\u5BA2\u6570\uFF08\u53F3\u8F74\uFF09</span>',
       '<span><i style="background:#1E7A46"></i>\u5E7F\u544A\u8BA2\u5355\uFF08\u67F1\u5185\u4E3A\u5360\u6BD4\uFF09</span><span><i style="background:#CDE8D8"></i>\u81EA\u7136\u8BA2\u5355</span><span><i style="background:#7D3C98"></i>\u5E73\u5747\u552E\u4EF7\uFF08\u53F3\u8F74\uFF09</span>'],
     campDays:['\u6BCF\u65E5 \u5E7F\u544A\u9500\u552E\u989D / \u82B1\u8D39 / ACOS','\u6BCF\u65E5 \u66DD\u5149 / \u70B9\u51FB / CTR',
       '<span><i style="background:#CFE2F5"></i>\u5E7F\u544A\u9500\u552E\u989D</span><span><i style="background:#C0392B"></i>\u82B1\u8D39</span><span><i style="background:#B7791F"></i>ACOS\uFF08\u53F3\u8F74\uFF09</span>',
@@ -3681,6 +3702,7 @@ function renderDrillSum(){
       <div class="ds-chart"><div class="ct">${CH[0]}</div><div class="cl">${CH[2]}</div><div id="dsc1"></div><div id="dsf1"></div></div>
       <div class="ds-chart"><div class="ct">${CH[1]}</div><div class="cl">${CH[3]}</div><div id="dsc2"></div><div id="dsf2"></div></div>
     </div>`;
+  bindAcctCollapse(s);
   { const tg=$('#ds_toggle');
     if(tg) tg.onclick=()=>{ if(typeof dmToggleCharts==='function') dmToggleCharts(); }; }
   $('#dsclose').onclick=()=>drill.length>1?goLevel(drill.length-2):goTop();
@@ -3826,7 +3848,7 @@ function ownerSiteBreak(v){
        ['\u8D26\u53F7',r=>r.nAcct>1?many(r.nAcct,'\u8D26\u53F7'):nm([...r.accts][0]),'c-site']];
   const NUM=[['ASIN \u6570',r=>fmt.int(r.nAsin)],['\u9500\u552E\u989D',r=>fmt.$2(r.gmv)],
     ['\u5360\u6BD4',r=>all.gmv>0?fmt.pct1(div(r.gmv,all.gmv)):'\u2013'],
-    ['\u4F1A\u8BDD',r=>fmt.int(r.sessions)],['\u8BA2\u5355\u8F6C\u5316\u7387',r=>fmt.pct1(r.ordCvr)],
+    ['\u8BBF\u5BA2\u6570',r=>fmt.int(r.sessions)],['\u8BA2\u5355\u8F6C\u5316\u7387',r=>fmt.pct1(r.ordCvr)],
     ['\u5E7F\u544A\u8D39',r=>fmt.$2(r.spend)],['\u5E7F\u544A\u9500\u552E',r=>fmt.$2(r.adSales)],
     ['ACOS',r=>r.adSales>0?fmt.pct1(r.acos):'\u2013'],
     ['TACOS',r=>r.gmv>0?fmt.pct1(div(r.spend,r.gmv)):'\u2013']];
@@ -3862,7 +3884,7 @@ function ownerSiteBreak(v){
       <td>${all.gmv>0?fmt.pct1(div(all.spend,all.gmv)):'\u2013'}</td></tr></tfoot></table></div>
     <div class="sp-foot">\u5360\u6BD4\u4E0E\u5408\u8BA1\u884C\u59CB\u7EC8\u4EE5\u8BE5\u8FD0\u8425\u7684\u5168\u91CF\u4E3A\u5206\u6BCD\uFF0C\u4E0D\u968F\u7B5B\u9009\u53D8\u5316\uFF1B
       \u5404\u9879\u7684\u8F6C\u5316\u7387\u4E0E ACOS \u5DEE\u5F02\u5F80\u5F80\u5F88\u5927\uFF0C\u5408\u5728\u4E00\u8D77\u770B\u4F1A\u88AB\u5927\u9879\u62C9\u5E73\u3002`
-    +(cut>0?`\u5408\u8BA1\u4F1A\u8BDD ${fmt.int(all.sessions)} \u5C0F\u4E8E\u5404\u9879\u76F8\u52A0\u7684 ${fmt.int(naive)}\uFF1A\u540C\u4E00 listing \u88AB\u591A\u4E2A\u8D26\u53F7\u8DDF\u5356\u65F6\uFF0C\u8BE6\u60C5\u9875\u6D41\u91CF\u5DF2\u53BB\u91CD\u3002`:'')
+    +(cut>0?`\u5408\u8BA1\u8BBF\u5BA2\u6570 ${fmt.int(all.sessions)} \u5C0F\u4E8E\u5404\u9879\u76F8\u52A0\u7684 ${fmt.int(naive)}\uFF1A\u540C\u4E00 listing \u88AB\u591A\u4E2A\u8D26\u53F7\u8DDF\u5356\u65F6\uFF0C\u8BE6\u60C5\u9875\u6D41\u91CF\u5DF2\u53BB\u91CD\u3002`:'')
     +`</div>
   </div>`;
 }
@@ -3885,12 +3907,19 @@ function asinAcctBreak(v,t){
     <td>${fmt.$2(r.adSales)}</td>
     <td>${r.adSales>0?fmt.pct1(r.acos):'\u2013'}</td></tr>`;
   const naive=parts.reduce((s,r)=>s+(r.sessions||0),0);
-  return `<div class="ds-split">
-    <div class="sp-head">\u6309\u8D26\u53F7\u62C6\u5206\uFF08\u540C\u4E00 listing \u88AB ${parts.length} \u4E2A\u8D26\u53F7\u5171\u7528\uFF09
-      <span class="sp-note">\u70B9\u4EFB\u610F\u4E00\u884C\u53EA\u770B\u8BE5\u8D26\u53F7\u7684\u6BCF\u65E5\u8D8B\u52BF</span></div>
+  return `<div class="ds-split ds-acct collapsed">
+    <div class="sp-head">
+      <button class="sp-toggle" type="button" aria-expanded="false">
+        <span class="sp-caret" aria-hidden="true">▸</span>
+        <span>按账号拆分（同一 listing 被 ${parts.length} 个账号共用）</span>
+        <span class="sp-state">展开账号明细</span>
+      </button>
+      <span class="sp-note">展开后可点击账号查看每日趋势</span>
+    </div>
+    <div class="sp-body">
     <div class="sp-wrap"><table class="sp-tbl"><thead><tr>
       <th class="c-main">\u8D26\u53F7</th><th class="c-site">\u7AD9\u70B9</th><th class="c-sku">SKU</th>
-      <th>\u4F1A\u8BDD</th><th>\u9500\u91CF</th>
+      <th>\u8BBF\u5BA2\u6570</th><th>\u9500\u91CF</th>
       <th>\u9500\u552E\u989D</th><th>\u5360\u672C listing</th><th>\u8BA2\u5355\u8F6C\u5316\u7387</th>
       <th>\u5E7F\u544A\u8D39</th><th>\u5E7F\u544A\u9500\u552E</th><th>ACOS</th></tr></thead>
     <tbody>${parts.map(row).join('')}</tbody>
@@ -3901,9 +3930,10 @@ function asinAcctBreak(v,t){
       <td>${fmt.pct1(div(t.ordItems,t.sessions))}</td>
       <td>${fmt.$2(t.spend)}</td><td>${fmt.$2(t.adSales)}</td>
       <td>${t.adSales>0?fmt.pct1(div(t.spend,t.adSales)):'\u2013'}</td></tr></tfoot></table></div>
-    <div class="sp-foot">\u4F1A\u8BDD\u5408\u5E76\u540E\u4E3A <b>${fmt.int(t.sessions)}</b>\uFF0C\u4E0D\u662F\u5404\u884C\u76F8\u52A0\u7684 ${fmt.int(naive)}\uFF1A
+    <div class="sp-foot">\u8BBF\u5BA2\u6570\u5408\u5E76\u540E\u4E3A <b>${fmt.int(t.sessions)}</b>\uFF0C\u4E0D\u662F\u5404\u884C\u76F8\u52A0\u7684 ${fmt.int(naive)}\uFF1A
       \u540C\u4E00\u4E2A\u8BE6\u60C5\u9875\u7684\u8BBF\u5BA2\u5728\u6BCF\u4E2A\u8D26\u53F7\u7684\u62A5\u8868\u91CC\u90FD\u4F1A\u8BB0\u4E00\u904D\uFF0C\u5DF2\u6309\u3010\u65E5\u671F \u00B7 \u56FD\u5BB6 \u00B7 ASIN\u3011\u53D6\u6700\u5927\u503C\uFF1B
       \u9500\u91CF / \u9500\u552E\u989D / \u5E7F\u544A\u6570\u636E\u4E3A\u76F8\u52A0\u3002</div>
+    </div>
   </div>`;
 }
 
@@ -3935,7 +3965,7 @@ function drawDrillCharts(v,rows,t){
   if(v.type==='siteDays'){
     $('#dsc1').innerHTML=comboChart(rows,[{get:r=>r.gmv,color:'#CFE2F5',label:'\u9500\u552E\u989D'},
       {get:r=>r.spend,color:'#C0392B',label:'\u5E7F\u544A\u8D39',labelColor:'#C0392B'}],
-      {get:r=>r.sessions,color:'#0B7285',label:'\u4F1A\u8BDD',fmt:x=>fmt.int(x)});
+      {get:r=>r.sessions,color:'#0B7285',label:'\u8BBF\u5BA2\u6570',fmt:x=>fmt.int(x)});
     $('#dsc2').innerHTML=stackChart(rows,{get:r=>Math.min(r.adSales,r.gmv),color:'#146EB4',label:'\u5E7F\u544A\u9500\u552E\u989D'},
       {get:r=>Math.max(0,r.gmv-r.adSales),color:'#CFE2F5',label:'\u81EA\u7136\u9500\u552E\u989D'},
       {get:r=>r.tacos,color:'#B7791F',label:'TACOS',fmt:x=>fmt.pct1(x)},
@@ -3945,7 +3975,7 @@ function drawDrillCharts(v,rows,t){
   if(v.type==='asinDays'){
     $('#dsc1').innerHTML=comboChart(rows,[{get:r=>r.gmv,color:'#CFE2F5',label:'\u9500\u552E\u989D'},
       {get:r=>r.spend,color:'#C0392B',label:'\u5E7F\u544A\u8D39',labelColor:'#C0392B'}],
-      {get:r=>r.sessions,color:'#0B7285',label:'\u4F1A\u8BDD',fmt:x=>fmt.int(x)});
+      {get:r=>r.sessions,color:'#0B7285',label:'\u8BBF\u5BA2\u6570',fmt:x=>fmt.int(x)});
     $('#dsc2').innerHTML=stackChart(rows,{get:r=>Math.min(r.adOrders,r.ordItems||r.adOrders),color:'#1E7A46',label:'\u5E7F\u544A\u8BA2\u5355'},
       {get:r=>Math.max(0,(r.ordItems||0)-r.adOrders),color:'#CDE8D8',label:'\u81EA\u7136\u8BA2\u5355'},
       {get:r=>div(r.gmv,r.units),color:'#7D3C98',label:'\u5E73\u5747\u552E\u4EF7',fmt:x=>fmt.$2(x)},
@@ -4172,25 +4202,26 @@ function stackChart(D,segA,segB,line,opt={}){
 const TIP={gmv:'\u4E9A\u9A6C\u900A\u300C\u8BA2\u5355\u5546\u54C1\u9500\u552E\u989D / \u5DF2\u8BA2\u8D2D\u5546\u54C1\u9500\u552E\u989D\u300D\uFF0C\u4E0B\u5355\u53E3\u5F84\uFF0C\u672A\u6263\u9000\u6B3E\u4E0E\u53D6\u6D88',
   ordItems:'\u8BA2\u5355\u5546\u54C1\u603B\u6570 Total Order Items\uFF08\u4E0D\u7B49\u4E8E\u8BA2\u5355\u6570\uFF09',
   units:'\u8BA2\u8D2D\u6570\u91CF Units Ordered',
-  sessions:'\u4F1A\u8BDD\u6570 Sessions\uFF08\u53BB\u91CD\u8BBF\u5BA2\uFF09\uFF0C\u4E0D\u662F\u9875\u9762\u6D4F\u89C8\u91CF\u3002'
-    +'\u4F1A\u8BDD\u662F ASIN \u8BE6\u60C5\u9875\u53E3\u5F84\uFF1A\u540C\u4E00\u5929\u3001\u540C\u4E00\u56FD\u5BB6\u7AD9\u70B9\u3001\u540C\u4E00 ASIN\uFF0C'
+  sessions:'\u8BBF\u5BA2\u6570 Sessions\uFF1A\u540C\u4E00\u7528\u6237\u5728 24 \u5C0F\u65F6\u5185\u591A\u6B21\u8BBF\u95EE\u540C\u4E00\u5546\u54C1\u8BE6\u60C5\u9875\uFF0C\u901A\u5E38\u8BA1\u4E3A 1 \u4E2A Session\u3002'
+    +'\u8DE8\u5929\u4F1A\u91CD\u590D\u8BA1\u6570\uFF0C\u6240\u4EE5\u591A\u65E5\u5408\u8BA1\u4E0D\u7B49\u4E8E\u6574\u4E2A\u533A\u95F4\u7684\u72EC\u7ACB\u8BBF\u5BA2\u4EBA\u6570\uFF1B\u4E5F\u4E0D\u662F\u9875\u9762\u6D4F\u89C8\u91CF\u3002'
+    +'\u8BBF\u5BA2\u6570\u662F ASIN \u8BE6\u60C5\u9875\u53E3\u5F84\uFF1A\u540C\u4E00\u5929\u3001\u540C\u4E00\u56FD\u5BB6\u7AD9\u70B9\u3001\u540C\u4E00 ASIN\uFF0C'
     +'\u65E0\u8BBA\u62C6\u6210\u51E0\u4E2A SKU\u3001\u88AB\u51E0\u4E2A\u8D26\u53F7\u8DDF\u5356\uFF0C\u90FD\u662F\u540C\u4E00\u6279\u8BBF\u5BA2\uFF0C'
     +'\u6C47\u603B\u65F6\u53D6\u6700\u5927\u503C\u800C\u4E0D\u662F\u76F8\u52A0\uFF08\u76F8\u52A0\u4F1A\u628A\u8F6C\u5316\u7387\u5206\u6BCD\u5439\u5927\uFF09',
-  pv:'\u9875\u9762\u6D4F\u89C8\u91CF\uFF0C\u4E0E\u4F1A\u8BDD\u540C\u4E3A\u8BE6\u60C5\u9875\u53E3\u5F84\uFF0C\u6C47\u603B\u65F6\u540C\u6837\u6309\u3010\u65E5\u671F \u00B7 \u56FD\u5BB6 \u00B7 ASIN\u3011\u53BB\u91CD\u53D6\u6700\u5927\u503C',
-  ordCvr:'\u8BA2\u5355\u8F6C\u5316\u7387 = \u8BA2\u5355\u5546\u54C1\u603B\u6570 \u00F7 \u4F1A\u8BDD\u6570\uFF08\u5206\u6BCD\u4E3A\u53BB\u91CD\u540E\u7684\u4F1A\u8BDD\uFF09',
-  unitCvr:'\u5355\u4F4D\u8F6C\u5316\u7387 = \u9500\u91CF \u00F7 \u4F1A\u8BDD\u6570',
+  pv:'\u9875\u9762\u6D4F\u89C8\u91CF\uFF0C\u4E0E\u8BBF\u5BA2\u6570\u540C\u4E3A\u8BE6\u60C5\u9875\u53E3\u5F84\uFF0C\u6C47\u603B\u65F6\u540C\u6837\u6309\u3010\u65E5\u671F \u00B7 \u56FD\u5BB6 \u00B7 ASIN\u3011\u53BB\u91CD\u53D6\u6700\u5927\u503C',
+  ordCvr:'\u8BA2\u5355\u8F6C\u5316\u7387 = \u8BA2\u5355\u5546\u54C1\u603B\u6570 \u00F7 \u8BBF\u5BA2\u6570\uFF08\u5206\u6BCD\u4E3A\u6C47\u603B\u53BB\u91CD\u540E\u7684 Sessions\uFF09',
+  unitCvr:'\u5355\u4F4D\u8F6C\u5316\u7387 = \u9500\u91CF \u00F7 \u8BBF\u5BA2\u6570',
   acos:'\u5E7F\u544A\u82B1\u8D39 \u00F7 \u5E7F\u544A\u9500\u552E\u989D\uFF08\u5E7F\u544A\u9500\u552E\u989D\u4E3A 7 \u5929\u5F52\u56E0\uFF09',
   tacos:'\u5E7F\u544A\u82B1\u8D39 \u00F7 \u603B\u9500\u552E\u989D',
   roas:'\u5E7F\u544A\u9500\u552E\u989D \u00F7 \u5E7F\u544A\u82B1\u8D39 = 1 \u00F7 ACOS',
   ctr:'\u70B9\u51FB \u00F7 \u66DD\u5149',
-  adClickPct:'\u5E7F\u544A\u70B9\u51FB \u00F7 \u4F1A\u8BDD\u6570\uFF0C\u770B\u6D41\u91CF\u5BF9\u5E7F\u544A\u7684\u4F9D\u8D56\u5EA6',
+  adClickPct:'\u5E7F\u544A\u70B9\u51FB \u00F7 \u8BBF\u5BA2\u6570\uFF0C\u770B\u6D41\u91CF\u5BF9\u5E7F\u544A\u7684\u4F9D\u8D56\u5EA6',
   cur:'\u8BE5\u884C\u7684\u539F\u59CB\u5E01\u79CD\uFF1B\u8868\u5185\u91D1\u989D\u5DF2\u7EDF\u4E00\u6298\u7B97\u4E3A\u9876\u90E8\u9009\u5B9A\u5E01\u79CD',
   waste:'\u65E0\u6548\u70B9\u51FB\u6570 \u00D7 \u8BE5\u6D3B\u52A8 CPC\uFF0C\u4EC5\u4E3A\u4F30\u7B97',
   invClkRate:'\u65E0\u6548\u70B9\u51FB \u00F7 \u603B\u70B9\u51FB\uFF08\u4E9A\u9A6C\u900A\u4F1A\u8FD4\u8FD8\u65E0\u6548\u70B9\u51FB\u8D39\u7528\uFF0C\u4F46\u9AD8\u65E0\u6548\u7387\u610F\u5473\u7740\u6295\u653E\u73AF\u5883\u5DEE\uFF09'};
 const Cc=(k,l,o={})=>({k,l,...o});
 // 业务指标
 const BIZ=[
-  Cc('sessions','\u4F1A\u8BDD',{f:fmt.int,tip:TIP.sessions}),
+  Cc('sessions','\u8BBF\u5BA2\u6570',{f:fmt.int,tip:TIP.sessions}),
   Cc('pv','PV',{f:fmt.int,tip:TIP.pv}),
   Cc('units','\u9500\u91CF',{f:fmt.int,tip:TIP.units}),
   Cc('ordItems','\u8BA2\u5355\u6570',{f:fmt.int,tip:TIP.ordItems}),
@@ -4664,7 +4695,7 @@ function renderTable(){
     siteDays:'\u70B9\u4EFB\u610F\u4E00\u884C\u770B\u8BE5\u7AD9\u70B9\u5F53\u65E5\u5168\u90E8 ASIN\u3002',
     siteDayAsins:'\u70B9\u4EFB\u610F\u4E00\u884C\u770B\u8BE5 ASIN \u6BCF\u65E5\u8D8B\u52BF\u3002',
     asin:'\u70B9\u4EFB\u610F\u4E00\u884C\u770B\u8BE5 ASIN \u6BCF\u65E5\u3002\u540C\u4E00 ASIN \u5728\u4E0D\u540C\u7AD9\u70B9\u5206\u5F00\u7EDF\u8BA1\u3002',
-    asinDays:'\u8BE5 ASIN \u5728\u8BE5\u56FD\u5BB6\u7AD9\u70B9\u7684\u9010\u65E5\u8868\u73B0\uFF0C\u5DF2\u5408\u5E76\u540C\u7AD9\u70B9\u4E0B\u5171\u7528\u8BE5 listing \u7684\u5168\u90E8\u8D26\u53F7\u4E0E SKU\uFF08\u4F1A\u8BDD\u53D6\u6700\u5927\u503C\uFF0C\u9500\u91CF / \u5E7F\u544A\u76F8\u52A0\uFF09\u3002',
+    asinDays:'\u8BE5 ASIN \u5728\u8BE5\u56FD\u5BB6\u7AD9\u70B9\u7684\u9010\u65E5\u8868\u73B0\uFF0C\u5DF2\u5408\u5E76\u540C\u7AD9\u70B9\u4E0B\u5171\u7528\u8BE5 listing \u7684\u5168\u90E8\u8D26\u53F7\u4E0E SKU\uFF08\u8BBF\u5BA2\u6570\u53D6\u6700\u5927\u503C\uFF0C\u9500\u91CF / \u5E7F\u544A\u76F8\u52A0\uFF09\u3002',
     ownerAsins:'\u70B9\u4EFB\u610F\u4E00\u884C\u770B\u8BE5 ASIN \u6BCF\u65E5\u8D8B\u52BF\u3002',
     owner:'\u6309\u8FD0\u8425\u4EBA\u5458\u6C47\u603B\uFF08\u6765\u81EA ASIN \u65E5\u62A5\u7684\u300C\u8FD0\u8425\u4EBA\u5458\u300D\u5B57\u6BB5\uFF09\uFF0C\u70B9\u884C\u770B\u5176\u540D\u4E0B\u5168\u90E8 ASIN\u3002',
     camp:'\u70B9\u4EFB\u610F\u4E00\u884C\u4E0B\u94BB\u5230\u8BE5\u6D3B\u52A8\u7684\u5E7F\u544A\u7EC4\uFF0C\u5BF9\u6BD4\u54EA\u4E2A\u5E7F\u544A\u7EC4\u82B1\u8D39\u5360\u6BD4\u9AD8\u3001ACOS \u9AD8\u4E8E\u6D3B\u52A8\u5E73\u5747\u3002\u82E5\u641C\u7D22\u8BCD\u62A5\u8868\u4E2D\u6CA1\u6709\u8BE5\u6D3B\u52A8\u7684\u5E7F\u544A\u7EC4\u6570\u636E\uFF0C\u5219\u81EA\u52A8\u56DE\u9000\u5230\u6D3B\u52A8\u6BCF\u65E5 / \u5E7F\u544A\u4F4D\u660E\u7EC6\u3002\u65E5\u9884\u7B97\u53D6\u533A\u95F4\u5185\u6700\u540E\u4E00\u5929\u7684\u503C\u3002',
@@ -4691,7 +4722,7 @@ function renderTable(){
   /* 会话去重说明：合计行的会话不是各行相加 */
   if(SESS_VIEWS.has(view)&&dupCut(tot)>0){
     const sh=(model.shared||[]).length;
-    notes.push('\u5408\u8BA1\u884C\u7684\u4F1A\u8BDD / \u9875\u9762\u6D4F\u89C8\u4E0D\u662F\u5404\u884C\u76F8\u52A0\uFF1A\u5B83\u4EEC\u662F ASIN \u8BE6\u60C5\u9875\u53E3\u5F84\uFF0C'
+    notes.push('\u5408\u8BA1\u884C\u7684\u8BBF\u5BA2\u6570 / \u9875\u9762\u6D4F\u89C8\u4E0D\u662F\u5404\u884C\u76F8\u52A0\uFF1A\u5B83\u4EEC\u662F ASIN \u8BE6\u60C5\u9875\u53E3\u5F84\uFF0C'
       +'\u540C\u4E00\u5929 \u00B7 \u540C\u4E00\u56FD\u5BB6\u7AD9\u70B9 \u00B7 \u540C\u4E00 ASIN \u88AB\u591A\u4E2A SKU \u6216\u591A\u4E2A\u8D26\u53F7\uFF08\u8DDF\u5356\uFF09\u5171\u7528\u65F6\uFF0C'
       +'\u5404\u884C\u62FF\u5230\u7684\u662F\u540C\u4E00\u6279\u8BBF\u5BA2\uFF0C\u5DF2\u6309\u3010\u65E5\u671F \u00B7 \u56FD\u5BB6 \u00B7 ASIN\u3011\u53D6\u6700\u5927\u503C\uFF1A'
       +`\u76F4\u63A5\u76F8\u52A0 ${fmt.int(tot.sessRaw)} \u2192 \u53BB\u91CD\u540E ${fmt.int(tot.sessions)}\uFF08\u6263\u9664 ${fmt.int(dupCut(tot))}\uFF09`
@@ -4734,7 +4765,7 @@ function renderGroupSum(view,rows,tot,dTot){
   const isBiz=['asin','siteDayAsins','ownerAsins','site','daySites','owner'].includes(view);
   const cells=isBiz?[
     ['\u9500\u552E\u989D',fmt.$2(tot.gmv)],['\u9500\u91CF',fmt.int(tot.units)],
-    ['\u8BA2\u5355\u5546\u54C1\u6570',fmt.int(tot.ordItems)],['\u4F1A\u8BDD',fmt.int(tot.sessions)],
+    ['\u8BA2\u5355\u5546\u54C1\u6570',fmt.int(tot.ordItems)],['\u8BBF\u5BA2\u6570',fmt.int(tot.sessions)],
     ['\u8BA2\u5355\u8F6C\u5316\u7387',fmt.pct1(dTot.ordCvr)],['\u5E73\u5747\u552E\u4EF7',fmt.$2(dTot.aur)],
     ['\u5E7F\u544A\u8D39',fmt.$2(tot.spend)],['\u5E7F\u544A\u9500\u552E\u989D',fmt.$2(tot.adSales)],
     ['\u5E7F\u544A\u8BA2\u5355',fmt.int(tot.adOrders)],['CPC',fmt.$c(dTot.cpc)],
@@ -4834,11 +4865,48 @@ function adiagQFilter(rows){
 const ADG_CATS={bleed:'\u6B62\u8840',listing:'listing\u4F18\u5316',scale:'\u53EF\u653E\u91CF',
   thin:'\u6837\u672C\u8584',data:'\u6570\u636E\u4E0D\u8DB3'};
 
+/* CTR 只回答「曝光能不能换来点击」，不直接进入 ACOS 公式。
+   ASIN 的 CTR 略低时，先用当前所选基准组的成交均价做代理比较：这不是外部竞品爬价，
+   但足以避免在价格明显偏高时武断地把问题归到主图。 */
+function adiagPeerPrice(r,bench){
+  if(!bench||!bench.all) return null;
+  const site=adiagSiteOf(r), gb=bench.grp.get(bench.keyOf(r)), sb=bench.site.get(site);
+  let B,scope;
+  if(gb&&gb.n>=BENCH_MIN){ B=gb;
+    scope=bench.mode==='brand'?`\u540C\u7AD9\u70B9 ${site} \u00B7 \u54C1\u724C ${r.brand||NOGRP}`
+      :bench.mode==='band'?`\u540C\u7AD9\u70B9 ${site} \u00B7 \u4EF7\u683C\u5E26 ${bench.bandOf(r).replace('B','\u7B2C')+' \u6863'}`
+      :`\u540C\u7AD9\u70B9 ${site}`;
+  }else if(sb&&sb.n>=BENCH_MIN){ B=sb; scope=`\u540C\u7AD9\u70B9 ${site}`+(bench.mode!=='site'?'\uFF08\u7EC6\u5206\u7EC4\u6837\u672C\u4E0D\u8DB3\uFF0C\u5DF2\u4E0A\u63D0\uFF09':''); }
+  else { B=bench.all; scope='\u5168\u76D8'+(bench.mode!=='site'?'\uFF08\u7EC6\u5206\u7EC4\u6837\u672C\u4E0D\u8DB3\uFF0C\u5DF2\u4E0A\u63D0\uFF09':''); }
+  const price=r.aur>0?r.aur:r.aov, med=B&&B.price;
+  if(!(price>0&&med>0)) return null;
+  return {price,med,ratio:price/med,scope,source:r.aur>0?'\u5E73\u5747\u552E\u4EF7':'\u5E7F\u544A\u5BA2\u5355\u4EF7'};
+}
+function adiagAsinCtrAdvice(r,ctrL,bench){
+  const ratio=ctrL>0?r.ctr/ctrL:1, gap=Math.max(0,1-ratio), mild=ratio>=0.80, severe=ratio<0.60;
+  const P=adiagPeerPrice(r,bench), priceHigh=P&&P.ratio>=1.05;
+  const gapTxt=`CTR ${fmt.pct2(r.ctr)} \u6BD4\u76EE\u6807 ${fmt.pct2(ctrL)} \u4F4E ${(gap*100).toFixed(0)}%`;
+  const priceTxt=P
+    ? `\u5F53\u524D${P.source} ${fmt.$2(P.price)}\uFF0C${P.scope}\u5185\u90E8\u4E2D\u4F4D\u6570 ${fmt.$2(P.med)}${priceHigh?`\uFF08\u9AD8 ${((P.ratio-1)*100).toFixed(0)}%\uFF09`:'\uFF08\u672A\u660E\u663E\u504F\u9AD8\uFF09'}`
+    : '\u5F53\u524D\u6570\u636E\u6CA1\u6709\u8DB3\u591F\u7684\u53EF\u6BD4\u4EF7\u683C\u57FA\u51C6';
+  if(mild){
+    const act=priceHigh
+      ? `${gapTxt}\uFF0C\u53EA\u662F\u8F7B\u5FAE\u504F\u4F4E\uFF1B${priceTxt}\u3002\u5148\u6838\u5BF9\u540C\u89C4\u683C\u7ADE\u54C1\u552E\u4EF7\u3001Coupon\u3001\u914D\u9001\u8D39 / \u65F6\u6548\u548C\u5BB9\u91CF\u5DEE\u5F02\uFF0C\u4EF7\u683C\u4E0E\u5C55\u793A\u6761\u4EF6\u5BF9\u9F50\u540E CTR \u4ECD\u4F4E\uFF0C\u518D\u5C0F\u6D41\u91CF A/B \u6D4B\u8BD5\u4E3B\u56FE / \u6807\u9898\uFF0C\u4E0D\u8981\u76F4\u63A5\u5224\u201C\u4E3B\u56FE\u5DEE\u201D`
+      : `${gapTxt}\uFF0C\u53EA\u662F\u8F7B\u5FAE\u504F\u4F4E\uFF1B${priceTxt}\u3002\u4E0D\u8DB3\u4EE5\u76F4\u63A5\u5F52\u56E0\u4E3B\u56FE\uFF0C\u5148\u67E5\u540C\u89C4\u683C\u552E\u4EF7 / Coupon\u3001\u8BC4\u5206\u8BC4\u8BBA\u3001\u914D\u9001\u65F6\u6548\u3001\u5E7F\u544A\u4F4D\u4E0E\u641C\u7D22\u8BCD\u76F8\u5173\u6027\uFF1B\u8FD9\u4E9B\u6B63\u5E38\u540E\u518D A/B \u6D4B\u4E3B\u56FE`;
+    return {block:'CTR\u7565\u4F4E',cls:'t-ctr',act,actShort:priceHigh?'\u5148\u6838\u5BF9\u4EF7\u683C':'\u5148\u67E5\u4EF7\u683C / \u5C55\u793A'};
+  }
+  const act=priceHigh
+    ? `${gapTxt}\uFF0C\u5DEE\u8DDD\u5DF2\u660E\u663E\uFF1B${priceTxt}\u3002\u5148\u5904\u7406\u4EF7\u683C / Coupon \u4E0E\u914D\u9001\u7ADE\u4E89\u529B\uFF0C\u518D\u8054\u5408\u68C0\u67E5\u4E3B\u56FE\u3001\u6807\u9898\u548C\u641C\u7D22\u8BCD\u76F8\u5173\u6027`
+    : `${gapTxt}\uFF0C\u5DEE\u8DDD\u5DF2\u660E\u663E\uFF1B${priceTxt}\u3002\u4EF7\u683C\u672A\u660E\u663E\u504F\u9AD8\u65F6\uFF0C\u4F18\u5148\u68C0\u67E5\u4E3B\u56FE / \u6807\u9898\u3001\u8BC4\u5206\u8BC4\u8BBA\u3001\u5E7F\u544A\u4F4D\u4E0E\u641C\u7D22\u8BCD\u76F8\u5173\u6027`;
+  return {block:severe?'CTR\u4E25\u91CD\u504F\u4F4E':'CTR\u504F\u4F4E',cls:'t-ctr',act,
+    actShort:priceHigh?'\u5148\u6838\u5BF9\u4EF7\u683C':'\u67E5\u4E3B\u56FE / \u76F8\u5173\u6027'};
+}
+
 /* 卡点定位：CTR/CVR 都低于线时，按「距线的相对差距」判断谁是主要短板 */
-function adiagBottleneck(r,ctrL,cvrL,obj,over){
+function adiagBottleneck(r,ctrL,cvrL,obj,over,bench){
   const lowCtr=r.impr>0&&r.ctr<ctrL, lowCvr=r.cvr<cvrL;
   const A={
-    asin:{ctr:'\u6539\u4E3B\u56FE / \u67E5\u4EF7\u683C / \u8865\u8BC4\u4EF7',cvr:'\u4F18\u5316\u8BE6\u60C5\u9875 / \u67E5\u5E93\u5B58\u4E0E Buy Box / \u8865\u8BC4\u4EF7',
+    asin:{ctr:'\u5148\u6838\u5BF9\u4EF7\u683C / \u4F18\u60E0 / \u5C55\u793A\uFF0C\u518D\u6D4B\u4E3B\u56FE',cvr:'\u4F18\u5316\u8BE6\u60C5\u9875 / \u67E5\u5E93\u5B58\u4E0E Buy Box / \u8865\u8BC4\u4EF7',
       both1:'\u5148\u6539\u4E3B\u56FE\u4E0E\u4EF7\u683C\u63D0\u70B9\u51FB\uFF0C\u518D\u4F18\u5316\u8BE6\u60C5',both2:'\u5148\u4F18\u5316\u8BE6\u60C5\u4E0E\u8BC4\u4EF7\u63D0\u8F6C\u5316\uFF0C\u518D\u770B\u4E3B\u56FE'},
     camp:{ctr:'\u68C0\u67E5\u6295\u653E\u8BCD\u76F8\u5173\u6027 / \u964D\u5B9A\u5411\u5C55\u4F4D',cvr:'\u68C0\u67E5\u843D\u5730 ASIN \u4E0E\u641C\u7D22\u8BCD\u5339\u914D\u5EA6',
       both1:'\u5148\u6E05\u7406\u4E0D\u76F8\u5173\u6295\u653E\u8BCD\uFF0C\u518D\u770B\u843D\u5730\u9875',both2:'\u5148\u6362\u843D\u5730 ASIN / \u6539\u8BE6\u60C5\uFF0C\u518D\u6536\u7A84\u6295\u653E\u8BCD'},
@@ -4846,12 +4914,13 @@ function adiagBottleneck(r,ctrL,cvrL,obj,over){
       both1:'\u76F8\u5173\u6027\u4E0E\u8F6C\u5316\u53CC\u5DEE\uFF0C\u5EFA\u8BAE\u5426\u5B9A',both2:'\u8F6C\u5316\u5DEE\u4E3A\u4E3B\uFF0C\u5148\u964D\u7ADE\u4EF7\u89C2\u5BDF'},
   }[obj];
   const S={
-    asin:{ctr:'\u6539\u4E3B\u56FE',cvr:'\u4F18\u5316\u8BE6\u60C5',both1:'\u5148\u6539\u4E3B\u56FE',both2:'\u5148\u4F18\u8BE6\u60C5'},
+    asin:{ctr:'\u5148\u67E5\u4EF7\u683C / \u5C55\u793A',cvr:'\u4F18\u5316\u8BE6\u60C5',both1:'\u5148\u67E5\u70B9\u51FB\u7AEF',both2:'\u5148\u4F18\u8BE6\u60C5'},
     camp:{ctr:'\u6E05\u6295\u653E\u8BCD',cvr:'\u67E5\u843D\u5730\u9875',both1:'\u5148\u6E05\u8BCD',both2:'\u5148\u6362\u843D\u5730'},
     term:{ctr:'\u5EFA\u8BAE\u5426\u5B9A',cvr:'\u964D\u7ADE\u4EF7',both1:'\u52A0\u5426\u5B9A',both2:'\u964D\u7ADE\u4EF7'},
   }[obj];
   if(lowCtr&&lowCvr){
-    const ctrWorse=(r.ctr/ctrL)<=(r.cvr/cvrL);
+    const ctrMild=(r.ctr/ctrL)>=0.80;
+    const ctrWorse=!ctrMild&&(r.ctr/ctrL)<=(r.cvr/cvrL);
     /* 搜索词若本身就是手动投放词，「否定」会与投放词冲突，只能降竞价或暂停 */
     if(obj==='term'&&String(r.type||'').indexOf('\u624B\u52A8')>=0){
       return {block:'\u70B9\u51FB+\u8F6C\u5316\u53CC\u4F4E',cls:ctrWorse?'t-ctr':'t-cvr',
@@ -4892,11 +4961,12 @@ function adiagBottleneck(r,ctrL,cvrL,obj,over){
       return {block:'\u70B9\u51FB\u7387\u4F4E',cls:'t-ctr',act,
         actShort:over?'\u964D\u7ADE\u4EF7':'\u63D0\u70B9\u51FB'};
     }
+    if(obj==='asin') return adiagAsinCtrAdvice(r,ctrL,bench);
     return {block:'\u70B9\u51FB\u7387\u4F4E',cls:'t-ctr',act:A.ctr,actShort:S.ctr};
   }
   return null;
 }
-function adiagClassify(r,c,obj){
+function adiagClassify(r,c,obj,bench){
   const be=c.margin/100, ctrL=c.ctr/100, cvrL=c.cvr/100;
   if(r.clicks<c.minClicks)
     return {cat:'data',block:'\u6570\u636E\u4E0D\u8DB3',cls:'t-dim',acls:'a-dim',
@@ -4928,9 +4998,17 @@ function adiagClassify(r,c,obj){
       actShort:lose?'\u5148\u51B3\u53BB\u7559':'\u518D\u89C2\u5BDF',
       save:lose?Math.max(0,r.spend-r.adSales*be):0};
   }
-  const bn=adiagBottleneck(r,ctrL,cvrL,obj,r.acos>be);
+  const bn=adiagBottleneck(r,ctrL,cvrL,obj,r.acos>be,bench);
   if(r.acos>be){
     const save=Math.max(0,r.spend-r.adSales*be);
+    /* CTR 不进入 ACOS 公式：ASIN 的 CVR 健康但 CTR 偏低时，不能把亏损归因成「主图差」。
+       利润侧仍先控 CPC / 广告位；CTR 侧只作为价格与展示检查的次级信号。 */
+    if(obj==='asin'&&r.impr>0&&r.ctr<ctrL&&r.cvr>=cvrL){
+      const ca=adiagAsinCtrAdvice(r,ctrL,bench), mildOver=(r.acos/be-1)<=0.15;
+      return {cat:'bleed',block:mildOver?'\u8F7B\u5FAE\u8D85\u7EBF':'ACOS\u504F\u9AD8',cls:'t-acos',acls:'',
+        act:`ACOS ${fmt.pct1(r.acos)} ${mildOver?'\u4EC5\u8F7B\u5FAE\u8D85\u8FC7':'\u9AD8\u4E8E'}\u76C8\u4E8F\u7EBF ${fmt.pct1(be)}\uFF1BCTR \u4E0D\u662F ACOS \u7684\u76F4\u63A5\u56E0\u5B50\uFF0C\u4E0D\u5F52\u56E0\u201C\u4E3B\u56FE\u5DEE\u201D\u3002${ca.act}\uFF1B\u5229\u6DA6\u4FA7\u5148\u5C0F\u5E45\u964D\u7ADE\u4EF7 / \u4F4E\u6548\u5E7F\u544A\u4F4D\u6EA2\u4EF7\uFF0C\u6539\u540E\u89C2\u5BDF 3~5 \u5929`,
+        actShort:mildOver?'\u6838\u4EF7\u00B7\u63A7\u7ADE\u4EF7':'\u63A7\u7ADE\u4EF7\u00B7\u6838\u4EF7',save};
+    }
     if(bn) return {cat:'bleed',...bn,acls:'',save};
     const ACT={asin:'\u964D\u7ADE\u4EF7 10~15% / \u8C03\u5E7F\u544A\u4F4D\u6EA2\u4EF7',
       camp:'\u964D\u7ADE\u4EF7\u4E0E\u5E7F\u544A\u4F4D\u6EA2\u4EF7 / \u6536\u7A84\u5339\u914D\u65B9\u5F0F',
@@ -4988,7 +5066,7 @@ const ADG_CAMP_NUMCO=[['block','\u5361\u70B9','84px'],['clicks','\u70B9\u51FB','
   ['save','\u53EF\u7701\u4F30\u7B97','72px']];
 const ADG_TIP={
   clicks:'\u5E7F\u544A\u70B9\u51FB\u6570\u3002\u4F4E\u4E8E\u300C\u6700\u5C11\u70B9\u51FB\u300D\u9608\u503C\u65F6\u6570\u5B57\u4F1A\u53D8\u7070\uFF0C\u8BF4\u660E\u53F3\u8FB9\u7684\u6BD4\u7387\u7C7B\u6307\u6807\u4E0D\u53EF\u4FE1',
-  ctr:'\u70B9\u51FB \u00F7 \u66DD\u5149\u3002\u504F\u4F4E = \u5361\u5728\u300C\u66DD\u5149\u2192\u70B9\u51FB\u300D\uFF08\u4E3B\u56FE / \u4EF7\u683C / \u76F8\u5173\u6027\uFF09',
+  ctr:'\u70B9\u51FB \u00F7 \u66DD\u5149\u3002\u504F\u4F4E\u53EA\u8BF4\u660E\u300C\u66DD\u5149\u2192\u70B9\u51FB\u300D\u504F\u5F31\uFF0C\u4E0D\u80FD\u76F4\u63A5\u5F52\u56E0\u4E3B\u56FE\uFF1B\u9700\u7ED3\u5408\u8DDD\u76EE\u6807\u7EBF\u7684\u5DEE\u8DDD\u3001\u4EF7\u683C / Coupon\u3001\u8BC4\u5206\u8BC4\u8BBA\u3001\u5E7F\u544A\u4F4D\u548C\u641C\u7D22\u8BCD\u76F8\u5173\u6027\u5224\u65AD\u3002CTR \u4E0D\u76F4\u63A5\u8FDB\u5165 ACOS \u516C\u5F0F',
   cvr:'\u5E7F\u544A\u8BA2\u5355 \u00F7 \u70B9\u51FB\u3002\u504F\u4F4E = \u5361\u5728\u300C\u70B9\u51FB\u2192\u4E0B\u5355\u300D\uFF08\u8BE6\u60C5\u9875 / \u5E93\u5B58 / Buy Box / \u8BC4\u4EF7\uFF09\u3002'
      +'\u5E7F\u544A\u8BA2\u5355\u4E0D\u8DB3 3 \u5355\u65F6\u6570\u5B57\u53D8\u7070\uFF1A\u8FD9\u65F6 CVR \u662F\u4E00\u4E24\u5355\u7B97\u51FA\u6765\u7684\uFF0C\u4E0D\u4F5C\u4E3A\u5361\u70B9\u4F9D\u636E\u3002'
      +'\u60AC\u505C\u5355\u5143\u683C\u53EF\u770B\u8BE5\u884C\u7684\u76C8\u4E8F\u5E73\u8861 CVR \u4E0E\u540C\u884C\u4E2D\u4F4D\u6570\u5BF9\u6BD4',
@@ -5005,8 +5083,9 @@ const adiagSiteOf=r=>r.country||r.site||'\u2013';
 function adiagRowsAll(){
   if(!model) return [];
   const M=OBJ_META[adiagObj];
-  return M.rows().filter(r=>r.spend>0||r.clicks>0||r.impr>0)
-    .map(r=>({...r,diag:adiagClassify(r,cfgFor(adiagSiteOf(r)),adiagObj)}));
+  const base=M.rows().filter(r=>r.spend>0||r.clicks>0||r.impr>0);
+  const bench=adiagObj==='asin'?adiagBench(base):null;
+  return base.map(r=>({...r,diag:adiagClassify(r,cfgFor(adiagSiteOf(r)),adiagObj,bench)}));
 }
 function adiagRows(){
   const all=adiagRowsAll();
@@ -5068,14 +5147,14 @@ function adiagBench(rows){
   const keyOf=r=>benchMode==='brand'?adiagSiteOf(r)+'\u0001'+(r.brand||NOGRP)
     :benchMode==='band'?adiagSiteOf(r)+'\u0001'+bandOf(r)
     :adiagSiteOf(r);
-  const grp=new Map(), bySite=new Map(), all={cvr:[],aov:[],cpc:[]};
-  const put=(m,k,r)=>{ let o=m.get(k); if(!o){ o={cvr:[],aov:[],cpc:[]}; m.set(k,o); }
-    o.cvr.push(r.cvr); o.aov.push(r.aov); o.cpc.push(r.cpc); };
+  const grp=new Map(), bySite=new Map(), all={cvr:[],aov:[],cpc:[],price:[]};
+  const put=(m,k,r)=>{ let o=m.get(k); if(!o){ o={cvr:[],aov:[],cpc:[],price:[]}; m.set(k,o); }
+    o.cvr.push(r.cvr); o.aov.push(r.aov); o.cpc.push(r.cpc); o.price.push(r.aur>0?r.aur:r.aov); };
   for(const r of usable){
     put(grp,keyOf(r),r); put(bySite,adiagSiteOf(r),r);
-    all.cvr.push(r.cvr); all.aov.push(r.aov); all.cpc.push(r.cpc);
+    all.cvr.push(r.cvr); all.aov.push(r.aov); all.cpc.push(r.cpc); all.price.push(r.aur>0?r.aur:r.aov);
   }
-  const fin=o=>({cvr:med(o.cvr),aov:med(o.aov),cpc:med(o.cpc),n:o.cvr.length,raw:o});
+  const fin=o=>({cvr:med(o.cvr),aov:med(o.aov),cpc:med(o.cpc),price:med(o.price),n:o.cvr.length,raw:o});
   const G=new Map(); for(const [k,o] of grp) G.set(k,fin(o));
   const S=new Map(); for(const [k,o] of bySite) S.set(k,fin(o));
   return {grp:G,site:S,all:fin(all),keyOf,bandOf,mode:benchMode};
@@ -5568,8 +5647,8 @@ function renderAdDiag(){
   renderNote('adg_note',
     `\u8BCA\u65AD\u53E3\u5F84\uFF08\u5F53\u524D\u5BF9\u8C61\uFF1A<b>${M.label}</b>\uFF0C${OBJNOTE}\uFF09\uFF1A`
     +`\u2460 \u70B9\u51FB &lt; ${c.minClicks} \u2192 <b>\u6570\u636E\u4E0D\u8DB3</b>\uFF0C\u4E0D\u4E0B\u7ED3\u8BBA\uFF1B`
-    +`\u2461 ACOS &gt; \u6BDB\u5229\u7387 ${c.margin}%\uFF08\u76C8\u4E8F\u5E73\u8861\uFF09\u2192 <b>\u6B62\u8840</b>\uFF1ACVR&lt;${c.cvr}% \u2192 \u8F6C\u5316\u7387\u4F4E\u3001CTR&lt;${c.ctr}% \u2192 \u70B9\u51FB\u7387\u4F4E\uFF1B\u4E24\u8005\u90FD\u4F4E\u65F6\u6309\u300C\u8DDD\u7EBF\u7684\u76F8\u5BF9\u5DEE\u8DDD\u300D\u5B9A\u4F4D\u4E3B\u5361\u70B9\uFF1B\u90FD\u4E0D\u4F4E\u5219\u4E3A ACOS \u504F\u9AD8\uFF08CPC \u8FC7\u9AD8\uFF09\uFF1B`
-    +`\u2462 ACOS \u8FBE\u6807\u4F46 CTR/CVR \u4F4E\u4E8E\u7EBF \u2192 <b>\u5F85\u4F18\u5316</b>\uFF08\u73B0\u5728\u8D5A\u94B1\u4F46\u6F0F\u6597\u6709\u77ED\u677F\uFF09\uFF1B`
+    +`\u2461 ACOS &gt; \u6BDB\u5229\u7387 ${c.margin}%\uFF08\u76C8\u4E8F\u5E73\u8861\uFF09\u2192 <b>\u6B62\u8840</b>\uFF1A\u5148\u6309 CPC / CVR / \u5BA2\u5355\u4EF7\u5B9A\u4F4D\u76C8\u5229\u7AEF\u539F\u56E0\uFF1BCTR \u4E0D\u76F4\u63A5\u8FDB\u5165 ACOS \u516C\u5F0F\uFF0C\u53EA\u4F5C\u4E3A\u4EF7\u683C\u7ADE\u4E89\u529B / \u5C55\u793A\u6548\u7387\u7684\u6B21\u7EA7\u4FE1\u53F7\uFF0C\u4E0D\u76F4\u63A5\u5F52\u56E0\u4E3B\u56FE\uFF1B`
+    +`\u2462 ACOS \u8FBE\u6807\u4F46 CTR/CVR \u4F4E\u4E8E\u7EBF \u2192 <b>\u5F85\u4F18\u5316</b>\uFF1BCTR \u8DDD\u76EE\u6807\u7EBF\u4E0D\u8D85\u8FC7 20% \u65F6\u6807\u300CCTR\u7565\u4F4E\u300D\uFF0C\u5148\u6838\u5BF9\u4EF7\u683C / \u4F18\u60E0 / \u5C55\u793A\uFF0C\u4EF7\u683C\u6B63\u5E38\u4E14\u5DEE\u8DDD\u660E\u663E\u65F6\u518D\u4F18\u5148\u6D4B\u4E3B\u56FE\uFF1B`
     +`\u2463 \u6307\u6807\u5168\u90E8\u5065\u5EB7 \u2192 <b>\u53EF\u653E\u91CF</b>\uFF08ACOS \u8DDD\u76C8\u4E8F\u7EBF\u4E0D\u8DB3 max(3\u4E2A\u767E\u5206\u70B9, \u76C8\u4E8F\u7EBF\u00D715%) \u65F6\u6807\u300C\u63A5\u8FD1\u76C8\u4E8F\u7EBF\u300D\uFF0C\u53EA\u5C0F\u6B65\u653E\u91CF\uFF09\u3002`
     +`\u300C\u53EF\u7701\u300D= \u82B1\u8D39 \u2212 \u5E7F\u544A\u9500\u552E\u989D \u00D7 \u6BDB\u5229\u7387\uFF0C\u5373\u8D85\u51FA\u76C8\u4E8F\u5E73\u8861\u7684\u90A3\u90E8\u5206\u82B1\u8D39\u3002\u6570\u636E\u53D6\u81EA\u5F53\u524D\u6240\u9009\u65E5\u671F\u533A\u95F4\uFF0C\u91D1\u989D\u5DF2\u7EDF\u4E00\u6298\u7B97\u4E3A ${dispCur}\u3002`
     +(adiagObj==='camp'?`\u300C\u65E5\u5747\u8868\u73B0\u300D\u4E2D\u7684\u8D39 / \u5355 / \u9500\u5206\u522B\u4E3A\u65E5\u5747\u5E7F\u544A\u82B1\u8D39\u3001\u65E5\u5747\u5E7F\u544A\u8BA2\u5355\u3001\u65E5\u5747\u5E7F\u544A\u9500\u552E\u989D\uFF0C\u7EDF\u4E00\u6309\u5F53\u524D\u7B5B\u9009\u65E5\u671F\u7684 ${avgDays} \u4E2A\u81EA\u7136\u65E5\u8BA1\u7B97\u3002`:'')
@@ -6560,7 +6639,7 @@ const WARN_COLS={
     ['\u6807\u9898','16%',r=>`<span class="name" title="${esc(r.name)}${r.hint?' \u2014 '+esc(r.hint):''}">${esc(r.name)||'\u2013'}</span>`,null,null,r=>r.name],
     ['\u8D26\u53F7','7%',r=>acctc(r),null,r=>r.acct,r=>r.acct],
     ['\u7AD9\u70B9','5.5%',r=>stag(r.site),null,null,r=>r.site],
-    ['\u4F1A\u8BDD','6%',r=>wDelta(r.b.sessions,r.a.sessions,fmt.int,false),null,null,r=>r.a.sessions>0?(r.b.sessions-r.a.sessions)/r.a.sessions:0],
+    ['\u8BBF\u5BA2\u6570','6%',r=>wDelta(r.b.sessions,r.a.sessions,fmt.int,false),null,null,r=>r.a.sessions>0?(r.b.sessions-r.a.sessions)/r.a.sessions:0],
     ['\u9500\u552E\u989D','7%',r=>wDelta(r.b.gmv,r.a.gmv,fmt.$0,false),null,null,r=>r.a.gmv>0?(r.b.gmv-r.a.gmv)/r.a.gmv:0],
     ['\u5E7F\u544A\u82B1\u8D39','7%',r=>wDelta(r.b.spend,r.a.spend,fmt.$0,true),null,null,r=>r.a.spend>0?(r.b.spend-r.a.spend)/r.a.spend:0],
     ...DRV,
@@ -7291,7 +7370,7 @@ function renderOrganic(){
       <th>\u603B\u9500\u552E\u989D</th><th>\u5E7F\u544A\u9500\u552E\u989D</th><th>\u81EA\u7136\u9500\u552E\u989D</th>
       <th>\u81EA\u7136\u5360\u6BD4</th><th>\u81EA\u7136\u73AF\u6BD4</th>
       <th>\u5E7F\u544A\u4F9D\u8D56\u5EA6</th><th>\u4F9D\u8D56\u5EA6\u53D8\u5316</th>
-      <th>\u81EA\u7136\u8BA2\u5355</th><th>\u81EA\u7136\u4F1A\u8BDD</th><th>\u81EA\u7136\u4F1A\u8BDD\u73AF\u6BD4</th>
+      <th>\u81EA\u7136\u8BA2\u5355</th><th>\u81EA\u7136\u8BBF\u95EE\u6B21\u6570</th><th>\u81EA\u7136\u8BBF\u95EE\u73AF\u6BD4</th>
       <th>\u5E7F\u544A\u70B9\u51FB\u5360\u6BD4</th><th>TACOS</th></tr></thead><tbody>`
       +W.map(r=>`<tr>
         <td class="l">${r.from.slice(5)} ~ ${r.to.slice(5)}</td>
@@ -7314,7 +7393,7 @@ function renderOrganic(){
       +`\u8FD9\u79CD\u72B6\u6001\u53EF\u4EE5\u7EF4\u6301\u597D\u51E0\u5468\u800C ACOS \u770B\u4E0D\u51FA\u5F02\u5E38\uFF0C\u76F4\u5230\u9884\u7B97\u518D\u4E5F\u63D0\u4E0D\u52A8\u91CF\u3002<br>`
       +`\u53E3\u5F84\uFF1A\u81EA\u7136\u9500\u552E\u989D = \u603B\u9500\u552E\u989D \u2212 \u5E7F\u544A\u9500\u552E\u989D\u3002`
       +`\u5E7F\u544A\u4FA7\u662F 7 \u5929\u5F52\u56E0\u3001\u603B\u9500\u552E\u989D\u662F\u4E0B\u5355\u65E5\u53E3\u5F84\uFF0C\u4E24\u8005\u76F8\u51CF\u5F97\u5230\u7684\u662F<b>\u4F30\u7B97</b>\uFF0C`
-      +`\u770B\u8D8B\u52BF\u4E0E\u76F8\u5BF9\u53D8\u5316\uFF0C\u4E0D\u8981\u62A0\u7EDD\u5BF9\u503C\u3002\u81EA\u7136\u4F1A\u8BDD \u2248 \u4F1A\u8BDD \u2212 \u5E7F\u544A\u70B9\u51FB\uFF0C`
+      +`\u770B\u8D8B\u52BF\u4E0E\u76F8\u5BF9\u53D8\u5316\uFF0C\u4E0D\u8981\u62A0\u7EDD\u5BF9\u503C\u3002\u81EA\u7136\u8BBF\u95EE\u6B21\u6570 \u2248 \u603B\u8BBF\u95EE\u6B21\u6570 \u2212 \u5E7F\u544A\u70B9\u51FB\uFF0C`
       +`\u5FFD\u7565\u4E86\u540C\u4E00\u8BBF\u5BA2\u65E2\u70B9\u5E7F\u544A\u53C8\u81EA\u7136\u8FDB\u5165\u7684\u60C5\u51B5\uFF0C\u4F1A\u7565\u5FAE\u4F4E\u4F30\u3002`;
     return;
   }
@@ -7334,7 +7413,7 @@ function renderOrganic(){
     <th>\u81EA\u7136\u53D8\u5316\u989D<span class="thsub">\u8FD1\u671F \u2212 \u524D\u671F</span></th>
     <th>\u81EA\u7136\u53D8\u5316<span class="thsub">\u8FD1\u671F vs \u524D\u671F</span></th>
     <th>\u4F9D\u8D56\u5EA6\u53D8\u5316<span class="thsub">\u8FD1\u671F vs \u524D\u671F</span></th>
-    <th>\u81EA\u7136\u4F1A\u8BDD\u53D8\u5316<span class="thsub">\u8FD1\u671F vs \u524D\u671F</span></th>
+    <th>\u81EA\u7136\u8BBF\u95EE\u53D8\u5316<span class="thsub">\u8FD1\u671F vs \u524D\u671F</span></th>
     <th>\u8FD1\u671F\u5E7F\u544A\u8D39<span class="thsub">${md(AS.r2[0])} ~ ${md(AS.r2[1])}</span></th>
     <th>\u8FD1\u671FACOS<span class="thsub">${md(AS.r2[0])} ~ ${md(AS.r2[1])}</span></th>
     <th class="l">\u5224\u65AD</th><th class="l">\u5148\u67E5\u4EC0\u4E48</th></tr></thead><tbody>`
@@ -7360,9 +7439,9 @@ function renderOrganic(){
   $('#org_note').innerHTML=
     `\u53EA\u5217\u81EA\u7136\u9500\u552E\u989D\u4E0B\u6ED1\u7684\uFF0C\u6309\u4E0B\u6ED1\u91D1\u989D\u6392\u5E8F\uFF0C\u70B9\u4E00\u884C\u770B\u8BE5 ASIN \u6BCF\u65E5\u8D8B\u52BF\u3002`
     +`\u4E24\u4E2A\u7A97\u53E3\u7684\u5177\u4F53\u65E5\u671F\u5DF2\u6807\u5728\u4E0A\u65B9\u4E0E\u8868\u5934\u3002<br>`
-    +`\u5224\u65AD\u600E\u4E48\u6765\u7684\uFF1A\u81EA\u7136\u5728\u964D\u3001\u4F46\u81EA\u7136\u4F1A\u8BDD\u6CA1\u600E\u4E48\u964D\u4E14\u5E7F\u544A\u4F9D\u8D56\u5EA6\u5728\u5347 \u2192 \u81EA\u7136\u4F4D\u5728\u6389\uFF0C\u73B0\u5728\u7684\u5355\u662F\u82B1\u94B1\u4E70\u7684\uFF1B`
-    +`\u81EA\u7136\u4F1A\u8BDD\u8DDF\u7740\u4E00\u8D77\u964D\u8FC7 10% \u2192 \u6D41\u91CF\u5C42\u9762\u7684\u95EE\u9898\uFF08\u65AD\u8D27 / Buy Box / \u6392\u540D / \u5B63\u8282\uFF09\uFF1B`
-    +`\u4F1A\u8BDD\u6CA1\u964D\u4F46\u9500\u552E\u964D \u2192 \u8F6C\u5316\u95EE\u9898\uFF08\u8BE6\u60C5\u9875 / \u4EF7\u683C / \u5DEE\u8BC4\uFF09\u3002`;
+    +`\u5224\u65AD\u600E\u4E48\u6765\u7684\uFF1A\u81EA\u7136\u5728\u964D\u3001\u4F46\u81EA\u7136\u8BBF\u95EE\u6B21\u6570\u6CA1\u600E\u4E48\u964D\u4E14\u5E7F\u544A\u4F9D\u8D56\u5EA6\u5728\u5347 \u2192 \u81EA\u7136\u4F4D\u5728\u6389\uFF0C\u73B0\u5728\u7684\u5355\u662F\u82B1\u94B1\u4E70\u7684\uFF1B`
+    +`\u81EA\u7136\u8BBF\u95EE\u6B21\u6570\u8DDF\u7740\u4E00\u8D77\u964D\u8FC7 10% \u2192 \u6D41\u91CF\u5C42\u9762\u7684\u95EE\u9898\uFF08\u65AD\u8D27 / Buy Box / \u6392\u540D / \u5B63\u8282\uFF09\uFF1B`
+    +`\u81EA\u7136\u8BBF\u95EE\u6B21\u6570\u6CA1\u964D\u4F46\u9500\u552E\u964D \u2192 \u8F6C\u5316\u95EE\u9898\uFF08\u8BE6\u60C5\u9875 / \u4EF7\u683C / \u5DEE\u8BC4\uFF09\u3002`;
 }
 
 $('#org_export').onclick=ev=>{
@@ -7375,7 +7454,7 @@ $('#org_export').onclick=ev=>{
     tag='\u81EA\u7136\u8868\u73B0_\u5468\u8D70\u52BF';
     head=['\u5468\u5F00\u59CB','\u5468\u7ED3\u675F','\u603B\u9500\u552E\u989D','\u5E7F\u544A\u9500\u552E\u989D','\u81EA\u7136\u9500\u552E\u989D',
       '\u81EA\u7136\u5360\u6BD4','\u81EA\u7136\u73AF\u6BD4','\u5E7F\u544A\u4F9D\u8D56\u5EA6','\u4F9D\u8D56\u5EA6\u53D8\u5316pp',
-      '\u81EA\u7136\u8BA2\u5355','\u81EA\u7136\u4F1A\u8BDD','\u5E7F\u544A\u70B9\u51FB\u5360\u6BD4','TACOS'];
+      '\u81EA\u7136\u8BA2\u5355','\u81EA\u7136\u8BBF\u95EE\u6B21\u6570','\u5E7F\u544A\u70B9\u51FB\u5360\u6BD4','TACOS'];
     body=W.map(r=>[r.from,r.to,toDisp(r.gmv).toFixed(2),toDisp(r.adSales).toFixed(2),toDisp(r.orgSales).toFixed(2),
       (r.orgPct*100).toFixed(2)+'%',r.dOrg===null?'':(r.dOrg*100).toFixed(2)+'%',
       (r.adDep*100).toFixed(2)+'%',r.dDep===null?'':(r.dDep*100).toFixed(2),
@@ -7384,7 +7463,7 @@ $('#org_export').onclick=ev=>{
     const AS=orgAsinRows(); if(!AS||!AS.rows.length) return;
     tag='\u81EA\u7136\u8868\u73B0_ASIN\u4E0B\u6ED1\u699C';
     head=['ASIN','\u6807\u9898','\u8D26\u53F7','\u7AD9\u70B9',`\u524D${AS.n}\u5929\u81EA\u7136`,`\u8FD1${AS.n}\u5929\u81EA\u7136`,
-      '\u81EA\u7136\u53D8\u5316\u989D','\u81EA\u7136\u53D8\u5316%','\u4F9D\u8D56\u5EA6\u53D8\u5316pp','\u81EA\u7136\u4F1A\u8BDD\u53D8\u5316%',
+      '\u81EA\u7136\u53D8\u5316\u989D','\u81EA\u7136\u53D8\u5316%','\u4F9D\u8D56\u5EA6\u53D8\u5316pp','\u81EA\u7136\u8BBF\u95EE\u53D8\u5316%',
       '\u8FD1\u671F\u5E7F\u544A\u8D39','\u8FD1\u671FACOS','\u5224\u65AD','\u5148\u67E5\u4EC0\u4E48'];
     body=AS.rows.map(r=>[r.asin,r.title,r.acct,r.country,toDisp(r.orgPrev).toFixed(2),toDisp(r.orgNow).toFixed(2),
       toDisp(r.orgDelta).toFixed(2),(r.orgPctChg*100).toFixed(2)+'%',(r.depDelta*100).toFixed(2),
@@ -7456,7 +7535,7 @@ function buildReport(){
     ['\u5E7F\u544A\u82B1\u8D39',fmt.$0(T.spend),DL(T.spend,cT&&cT.spend,'spend')],
     ['ACOS',fmt.pct1(d.acos),DL(d.acos,cD&&cD.acos,'acos')],
     ['TACOS',fmt.pct1(d.tacos),DL(d.tacos,cD&&cD.tacos,'tacos')],
-    ['\u4F1A\u8BDD\u6570',fmt.k(T.sessions),DL(T.sessions,cT&&cT.sessions,'sessions')],
+    ['\u8BBF\u5BA2\u6570',fmt.k(T.sessions),DL(T.sessions,cT&&cT.sessions,'sessions')],
     ['\u8BA2\u5355\u8F6C\u5316\u7387',fmt.pct1(d.ordCvr),DL(d.ordCvr,cD&&cD.ordCvr,'ordCvr')],
     ['\u5E7F\u544A\u9500\u552E\u989D',fmt.$0(T.adSales),DL(T.adSales,cT&&cT.adSales,'adSales')],
     ['\u81EA\u7136\u9500\u552E\u5360\u6BD4',fmt.pct1(1-div(T.adSales,T.gmv)),''],
@@ -7488,7 +7567,7 @@ function buildReport(){
   /* ---- 四、站点表现 ---- */
   const sites=[...model.sites].sort((a,b)=>b.gmv-a.gmv).slice(0,14);
   h+=`<h2 class="rp-h2">\u56DB\u3001\u5404\u7AD9\u70B9\u8868\u73B0</h2>`
-    +rptTable(['\u7AD9\u70B9','\u9500\u552E\u989D','\u5E7F\u544A\u8D39','\u5E7F\u544A\u9500\u552E','ACOS','TACOS','\u4F1A\u8BDD','\u8F6C\u5316\u7387'],
+    +rptTable(['\u7AD9\u70B9','\u9500\u552E\u989D','\u5E7F\u544A\u8D39','\u5E7F\u544A\u9500\u552E','ACOS','TACOS','\u8BBF\u5BA2\u6570','\u8F6C\u5316\u7387'],
       sites.map(r=>[`<span class="l">${rptEsc(rptCut(r.site,26))}</span>`,fmt.$0(r.gmv),fmt.$0(r.spend),
         fmt.$0(r.adSales),r.adSales>0?fmt.pct1(r.acos):'\u2013',fmt.pct1(r.tacos),
         fmt.k(r.sessions),fmt.pct1(r.ordCvr)]),['l']);
@@ -7563,7 +7642,7 @@ function buildReport(){
   const bad=model.covBad||[];
   h+=`<h2 class="rp-h2">\u4E5D\u3001\u53E3\u5F84\u8BF4\u660E</h2>
     <ul class="rp-ul">
-      <li>\u4F1A\u8BDD\u4E0E\u9875\u9762\u6D4F\u89C8\u91CF\u4E3A ASIN \u8BE6\u60C5\u9875\u53E3\u5F84\uFF1A\u540C\u4E00\u5929\u3001\u540C\u4E00\u56FD\u5BB6\u7AD9\u70B9\u3001\u540C\u4E00 ASIN\uFF0C\u65E0\u8BBA\u62C6\u6210\u51E0\u4E2A SKU\u3001\u88AB\u51E0\u4E2A\u8D26\u53F7\u8DDF\u5356\uFF0C\u90FD\u662F\u540C\u4E00\u6279\u8BBF\u5BA2\uFF0C\u6C47\u603B\u65F6\u53D6\u6700\u5927\u503C\u800C\u975E\u76F8\u52A0\u3002</li>
+      <li>\u8BBF\u5BA2\u6570\uFF08Sessions\uFF09\u4E0E\u9875\u9762\u6D4F\u89C8\u91CF\u4E3A ASIN \u8BE6\u60C5\u9875\u53E3\u5F84\uFF1A\u540C\u4E00\u7528\u6237\u5728 24 \u5C0F\u65F6\u5185\u591A\u6B21\u8BBF\u95EE\u540C\u4E00\u8BE6\u60C5\u9875\uFF0C\u901A\u5E38\u8BA1\u4E3A 1 \u4E2A Session\uFF1B\u8DE8\u5929\u7D2F\u8BA1\u4E0D\u7B49\u4E8E\u6574\u4E2A\u533A\u95F4\u7684\u72EC\u7ACB\u8BBF\u5BA2\u4EBA\u6570\u3002</li>
       <li>\u5E7F\u544A\u9500\u552E\u989D\u4E3A 7 \u5929\u5F52\u56E0\uFF0C\u603B\u9500\u552E\u989D\u4E3A\u4E0B\u5355\u65E5\u53E3\u5F84\uFF0C\u4E24\u8005\u76F8\u51CF\u5F97\u5230\u7684\u300C\u81EA\u7136\u300D\u4E3A\u4F30\u7B97\u503C\u3002</li>
       <li>\u591A\u5E01\u79CD\u5DF2\u7EDF\u4E00\u6298\u7B97\u4E3A ${dispCur}\uFF1B\u6C47\u7387\u4E3A\u624B\u52A8\u8BBE\u5B9A\uFF0C\u975E\u5B9E\u65F6\u7ED3\u7B97\u6C47\u7387\u3002</li>
       <li>\u300C\u53EF\u7701\u4F30\u7B97\u300D\u6307\u628A ACOS \u62C9\u56DE\u76C8\u4E8F\u5E73\u8861\u7EBF\u540E\u80FD\u7701\u4E0B\u7684\u5E7F\u544A\u8D39\uFF0C\u4E0D\u7B49\u4E8E\u5B9E\u9645\u5229\u6DA6\u53D8\u5316\uFF1B\u5404\u6A21\u5757\u91D1\u989D\u53E3\u5F84\u4E0D\u540C\uFF0C\u4E0D\u53EF\u8DE8\u5757\u76F8\u52A0\u3002</li>
@@ -7881,7 +7960,7 @@ function renderDayPanel(){
     ['\u5E7F\u544A\u9500\u552E\u989D',fmt.$0(D.adSales),D.adSales,per(A.adSales),'adSales'],
     ['ACOS',fmt.pct1(D.acos),D.acos,A.acos,'acos'],
     ['TACOS',fmt.pct1(D.tacos),D.tacos,A.tacos,'tacos'],
-    ['\u4F1A\u8BDD',fmt.k(D.sessions),D.sessions,per(A.sessions),'sessions'],
+    ['\u8BBF\u5BA2\u6570',fmt.k(D.sessions),D.sessions,per(A.sessions),'sessions'],
     ['\u8BA2\u5355\u8F6C\u5316\u7387',fmt.pct1(D.ordCvr),D.ordCvr,A.ordCvr,'ordCvr'],
     ['CPC',fmt.$c(D.cpc),D.cpc,A.cpc,'cpc'],
   ];
@@ -8487,7 +8566,7 @@ function gpCalculate(){
       <div class="gp-route-title">需求侧：销售目标反推流量</div>
       <div class="gp-row"><span class="l">目标销量</span><span class="v">${gpInt(targetUnits)} 件/天</span></div>
       <div class="gp-row"><span class="l">综合转化率（流量加权）</span><span class="v">${gpPct(weighted)}</span></div>
-      <div class="gp-row"><span class="l">目标流量（总 Sessions）</span><span class="v">${gpInt(sessions)} Sessions/天</span></div>
+      <div class="gp-row"><span class="l">目标访问次数（Sessions）</span><span class="v">${gpInt(sessions)} 次/天</span></div>
       <div class="gp-row"><span class="l">自然流量 → 自然销量</span><span class="v">${gpInt(orgSessions)} → ${gpInt(orgUnits)} 件</span></div>
       <div class="gp-row"><span class="l">广告点击 → 广告销量</span><span class="v">${gpInt(adClicks)} → ${gpInt(adUnits)} 件</span></div>
     </div>
@@ -8501,7 +8580,7 @@ function gpCalculate(){
     </div>`;
   note.innerHTML=`口径：转化率统一按<b>销量 ÷ 流量</b>计算，与 ASP 和目标销量保持一致。`
     +`广告销量按广告订单 × 每单 ${gpAutoInfo.unitsPerOrder.toFixed(2)} 件估算；自然销量 = 总销量 - 估算广告销量。`
-    +`广告流量按<b>广告点击</b>计，自然流量按<b>总 Sessions - 广告点击</b>计。`
+    +`广告流量按<b>广告点击</b>计，自然流量按<b>总访问次数（Sessions）- 广告点击</b>计。`
     +`广告订单是归因口径，因此自然与广告拆分仍是规划估算值。`
     +`效率没有达标时不要盲目加预算，优先按 <b>提转化率 → 降 CPC → 加曝光 → 最后加预算</b> 的顺序处理。`
     +`完整净利润仍需扣除售价、采购成本、平台费用与广告费。`;
