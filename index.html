@@ -75,10 +75,10 @@ header .range b{color:var(--yellow);font-weight:600}
     page-break-inside:auto}
   .rp-tbl thead{display:table-header-group}
   .rp-tbl tr{page-break-inside:avoid}
-  .rp-tbl th{background:#E9F2FA;color:#232F3E;font-weight:600;padding:4px 5px;text-align:right;
+  .rp-tbl th{background:#E9F2FA;color:#232F3E;font-weight:600;padding:4px 5px;text-align:left;
     border-bottom:1px solid #C9DCEF;white-space:nowrap}
   .rp-tbl th.l,.rp-tbl td.l{text-align:left}
-  .rp-tbl td{padding:3px 5px;text-align:right;border-bottom:1px solid #F0F3F7}
+  .rp-tbl td{padding:3px 5px;text-align:left;border-bottom:1px solid #F0F3F7}
   .rp-tbl td b.r{color:#C0392B}
   .rp-tbl span.l{display:block;text-align:left}
   .rp-none{font-size:8pt;color:#8A97A6}
@@ -562,7 +562,7 @@ tbody tr.drill:hover td:first-child::after{opacity:1}
 .tblwrap{overflow:auto;max-height:640px;border:1px solid var(--line);border-radius:8px;background:var(--card)}
 table{border-collapse:separate;border-spacing:0;width:100%;white-space:nowrap;font-size:12px}
 thead th{position:sticky;top:0;background:var(--sky);color:var(--navy);font-weight:600;
-  padding:7px 10px;text-align:right;vertical-align:middle;cursor:pointer;user-select:none;
+  padding:7px 8px;text-align:left;vertical-align:middle;cursor:pointer;user-select:none;
   border-bottom:1px solid var(--line);z-index:2}
 thead th.l{text-align:left}
 thead th:hover{background:#D9E9F7}
@@ -572,11 +572,11 @@ thead th .qm{display:inline-block;margin-left:3px;width:12px;height:12px;line-he
   font-weight:700;vertical-align:1px;cursor:help}
 /* 单元格默认 vertical-align 是 baseline：左侧文本列用了 display:block 的截断容器，
    块盒与纯文本行盒的基线算法不同，同一行里文字会比数字高出约 7px。统一设成 middle。 */
-tbody td{padding:0 10px;height:34px;border-bottom:1px solid #EFF3F7;text-align:right;
+tbody td{padding:0 8px;height:34px;border-bottom:1px solid #EFF3F7;text-align:left;
   vertical-align:middle;font-variant-numeric:tabular-nums;line-height:1.3}
 tbody td.l{text-align:left}
 tbody tr:hover{background:#FAFCFF}
-tfoot td{padding:0 10px;height:34px;background:var(--sky);color:var(--navy);font-weight:700;text-align:right;
+tfoot td{padding:0 8px;height:34px;background:var(--sky);color:var(--navy);font-weight:700;text-align:left;
   vertical-align:middle;border-top:2px solid var(--navy);font-variant-numeric:tabular-nums;
   position:sticky;bottom:var(--fb,0)}
 tfoot td.l{text-align:left}
@@ -839,10 +839,10 @@ select{border:1px solid var(--line);border-radius:6px;padding:4px 8px;font-size:
 #actpop .pp-x{position:absolute;top:8px;right:10px;padding:2px 8px;cursor:pointer;font-size:16px;color:var(--muted)}
 #actpop .pp-b{overflow:auto;padding:8px 16px 14px}
 #actpop table{width:100%;border-collapse:collapse;font-size:11.5px}
-#actpop th{position:sticky;top:0;background:#F7F9FC;text-align:right;padding:5px 8px;
+#actpop th{position:sticky;top:0;background:#F7F9FC;text-align:left;padding:5px 8px;
   font-weight:600;color:var(--muted);white-space:nowrap}
 #actpop th:first-child,#actpop td:first-child{text-align:left}
-#actpop td{padding:4px 8px;border-top:1px solid #F0F3F7;text-align:right;white-space:nowrap}
+#actpop td{padding:4px 8px;border-top:1px solid #F0F3F7;text-align:left;white-space:nowrap}
 #actpop tr.sumrow td{border-top:2px solid var(--line,#DDE3EB);font-weight:700;background:#FAFBFD}
 #actpop .sbar{display:inline-block;height:8px;background:#C9DCF7;border-radius:2px;vertical-align:middle;margin-right:5px}
 /* ---- 盈亏平衡悬停测算 ---- */
@@ -961,7 +961,137 @@ select{border:1px solid var(--line);border-radius:6px;padding:4px 8px;font-size:
 .daily-head-sub{color:#8391A2;font-size:9.5px;font-weight:500;margin-left:3px}
 .sitetag{display:inline-block;padding:1px 7px;border-radius:5px;background:#EEF3F8;color:#54657A;
   font-size:11px;font-weight:700;font-family:var(--mono);letter-spacing:.4px}
+/* 层级徽标（Demo 的 .ag-count 造型）：等宽小字、细边框、极浅底 */
+.agbadge{display:inline-block;margin-left:6px;padding:0 5px;border:1px solid var(--line);
+  border-radius:4px;font-family:var(--mono);font-size:10px;line-height:15px;
+  color:var(--muted);background:var(--paper);font-weight:500;vertical-align:1px;white-space:nowrap}
+/* 活动状态胶囊（Demo 的 .pill 造型）：等宽小字、4px 圆角 */
+.stpill{display:inline-block;font-family:var(--mono);font-size:10.5px;border-radius:4px;
+  padding:1px 6px;white-space:nowrap}
+.stpill.on{background:var(--green-bg);color:var(--green)}
+.stpill.pause{background:var(--amber-bg);color:var(--amber)}
+.stpill.off{background:#F1F4F8;color:#93A1B3}
+/* 主表页签下的下钻提示（Demo 的 t-tools hint） */
+#tblhint{font-size:11.5px;color:var(--muted);margin:2px 0 6px}
+#tblhint:empty{display:none}
+/* ---- 下钻弹窗（Demo 式：主列表不动，逐层在弹窗内看） ----
+   近全屏工作台：与主板同宽（1500px），内部 flex 列布局——
+   面包屑 / KPI / 图表占自然高度，表格弹性吃掉剩余空间，全弹窗只有表格这一处滚动。 */
+#drillBg{position:fixed;inset:0;background:rgba(27,39,51,.48);display:none;
+  align-items:center;justify-content:center;z-index:80;padding:2.5vh 12px;
+  backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
+#drillBg.show{display:flex;animation:dmFade .16s ease}
+#drillModal{background:var(--paper);border-radius:12px;width:min(1520px,98vw);
+  height:95vh;display:flex;flex-direction:column;overflow:hidden;
+  padding:12px 14px 14px;box-shadow:0 24px 64px rgba(27,39,51,.38)}
+#drillBg.show #drillModal{animation:dmRise .2s cubic-bezier(.2,.7,.3,1)}
+@keyframes dmFade{from{opacity:0}}
+@keyframes dmRise{from{opacity:0;transform:translateY(14px) scale(.988)}}
+.dm-top{display:flex;gap:10px;align-items:center;flex:none;
+  padding-bottom:10px;margin-bottom:10px;border-bottom:1px solid var(--line)}
+.dm-top .dm-t{font-size:14.5px;font-weight:700;color:var(--navy);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:46%}
+.dm-top input{font-size:12.5px;padding:5px 10px;border:1px solid var(--line);border-radius:6px;
+  width:220px;margin-left:auto;background:var(--card)}
+.dm-close{border:none;background:var(--card);border:1px solid var(--line);border-radius:6px;
+  width:28px;height:28px;cursor:pointer;font-size:14px;color:var(--muted);flex:none}
+.dm-close:hover{color:var(--navy);border-color:var(--navy)}
+#drillHost{flex:1;min-height:0;min-width:0;display:flex;flex-direction:column;
+  overflow-y:auto;overflow-x:hidden}   /* 纵向仅作极端矮屏兜底；横向滚动只属于表格 */
+#drillHost>*{flex:none;min-width:0;max-width:100%}
+#drillHost #crumb{margin-bottom:8px}
+/* 表格容器：flex 收缩制——长表自动缩到「刚好填满剩余空间」并在内部滚动（外层因此不溢出，
+   不会出现第二根纵向条）；短表贴合内容，横向滚动条紧贴合计行。折叠图表后剩余空间变大，
+   表格自动变高，无需任何视口高度上限。 */
+#drillHost #tbl{flex:0 1 auto;min-height:180px;max-height:none;width:100%;overflow:auto}
+#drillHost #tblnote{flex:none}
+/* 弹窗内滚动条统一为细条，降低视觉噪音 */
+#drillHost,#drillHost #tbl{scrollbar-width:thin;scrollbar-color:#C3CEDA transparent}
+#drillHost::-webkit-scrollbar,#drillHost #tbl::-webkit-scrollbar{width:8px;height:8px}
+#drillHost::-webkit-scrollbar-thumb,#drillHost #tbl::-webkit-scrollbar-thumb{
+  background:#C3CEDA;border-radius:4px}
+#drillHost::-webkit-scrollbar-thumb:hover,#drillHost #tbl::-webkit-scrollbar-thumb:hover{
+  background:#9FB0C2}
+#drillHost::-webkit-scrollbar-track,#drillHost #tbl::-webkit-scrollbar-track{background:transparent}
+/* 「收起图表」：长表优先，把 KPI 下方的双图与脚注让位给表格（默认折叠，选择会被记住） */
+#drillModal.nochart #drillsum .ds-charts,
+#drillModal.nochart #drillsum .ds-foot{display:none}
+/* 图表原位的内联折叠栏：收起时留在原地当"入口"，一眼可见、一点即开 */
+.ds-ctog{margin-top:10px;padding:6px 12px;border:1px dashed var(--line);border-radius:7px;
+  font-size:12px;color:var(--muted);cursor:pointer;user-select:none;background:var(--paper)}
+.ds-ctog:hover{color:var(--blue);border-color:var(--blue)}
+.ds-ctog .tg-open{display:none}
+#drillModal.nochart .ds-ctog .tg-open{display:inline}
+#drillModal.nochart .ds-ctog .tg-close{display:none}
+/* 弹窗内的汇总面板整体压扁：KPI 卡一排 11 个、小一号字，把高度尽量让给表格 */
+#drillHost #drillsum{padding:10px 14px 8px;margin-bottom:8px}
+#drillHost .ds-head{margin-bottom:8px}
+#drillHost .ds-grid{grid-template-columns:repeat(var(--dscols,11),1fr);gap:6px}
+#drillHost .ds-cell{padding:5px 8px;border-radius:6px}
+#drillHost .ds-cell .l{font-size:10px}
+#drillHost .ds-cell .v{font-size:14px;margin-top:0}
+#drillHost .ds-cell .s{font-size:9.5px}
+#drillHost .ds-charts{margin-top:10px}
+@media(max-width:1180px){#drillHost .ds-grid{grid-template-columns:repeat(6,1fr)}}
+@media(max-width:640px){#drillHost .ds-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:760px){#drillBg{padding:0}
+  #drillModal{width:100vw;height:100vh;border-radius:0}}
+/* 弹窗打开时主表留在原位的幽灵快照 */
+#tblghost{opacity:.45;pointer-events:none}
 @media (max-width:1180px){ #adg_tbl td.c-act .act{font-size:11px} }
+
+/* ================= 目标规划 · 反向拆解计算器 ================= */
+#goalplan{margin-top:14px;background:var(--card);border:1px solid var(--line);
+  border-radius:10px;overflow:hidden}
+.gp-head{display:flex;align-items:center;gap:10px;min-height:46px;padding:9px 14px;
+  border-bottom:1px solid var(--line)}
+.gp-head h3{font-size:14px;color:var(--navy);white-space:nowrap}
+.gp-head .gp-sub{font-size:11.5px;color:var(--muted);line-height:1.5}
+.gp-head .btn{margin-left:auto;white-space:nowrap;flex:none}
+#goalplan.collapsed .gp-head{border-bottom:0}
+#goalplan.collapsed .gp-body{display:none}
+.gp-body{padding:12px 14px 11px}
+.gp-source{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;
+  color:var(--muted);font-size:11.5px}
+.gp-source b{color:var(--navy)}
+.gp-source .gp-dot{width:3px;height:3px;border-radius:50%;background:#A8B5C3}
+.gp-form{display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));gap:10px 12px;
+  padding:11px 12px;background:#FAFCFE;border:1px solid var(--line);border-radius:8px}
+.gp-field{display:flex;flex-direction:column;gap:4px;min-width:0}
+.gp-field label{font-size:11px;color:var(--muted);line-height:1.25}
+.gp-field.goal label{color:var(--blue);font-weight:600}
+.gp-field input{width:100%;height:32px;border:1px solid #D7E0E9;border-radius:6px;
+  padding:5px 9px;background:var(--card);color:var(--ink);font-family:var(--mono);
+  font-size:12.5px;font-variant-numeric:tabular-nums;outline:none}
+.gp-field input:focus{border-color:var(--blue);box-shadow:0 0 0 2px rgba(20,110,180,.10)}
+.gp-field input[aria-invalid="true"]{border-color:var(--red);background:#FFF9F8}
+.gp-results{display:grid;grid-template-columns:1fr 1fr;margin-top:10px;background:var(--navy);
+  border-radius:9px;color:#EAF1F7;overflow:hidden}
+.gp-route{padding:7px 18px 10px;min-width:0}
+.gp-route+.gp-route{border-left:1px solid rgba(255,255,255,.13)}
+.gp-route-title{padding:2px 0 5px;color:#AFC0D0;font-size:10.5px;font-weight:700;
+  letter-spacing:.04em}
+.gp-row{display:grid;grid-template-columns:minmax(170px,1fr) auto;gap:14px;align-items:baseline;
+  min-height:35px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.11)}
+.gp-row:last-child{border-bottom:0}
+.gp-row .l{color:#D6E0E8;font-size:12px;min-width:0}
+.gp-row .v{font-family:var(--mono);font-size:12.5px;font-weight:700;color:#FFF;
+  text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.gp-row.key .l{font-weight:700;color:#FFF}
+.gp-row.key .v{font-size:14px;color:var(--yellow)}
+.gp-row .v.good{color:#70D19A}.gp-row .v.bad{color:#FF8F82}
+.gp-error{display:none;margin-top:9px;padding:7px 10px;border-left:3px solid var(--red);
+  background:var(--red-bg);color:var(--red);font-size:11.5px;border-radius:0 6px 6px 0}
+.gp-error.show{display:block}
+.gp-note{margin-top:8px;color:var(--muted);font-size:11px;line-height:1.7}
+.gp-note b{color:var(--navy)}
+@media(max-width:1100px){.gp-form{grid-template-columns:repeat(2,minmax(150px,1fr))}}
+@media(max-width:760px){
+  .gp-head{align-items:flex-start;flex-wrap:wrap}.gp-head .gp-sub{width:100%;order:3}
+  .gp-head .btn{margin-left:auto}.gp-form{grid-template-columns:1fr}
+  .gp-results{grid-template-columns:1fr}.gp-route+.gp-route{border-left:0;border-top:1px solid rgba(255,255,255,.13)}
+  .gp-row{grid-template-columns:minmax(0,1fr) auto;gap:8px}.gp-route{padding-left:13px;padding-right:13px}
+}
 </style>
 </head>
 <body>
@@ -1068,6 +1198,21 @@ select{border:1px solid var(--line);border-radius:6px;padding:4px 8px;font-size:
       <span class="db-info" id="finfo"></span>
       <span class="fnote" id="fnote"></span>
     </div>
+
+    <section id="goalplan">
+      <div class="gp-head">
+        <h3>目标规划 · 反向拆解计算器</h3>
+        <span class="gp-sub">目标销售额 → 需要多少流量 / 自然与广告销量 / 广告预算，并校验 TACOS 天花板</span>
+        <button class="btn" id="gp_toggle" type="button" aria-expanded="true">收起计算器</button>
+      </div>
+      <div class="gp-body">
+        <div class="gp-source" id="gp_source"></div>
+        <div class="gp-form" id="gp_form"></div>
+        <div class="gp-error" id="gp_error" role="alert"></div>
+        <div class="gp-results" id="gp_results" aria-live="polite"></div>
+        <div class="gp-note" id="gp_note"></div>
+      </div>
+    </section>
 
     <div id="kpis"></div>
     <div id="kpimore"></div>
@@ -1224,6 +1369,8 @@ select{border:1px solid var(--line);border-radius:6px;padding:4px 8px;font-size:
           <button class="btn" id="export">导出当前表格 CSV</button>
         </div>
       </div>
+      <div id="tblhint"></div>
+      <div id="drillHome" style="display:none"></div>
       <div id="crumb" class="hide"></div>
       <div id="dimfilter" class="hide"></div>
       <div id="matchbar" class="hide"></div>
@@ -2106,8 +2253,9 @@ function buildModel(from,to){
       const k=termScopeKey(r);
       let s=m.get(k); if(!s){s=new Set();m.set(k,s);} s.add(r.camp);
       /* 来源汇总：匹配方式收集全量（细分标签），投放词只收手动关键词、按花费排序 */
-      let t=km.get(k); if(!t){t={m:new Set(),kw:new Map(),a:0,h:0};km.set(k,t);}
+      let t=km.get(k); if(!t){t={m:new Set(),kw:new Map(),a:0,h:0,src:new Set()};km.set(k,t);}
       const cn=r.match||matchCn('',r.kwid,r.kwText);
+      t.src.add(termSrcKey(r));            // 来源 = 活动×广告组×投放词，与下钻「来源对比」层同口径
       t.m.add(matchFine(cn,r.kwText));
       if(isAutoMatch(cn)) t.a=1; else t.h=1;
       if(r.kwText&&!isAutoMatch(cn)) t.kw.set(r.kwText,(t.kw.get(r.kwText)||0)+(r.spend||0));
@@ -2116,6 +2264,7 @@ function buildModel(from,to){
       o.nCamp=(m.get(o.id)||{size:0}).size;
       const t=km.get(o.id);
       if(t){
+        o.nSrc=t.src.size;
         const kws=[...t.kw.entries()].sort((a,b)=>b[1]-a[1]).map(x=>x[0]);
         o.kwSum=kws.join(' / ');
         o.nKwSrc=kws.length;
@@ -2153,6 +2302,15 @@ function buildModel(from,to){
     enrichGroup(o); const s=dayAgStats.get(o.date+'\u0001'+o.id)||{terms:new Set(),kw:new Set()};
     o.nTerm=s.terms.size; o.nKw=s.kw.size; o.type=o.nKw?'\u624B\u52A8/\u5173\u952E\u8BCD':'\u81EA\u52A8/\u5B9A\u5411';
   }
+
+  /* 活动层附加信息：广告组数（名称旁徽标，先亮出层级再下钻）+ 合并的「账号 · 站点」文本
+     （排序 / 搜索 / CSV 导出直接用该字段，与单元格 HTML 解耦） */
+  { const agc=new Map();
+    for(const g of adGroups) agc.set(g.camp,(agc.get(g.camp)||0)+1);
+    for(const o of camps){
+      o.nAg=agc.get(o.camp)||0;
+      o.acctSite=(o.acct||'\u2013')+' \u00B7 '+(o.country||'\u2013');
+    } }
 
   /* ---- 投放词层（活动 × 广告组 × 投放词）与匹配方式汇总 ----
      搜索词报表的一行是「投放词 → 搜索词」的一次映射。按投放词聚合才能回答
@@ -2566,8 +2724,10 @@ function renderCurBar(){
   $('#curinfo').innerHTML=multi
     ? `\u6570\u636E\u542B <b>${cs.length}</b> \u4E2A\u5E01\u79CD\uFF08${cs.join(' / ')}\uFF09\uFF0C\u5DF2\u5168\u90E8\u6298\u7B97\u4E3A <b>${dispCur}</b> \u540E\u6C47\u603B`
     : `\u6570\u636E\u4E3A\u5355\u4E00\u5E01\u79CD <b>${cs[0]}</b>`;
+  // 可编辑汇率 = 数据里出现的币种 + 当前展示币种（否则选 CNY 等展示时无法修改其结算汇率）
+  const eds=[...new Set([...cs,dispCur])].filter(Boolean);
   $('#rates').innerHTML=`<span class="rate" style="color:var(--navy);font-weight:600">1 USD =</span>`
-    +cs.map(c=>`<span class="rate">${c} <input class="rt" type="number" step="0.0001" min="0.000001" data-c="${c}" value="${RATES[c]??1}"></span>`).join('')
+    +eds.map(c=>`<span class="rate">${c} <input class="rt" type="number" step="0.0001" min="0.000001" data-c="${c}" value="${RATES[c]??1}"></span>`).join('')
     +`<button class="btn" id="rateReset" style="margin-left:6px">\u6062\u590D\u9ED8\u8BA4</button>`;
   $('#rates').querySelectorAll('input.rt').forEach(el=>el.addEventListener('change',()=>{
     const v=parseFloat(el.value);
@@ -2769,6 +2929,7 @@ function render(){
   const cT=cmpModel?cmpModel.T:null;
   const cD=cT?derive({spend:cT.spend,clicks:cT.clicks,impr:cT.impr,orders:cT.adOrders,sales:cT.adSales,
     gmv:cT.gmv,sessions:cT.sessions,pv:cT.pv,units:cT.units,ordItems:cT.ordItems}):null;
+  if(typeof renderGoalPlanner==='function') renderGoalPlanner(T,d);
   const DL=(cur,prev,key)=>cT?deltaHtml(cur,prev,key):'';
   const nSite=model.sites.length, nAsin=new Set(model.asins.map(r=>r.asin)).size;
   /* 会话口径提示：能去重的说明扣了多少，不能去重的说明为什么 */
@@ -2853,6 +3014,14 @@ function renderTabs(){
     el.title=avail[t]?'':'\u5C1A\u672A\u4E0A\u4F20\u5BF9\u5E94\u62A5\u8868';
   });
   if(!avail[curTab]){ curTab='daily'; drill=[]; }
+  /* Demo 式提示行：先告诉用户点行会发生什么，再让他点 */
+  const HINT={
+    camp:'\u70B9\u51FB\u884C\u5F39\u7A97\u4E0B\u94BB\uFF1A\u6D3B\u52A8 \u2192 \u5404\u5E7F\u544A\u7EC4\u5BF9\u6BD4 \u2192 \u6BCF\u65E5 \u00B7 \u4E3B\u5217\u8868\u4FDD\u6301\u4E0D\u52A8\uFF0C\u5173\u6389\u5F39\u7A97\u56DE\u5230\u539F\u5904 \u00B7 \u540D\u79F0\u65C1\u5FBD\u6807 = \u8BE5\u6D3B\u52A8\u4E0B\u7684\u5E7F\u544A\u7EC4\u6570',
+    term:'\u70B9\u51FB\u884C\u5F39\u7A97\u4E0B\u94BB\uFF1A\u591A\u6765\u6E90\u8BCD\u5148\u770B\u300C\u6D3B\u52A8 \u00D7 \u5E7F\u544A\u7EC4 \u00D7 \u6295\u653E\u8BCD\u300D\u6765\u6E90\u5BF9\u6BD4\uFF0C\u5355\u6765\u6E90\u76F4\u63A5\u770B\u6BCF\u65E5 \u00B7 \u5FBD\u6807 = \u6765\u6E90\u6570',
+    adgroup:'\u70B9\u51FB\u884C\u5F39\u7A97\u67E5\u770B\u8BE5\u5E7F\u544A\u7EC4\u7684\u6BCF\u65E5\u8D70\u52BF\uFF0C\u518D\u70B9\u4EFB\u610F\u4E00\u5929\u53EF\u770B\u5F53\u5929\u641C\u7D22\u8BCD\u660E\u7EC6',
+    target:'\u70B9\u51FB\u884C\u5F39\u7A97\u67E5\u770B\u8BE5\u6295\u653E\u8BCD\u5B9E\u9645\u8DD1\u51FA\u6765\u7684\u641C\u7D22\u8BCD\uFF08\u62D3\u8BCD\u4E0E\u5426\u5B9A\u7684\u539F\u6599\uFF09',
+    daily:'\u70B9\u51FB\u4EFB\u610F\u4E00\u884C\u5F39\u7A97\u67E5\u770B\u5F53\u65E5\u5168\u90E8\u7AD9\u70B9'};
+  const hint=$('#tblhint'); if(hint) hint.textContent=HINT[curTab]||'';
 }
 
 /* ================= 覆盖体检 ================= */
@@ -3280,9 +3449,10 @@ const TAB_NAME={daily:'\u6BCF\u65E5\u5927\u76D8',site:'\u7AD9\u70B9',asin:'ASIN'
   camp:'\u5E7F\u544A\u6D3B\u52A8',adgroup:'\u5E7F\u544A\u7EC4',target:'\u6295\u653E\u8BCD',
   place:'\u5E7F\u544A\u4F4D',term:'\u641C\u7D22\u8BCD',inv:'\u65E0\u6548\u6D41\u91CF'};
 function renderCrumb(){
+  if(typeof drillModalSync==='function') drillModalSync();
   const c=$('#crumb');
   if(!drill.length){ c.classList.add('hide'); $('#tabs').classList.remove('hide'); return; }
-  c.classList.remove('hide'); $('#tabs').classList.add('hide');
+  c.classList.remove('hide');   /* 下钻在弹窗内进行，主页签保持可见（Demo 式：主列表不动） */
   let h=`<span class="c" data-i="-1">${TAB_NAME[curTab]}</span>`;
   drill.forEach((d,i)=>{
     h+=`<span class="sep">\u203A</span><span class="c${i===drill.length-1?' cur':''}" data-i="${i}">${esc(drillLabel(d))}</span>`;
@@ -3500,13 +3670,19 @@ function renderDrillSum(){
       <div><div class="ds-name">${esc(name)}</div><div class="ds-sub">${sub}</div></div>
       <button class="btn ds-close" id="dsclose">\u2715 \u5173\u95ED\u8BE6\u60C5</button>
     </div>
-    <div class="ds-grid">${cells.map(([l,val,sb,c])=>
+    <div class="ds-grid" style="--dscols:${(n=>Math.ceil(n/Math.ceil(n/11)))(Math.max(cells.length,1))}">${cells.map(([l,val,sb,c])=>
       `<div class="ds-cell" style="--bar:${c}"><div class="l">${l}</div><div class="v">${val}</div>${sb?`<div class="s">${sb}</div>`:''}</div>`).join('')}</div>
     ${asinAcctBreak(v,t)}${ownerSiteBreak(v)}
+    <div class="ds-ctog" id="ds_toggle" title="\u5C55\u5F00 / \u6536\u8D77\u4E0B\u65B9\u5BF9\u6BD4\u56FE">
+      <span class="tg-open">\u25B8 \u5C55\u5F00\u56FE\u8868${CH[0]?` \u00B7 ${CH[0]} / ${CH[1]}`:''}</span>
+      <span class="tg-close">\u25BE \u6536\u8D77\u56FE\u8868</span>
+    </div>
     <div class="ds-charts">
       <div class="ds-chart"><div class="ct">${CH[0]}</div><div class="cl">${CH[2]}</div><div id="dsc1"></div><div id="dsf1"></div></div>
       <div class="ds-chart"><div class="ct">${CH[1]}</div><div class="cl">${CH[3]}</div><div id="dsc2"></div><div id="dsf2"></div></div>
     </div>`;
+  { const tg=$('#ds_toggle');
+    if(tg) tg.onclick=()=>{ if(typeof dmToggleCharts==='function') dmToggleCharts(); }; }
   $('#dsclose').onclick=()=>drill.length>1?goLevel(drill.length-2):goTop();
   s.querySelectorAll('.sp-seg .sg').forEach(el=>el.onclick=e=>{      // 切换拆分维度
     e.stopPropagation();
@@ -4015,19 +4191,20 @@ const Cc=(k,l,o={})=>({k,l,...o});
 // 业务指标
 const BIZ=[
   Cc('sessions','\u4F1A\u8BDD',{f:fmt.int,tip:TIP.sessions}),
-  Cc('pv','\u9875\u9762\u6D4F\u89C8',{f:fmt.int,tip:TIP.pv}),
+  Cc('pv','PV',{f:fmt.int,tip:TIP.pv}),
   Cc('units','\u9500\u91CF',{f:fmt.int,tip:TIP.units}),
-  Cc('ordItems','\u8BA2\u5355\u5546\u54C1\u6570',{f:fmt.int,tip:TIP.ordItems}),
+  Cc('ordItems','\u8BA2\u5355\u6570',{f:fmt.int,tip:TIP.ordItems}),
   Cc('gmv','\u9500\u552E\u989D',{f:fmt.$2,tip:TIP.gmv}),
-  Cc('ordCvr','\u8BA2\u5355\u8F6C\u5316\u7387',{f:fmt.pct1,tip:TIP.ordCvr}),
-  Cc('unitCvr','\u5355\u4F4D\u8F6C\u5316\u7387',{f:fmt.pct1,tip:TIP.unitCvr}),
-  Cc('aur','\u5E73\u5747\u552E\u4EF7',{f:fmt.$2}),
-  Cc('aovAll','\u5BA2\u5355\u4EF7',{f:fmt.$2}),
+  /* 「订单转化率」与「客单价」已从表格列中移除以让全部列一屏放下：
+     与保留的「单位转化率」「平均售价」口径高度重合，且下钻 KPI 卡仍完整展示，
+     底层字段照常计算，如需可随时加回。 */
+  Cc('unitCvr','\u8F6C\u5316\u7387',{f:fmt.pct1,tip:TIP.unitCvr}),
+  Cc('aur','ASP',{f:fmt.$2,tip:'\u5E73\u5747\u552E\u4EF7 = \u9500\u552E\u989D \u00F7 \u9500\u91CF'}),
 ];
 // 广告指标（业务视图用）
 const ADB=[
   Cc('spend','\u5E7F\u544A\u8D39',{f:fmt.$2}),
-  Cc('adSales','\u5E7F\u544A\u9500\u552E\u989D',{f:fmt.$2}),
+  Cc('adSales','\u5E7F\u544A\u9500\u552E',{f:fmt.$2,tip:'\u5E7F\u544A\u9500\u552E\u989D'}),
   Cc('adOrders','\u5E7F\u544A\u8BA2\u5355',{f:fmt.int}),
   Cc('impr','\u66DD\u5149',{f:fmt.k}),
   Cc('clicks','\u70B9\u51FB',{f:fmt.int}),
@@ -4036,10 +4213,10 @@ const ADB=[
   Cc('cvr','\u5E7F\u544ACVR',{f:fmt.pct1}),
   Cc('cpa','CPA',{f:fmt.$c}),
   Cc('acos','ACOS',{pill:[0.15,0.30],f:fmt.pct1,tip:TIP.acos}),
-  Cc('roas','ROAS',{f:v=>v.toFixed(2),tip:TIP.roas}),
+  /* ROAS 列已移除：与 ACOS 互为倒数，信息重复；ACOS 的 KPI 卡副标仍标注 ROAS。 */
   Cc('tacos','TACOS',{pill:[0.05,0.10],f:fmt.pct1,tip:TIP.tacos}),
-  Cc('adSalesPct','\u5E7F\u544A\u9500\u552E\u5360\u6BD4',{f:fmt.pct1}),
-  Cc('adClickPct','\u5E7F\u544A\u70B9\u51FB\u5360\u6BD4',{f:fmt.pct1,tip:TIP.adClickPct}),
+  Cc('adSalesPct','\u5E7F\u544A\u5360\u6BD4',{f:fmt.pct1,tip:'\u5E7F\u544A\u9500\u552E\u989D \u00F7 \u603B\u9500\u552E\u989D'}),
+  Cc('adClickPct','\u70B9\u51FB\u5360\u6BD4',{f:fmt.pct1,tip:TIP.adClickPct}),
 ];
 // 纯广告视图指标
 const ADO=[
@@ -4051,10 +4228,10 @@ const ADO=[
   Cc('adOrders','\u5E7F\u544A\u8BA2\u5355',{f:fmt.int}),
   Cc('cvr','CVR',{f:fmt.pct1}),
   Cc('cpa','CPA',{f:fmt.$c}),
-  Cc('adSales','\u5E7F\u544A\u9500\u552E\u989D',{f:fmt.$2}),
+  Cc('adSales','\u5E7F\u544A\u9500\u552E',{f:fmt.$2,tip:'\u5E7F\u544A\u9500\u552E\u989D'}),
   Cc('aov','\u5E7F\u544A\u5BA2\u5355',{f:fmt.$2}),
   Cc('acos','ACOS',{pill:[0.15,0.30],f:fmt.pct1,tip:TIP.acos}),
-  Cc('roas','ROAS',{f:v=>v.toFixed(2),tip:TIP.roas}),
+  /* ROAS \u5217\u5DF2\u79FB\u9664\uFF08\u4E0E ACOS \u4E92\u4E3A\u5012\u6570\uFF09\uFF0C\u4E0E\u4E1A\u52A1\u89C6\u56FE\u4FDD\u6301\u4E00\u81F4 */
 ];
 const capSpan=(v,w)=>`<span class="name"${w?` style="max-width:${w}"`:''} title="${esc(v)}">${esc(v)||'\u2013'}</span>`;
 const nameCol=(k,l,w)=>Cc(k,l,{left:1,raw:1,w,f:v=>capSpan(v,w)});
@@ -4072,30 +4249,45 @@ const dateCol=Cc('date','\u65E5\u671F',{left:1,raw:1,
   f:v=>`${esc(v)}<span class="wd${isWeekend(v)?' we':''}">${wdCN(v)}</span>`});
 const curCol=Cc('cur','\u5E01\u79CD',{left:1,raw:1,f:v=>v?`<span class="cur-tag">${esc(v)}</span>`:'<span class="dim">\u591A\u5E01\u79CD</span>',tip:TIP.cur});
 
+/* 活动状态 -> 彩色胶囊（Demo 式）：统一翻成中文短标签，在投绿 / 暂停黄 / 归档灰 */
+const stPill=v=>{ const s=String(v||'');
+  if(!s.trim()) return '<span class="dim">\u2013</span>';
+  const u=s.toUpperCase();
+  if(/ENAB|DELIVER|RUNNING|SERV/.test(u)||/\u5728\u6295|\u6295\u653E\u4E2D|\u542F\u7528/.test(s))
+    return '<span class="stpill on">\u5728\u6295</span>';
+  if(/PAUS/.test(u)||/\u6682\u505C/.test(s))
+    return '<span class="stpill pause">\u6682\u505C</span>';
+  if(/ARCHIV|ENDED/.test(u)||/\u5F52\u6863|\u5DF2\u7ED3\u675F/.test(s))
+    return '<span class="stpill off">\u5F52\u6863</span>';
+  return `<span class="stpill pause" title="${esc(s)}">${esc(s)}</span>`; };
 const COLS={
   daily:[dateCol,...BIZ,...ADB],
-  site:[txtCol('acct','\u8D26\u53F7','148px'),txtCol('country','\u7AD9\u70B9','62px'),curCol,...BIZ,...ADB],
-  daySites:[txtCol('acct','\u8D26\u53F7','136px'),txtCol('country','\u7AD9\u70B9','62px'),curCol,...BIZ,...ADB],
+  site:[txtCol('acct','\u8D26\u53F7','96px'),txtCol('country','\u7AD9\u70B9','62px'),...BIZ,...ADB],
+  daySites:[txtCol('acct','\u8D26\u53F7','96px'),txtCol('country','\u7AD9\u70B9','62px'),...BIZ,...ADB],
   siteDays:[dateCol,...BIZ,...ADB],
   pcode:[txtCol('pcode','\u4EA7\u54C1\u7F16\u53F7','96px'),nameCol('title','\u6807\u9898','250px'),
     txtCol('brand','\u54C1\u724C','62px'),Cc('nAsin','ASIN\u6570',{f:fmt.int}),
     Cc('nSite','\u5957\u8D26\u00D7\u7AD9\u70B9',{f:fmt.int}),Cc('nCountry','\u56FD\u5BB6\u6570',{f:fmt.int}),...BIZ,...ADB],
   pcodeAsins:[nameCol('title','\u6807\u9898','232px'),txtCol('asin','ASIN','96px'),
-    txtCol('acct','\u8D26\u53F7','124px'),txtCol('country','\u7AD9\u70B9','62px'),...BIZ,...ADB],
-  asin:[nameCol('title','\u6807\u9898','232px'),txtCol('asin','ASIN','96px'),txtCol('sku','SKU','124px'),
+    txtCol('acct','\u8D26\u53F7','104px'),txtCol('country','\u7AD9\u70B9','56px'),...BIZ,...ADB],
+  asin:[nameCol('title','\u6807\u9898','232px'),txtCol('asin','ASIN','96px'),txtCol('sku','SKU','110px'),
     txtCol('brand','\u54C1\u724C','58px'),
-    txtCol('acct','\u8D26\u53F7','124px'),txtCol('country','\u7AD9\u70B9','62px'),
+    txtCol('acct','\u8D26\u53F7','104px'),txtCol('country','\u7AD9\u70B9','56px'),
     txtCol('owner','\u8FD0\u8425','76px'),...BIZ,...ADB],
   siteDayAsins:[nameCol('title','\u6807\u9898','232px'),txtCol('asin','ASIN','96px'),txtCol('sku','SKU','124px'),...BIZ,...ADB],
   ownerAsins:[nameCol('title','\u6807\u9898','232px'),txtCol('asin','ASIN','96px'),
-    txtCol('acct','\u8D26\u53F7','124px'),txtCol('country','\u7AD9\u70B9','62px'),...BIZ,...ADB],
+    txtCol('acct','\u8D26\u53F7','104px'),txtCol('country','\u7AD9\u70B9','56px'),...BIZ,...ADB],
   asinDays:[dateCol,...BIZ,...ADB],
-  owner:[txtCol('owner','\u8FD0\u8425\u4EBA\u5458','104px'),txtCol('sup','\u4E3B\u7BA1','88px'),
+  owner:[txtCol('owner','\u8FD0\u8425\u4EBA\u5458','80px'),
     Cc('nAsin','ASIN\u6570',{f:fmt.int}),Cc('nSite','\u7AD9\u70B9\u6570',{f:fmt.int}),...BIZ,...ADB],
-  camp:[nameCol('campName','\u5E7F\u544A\u6D3B\u52A8\u540D','250px'),
-    txtCol('adAsin','\u63A8\u5E7F ASIN','126px'),txtCol('acct','\u8D26\u53F7','110px'),
-    txtCol('country','\u7AD9\u70B9','62px'),curCol,
-    txtCol('status','\u72B6\u6001','82px'),Cc('budget','\u65E5\u9884\u7B97',{f:fmt.$2}),...ADO,
+  camp:[Cc('campName','\u5E7F\u544A\u6D3B\u52A8\u540D',{left:1,raw:1,w:'270px',
+      tip:'\u540D\u79F0\u65C1\u5FBD\u6807 = \u8BE5\u6D3B\u52A8\u4E0B\u7684\u5E7F\u544A\u7EC4\u6570\uFF0C\u70B9\u884C\u4E0B\u94BB\uFF1A\u6D3B\u52A8 \u2192 \u5E7F\u544A\u7EC4 \u2192 \u6BCF\u65E5',
+      rf:r=>capSpan(r.campName,'214px')+(r.nAg>0?`<span class="agbadge">${r.nAg} \u5E7F\u544A\u7EC4</span>`:'')}),
+    txtCol('adAsin','\u63A8\u5E7F ASIN','126px'),
+    Cc('acctSite','\u8D26\u53F7 \u00B7 \u7AD9\u70B9',{left:1,raw:1,w:'132px',
+      rf:r=>capSpan(r.acctSite||((r.acct||'\u2013')+' \u00B7 '+(r.country||'\u2013')),'132px')}),
+    Cc('status','\u72B6\u6001',{left:1,raw:1,w:'70px',rf:r=>stPill(r.status)}),
+    Cc('budget','\u65E5\u9884\u7B97',{f:fmt.$2}),...ADO,
     Cc('tacos','TACOS',{pill:[0.05,0.10],f:fmt.pct1,tip:'\u82B1\u8D39 \u00F7 \u540C\u5E01\u79CD\u7AD9\u70B9\u603B\u9500\u552E\u989D'})],
   campGroups:[nameCol('agName','\u5E7F\u544A\u7EC4\u540D','220px'),txtCol('adAsin','\u63A8\u5E7F ASIN','112px'),
     Cc('drag','\u8868\u73B0 <span class="impact-key"><i class="good"></i>\u4F18<i class="bad"></i>\u62D6</span>',{left:1,raw:1,f:impactBlock,
@@ -4110,8 +4302,8 @@ const COLS={
     Cc('acos','ACOS',{pill:[0.15,0.30],f:fmt.pct1}),
     Cc('acosGap','vs \u6D3B\u52A8 ACOS',{f:v=>(v===''||v==null)?'\u2014':`${v>0?'+':''}${(v*100).toFixed(1)}pp`})],
   adgroup:[nameCol('agName','\u5E7F\u544A\u7EC4\u540D','210px'),nameCol('campName','\u5E7F\u544A\u6D3B\u52A8\u540D','200px'),
-    txtCol('adAsin','\u63A8\u5E7F ASIN','112px'),txtCol('acct','\u8D26\u53F7','100px'),
-    txtCol('country','\u7AD9\u70B9','60px'),txtCol('type','\u6295\u653E\u7C7B\u578B','96px'),
+    txtCol('adAsin','\u63A8\u5E7F ASIN','112px'),txtCol('acct','\u8D26\u53F7','88px'),
+    txtCol('country','\u7AD9\u70B9','56px'),txtCol('type','\u6295\u653E\u7C7B\u578B','96px'),
     Cc('nKw','\u6295\u653E\u8BCD\u6570',{f:fmt.int}),Cc('nTerm','\u641C\u7D22\u8BCD\u6570',{f:fmt.int}),...ADO],
   target:[nameCol('kwText','\u6295\u653E\u8BCD','200px'),
     Cc('match','\u5339\u914D\u65B9\u5F0F',{left:1,raw:1,w:'86px',f:v=>matchTag(v)}),
@@ -4132,20 +4324,23 @@ const COLS={
   placeDays:[dateCol,...ADO,Cc('refGmv','\u5F53\u65E5\u603B\u9500\u552E\u989D',{f:fmt.$0}),
     Cc('adSalesPct','\u5360\u5F53\u65E5\u9500\u552E\u989D',{f:fmt.pct1}),Cc('tacos','TACOS',{pill:[0.05,0.10],f:fmt.pct1})],
   dayPlaces:[txtCol('pl','\u5E7F\u544A\u4F4D','158px'),...ADO,Cc('adSalesPct','\u5360\u5F53\u65E5\u9500\u552E\u989D',{f:fmt.pct1})],
-  campDayPlaces:[txtCol('pl','\u5E7F\u544A\u4F4D','158px'),curCol,...ADO],
-  term:[txtCol('term','\u641C\u7D22\u8BCD','216px'),txtCol('acct','\u8D26\u53F7','100px'),
-    txtCol('country','\u7AD9\u70B9','82px'),curCol,txtCol('type','\u6295\u653E\u7C7B\u578B','96px'),
+  campDayPlaces:[txtCol('pl','\u5E7F\u544A\u4F4D','158px'),...ADO],
+  term:[Cc('term','\u641C\u7D22\u8BCD',{left:1,raw:1,w:'216px',
+      tip:'\u540D\u79F0\u65C1\u5FBD\u6807 = \u8BE5\u8BCD\u7684\u6765\u6E90\u6570\uFF08\u6D3B\u52A8\u00D7\u5E7F\u544A\u7EC4\u00D7\u6295\u653E\u8BCD\uFF09\uFF1B\u591A\u6765\u6E90\u70B9\u884C\u5148\u770B\u6765\u6E90\u5BF9\u6BD4\uFF0C\u5355\u6765\u6E90\u76F4\u63A5\u770B\u6BCF\u65E5',
+      rf:r=>capSpan(r.term,'168px')+(r.nSrc>1?`<span class="agbadge">${r.nSrc} \u6765\u6E90</span>`:'')}),
+    txtCol('acct','\u8D26\u53F7','88px'),
+    txtCol('country','\u7AD9\u70B9','56px'),txtCol('type','\u6295\u653E\u7C7B\u578B','96px'),
     txtCol('kwSum','\u6295\u653E\u8BCD','170px'),txtCol('matchSum','\u5339\u914D\u65B9\u5F0F','130px'),
     Cc('nCamp','\u6D89\u53CA\u6D3B\u52A8',{f:fmt.int}),...ADO],
   termDays:[dateCol,...ADO],
   termCamps:[nameCol('campName','\u5e7f\u544a\u6d3b\u52a8\u540d','230px'),
     txtCol('agName','\u5e7f\u544a\u7ec4\u540d','150px'),
     txtCol('kwDisp','\u6295\u653e\u8bcd','150px'),txtCol('mFine','\u5339\u914d\u65b9\u5f0f','110px'),
-    txtCol('acct','\u8d26\u53f7','96px'),txtCol('country','\u7ad9\u70b9','62px'),curCol,...ADO],
+    txtCol('acct','\u8d26\u53f7','88px'),txtCol('country','\u7ad9\u70b9','56px'),...ADO],
   termSrcDays:[dateCol,...ADO],
   inv:[nameCol('campName','\u5E7F\u544A\u6D3B\u52A8\u540D','220px'),txtCol('camp','\u6D3B\u52A8 ID','128px'),
-    txtCol('adAsin','\u63A8\u5E7F ASIN','112px'),txtCol('acct','\u8D26\u53F7','100px'),
-    txtCol('country','\u7AD9\u70B9','118px'),curCol,
+    txtCol('adAsin','\u63A8\u5E7F ASIN','112px'),txtCol('acct','\u8D26\u53F7','88px'),
+    txtCol('country','\u7AD9\u70B9','62px'),
     Cc('grossImpr','\u603B\u66DD\u5149',{f:fmt.k}),Cc('invImpr','\u65E0\u6548\u66DD\u5149',{f:fmt.k}),
     Cc('invImprRate','\u65E0\u6548\u66DD\u5149\u7387',{pill:[0.10,0.25],f:fmt.pct1}),
     Cc('grossClk','\u603B\u70B9\u51FB',{f:fmt.int}),Cc('invClk','\u65E0\u6548\u70B9\u51FB',{f:fmt.int}),
@@ -4311,14 +4506,14 @@ const FREEZE={daily:[1,'96px'],siteDays:[1,'96px'],asinDays:[1,'96px'],
   adGroupDays:[1,'96px'],adGroupTermDays:[1,'96px'],campDays:[1,'96px'],
   placeDays:[1,'96px'],termDays:[1,'96px'],invDays:[1,'96px'],
   place:[1,'178px'],dayPlaces:[1,'178px'],campDayPlaces:[1,'178px'],
-  owner:[2,'124px','108px'],
-  site:[2,'168px','64px'],daySites:[2,'156px','64px'],
+  owner:[1,'96px'],   /* 主管列已删，只冻结运营列 */
+  site:[2,'112px','58px'],daySites:[2,'112px','58px'],
   asin:[2,'252px','116px'],siteDayAsins:[2,'252px','116px'],ownerAsins:[2,'252px','116px'],
   pcode:[2,'116px','270px'],pcodeAsins:[2,'252px','116px'],
   camp:[1,'270px'],campGroups:[2,'240px','132px'],adGroupDayTerms:[1,'240px'],
   adgroup:[2,'230px','220px'],target:[2,'220px','106px'],targetTerms:[1,'260px'],
   targetDays:[1,'96px'],targetTermDays:[1,'96px'],
-  term:[2,'236px','120px'],termCamps:[1,'250px'],termSrcDays:[1,'96px'],inv:[2,'240px','148px']};
+  term:[2,'236px','104px'],termCamps:[1,'250px'],termSrcDays:[1,'96px'],inv:[2,'240px','148px']};
 const PERDAY_TABLE=new Set(['daily','siteDays','asinDays','adGroupDays','adGroupTermDays',
   'campDays','placeDays','termDays','invDays','targetDays','targetTermDays','termSrcDays']);
 /* 带「会话 / 页面浏览」的业务视图：这些视图的合计行走详情页去重口径 */
@@ -4333,7 +4528,15 @@ function renderTable(){
   const shown=rows.slice(0,LIMIT);
 
   const tot=sumAgg(rows);
-  const refSum=rows.reduce((s,r)=>s+(r.refGmv||0),0);
+  /* 参考销售额（TACOS / 广告占比的分母）必须按「币种 × 日期」去重后求和：
+     活动 / 广告位等行携带的 refGmv 是其所在币种站点（或当日）的总销售额，
+     同一参考被多行共享，直接逐行相加会把分母放大成行数倍，导致合计行 TACOS 趋近 0。 */
+  const refGmvSum=rs=>{ const seen=new Map();
+    for(const r of rs){ if(!(r.refGmv>0)) continue;
+      const k=(r.cur||'')+'\u0001'+(r.date||'');
+      if(!seen.has(k)) seen.set(k,r.refGmv); }
+    let s=0; for(const v of seen.values()) s+=v; return s; };
+  const refSum=refGmvSum(rows);
   const dTot={...derive({spend:tot.spend,clicks:tot.clicks,impr:tot.impr,orders:tot.adOrders,
     sales:tot.adSales,gmv:tot.gmv||refSum,sessions:tot.sessions,pv:tot.pv,units:tot.units,ordItems:tot.ordItems}),
     refGmv:refSum,invImprRate:div(tot.invImpr,tot.grossImpr),invClkRate:div(tot.invClk,tot.grossClk),
@@ -4348,7 +4551,7 @@ function renderTable(){
     for(const [f] of (DIM_OF[view]||[])){ const s=dimFilter[f]; if(s&&s.size) cRows=cRows.filter(r=>s.has(String(r[f]??''))); }
     if(searchQ&&SEARCHABLE.has(view)){ const G=queryGroups(searchQ); cRows=cRows.filter(r=>queryHit(searchText(r),G)); }
     cTot=sumAgg(cRows);
-    const cRef=cRows.reduce((s,r)=>s+(r.refGmv||0),0);
+    const cRef=refGmvSum(cRows);
     cdTot={...derive({spend:cTot.spend,clicks:cTot.clicks,impr:cTot.impr,orders:cTot.adOrders,
       sales:cTot.adSales,gmv:cTot.gmv||cRef,sessions:cTot.sessions,pv:cTot.pv,units:cTot.units,ordItems:cTot.ordItems}),
       refGmv:cRef,invImprRate:div(cTot.invImpr,cTot.grossImpr),invClkRate:div(cTot.invClk,cTot.grossClk),
@@ -4377,7 +4580,8 @@ function renderTable(){
   const body=shown.map((r,ri)=>`<tr data-ri="${ri}"${dk?` class="drill" data-v="${esc(r[dk])}"`:''}>`+cols.map(c=>{
     const v=r[c.k];
     let html;
-    if(c.pill) html=pill(v,c.f,c.pill[0],c.pill[1]);
+    if(c.rf) html=c.rf(r);
+    else if(c.pill) html=pill(v,c.f,c.pill[0],c.pill[1]);
     else if(typeof v==='number') html=(isFinite(v)&&(v!==0||NONZERO.has(c.k)))?c.f(v):'<span class="dim">\u2013</span>';
     else html=c.f(v??'');
     if(cmpMap&&CMP_ROW_COLS[view]&&CMP_ROW_COLS[view].includes(c.k)){
@@ -8084,6 +8288,9 @@ document.addEventListener('keydown',e=>{
   if(e.key!=='Escape') return;
   const t=e.target;
   if(t&&/^(INPUT|SELECT|TEXTAREA)$/.test(t.tagName)) return;
+  /* 下钻弹窗打开时，Esc 先关弹窗（回到主列表），不再往下走折叠区块的逻辑 */
+  const dbg=document.getElementById('drillBg');
+  if(dbg&&dbg.classList.contains('show')){ goTop(); return; }
   if(typeof selDay!=='undefined'&&selDay){ selDay=null; renderChart(); return; }
   const open=[...document.querySelectorAll('#board section')].filter(x=>
     SEC_CLOSE[x.id]&&!x.classList.contains('collapsed')&&!x.classList.contains('hide'));
@@ -8091,6 +8298,253 @@ document.addEventListener('keydown',e=>{
   const hit=open.find(x=>{ const r=x.getBoundingClientRect(); return r.top<=90&&r.bottom>90; })||open[0];
   closeSection(hit.id);
 });
+</script>
+
+<!-- ================= 下钻弹窗（Demo 式）：主列表不动，逐层在弹窗内看 ================= -->
+<div id="drillBg">
+  <div id="drillModal">
+    <div class="dm-top">
+      <span class="dm-t" id="dm_title">下钻明细</span>
+      <input type="search" id="m_search" placeholder="在当前层搜索…">
+      <button class="btn" id="m_charts">收起图表</button>
+      <button class="btn" id="m_export">导出 CSV</button>
+      <button class="dm-close" id="drillClose" title="关闭（Esc）">✕</button>
+    </div>
+    <div id="drillHost"></div>
+  </div>
+</div>
+<script id="drill-modal-js">
+/* ================= 下钻弹窗控制 =================
+   吸收「广告全盘诊断台 Demo」的下钻交互：点行不再整表替换，而是把既有的
+   下钻管线（#crumb 面包屑 / #matchbar / #drillsum KPI+双图 / #groupsum /
+   #tbl 明细表 / #tblnote 说明）整体搬进弹窗；主列表位置留一份半透明幽灵
+   快照，关闭弹窗（✕ / 点遮罩 / Esc / 面包屑回顶层）即回到原处，
+   排序与滚动位置都还在。渲染函数全部复用，不改任何计算口径。 */
+const DM_MOVE=['crumb','dimfilter','matchbar','drillsum','groupsum','tbl','tblnote'];
+/* dimfilter 必须一起搬：它在原布局里位于 crumb 与 matchbar 之间，
+   若留在原地，关闭弹窗按序回插时会被挤到表格下方（筛选条跑到页尾的错位 bug）。
+   下钻视图本身没有维度筛选，renderDimFilter 会把它藏起来，搬进弹窗无副作用。 */
+let _dmGhost=null;
+function drillModalSync(){
+  const bg=$('#drillBg'); if(!bg) return;
+  const open=bg.classList.contains('show');
+  if(drill.length&&!open){
+    const tbl=$('#tbl');
+    _dmGhost=tbl.cloneNode(true);
+    _dmGhost.removeAttribute('id'); _dmGhost.id='tblghost';
+    _dmGhost.querySelectorAll('[id]').forEach(x=>x.removeAttribute('id'));
+    tbl.before(_dmGhost);
+    const host=$('#drillHost');
+    for(const id of DM_MOVE){ const el=$('#'+id); if(el) host.appendChild(el); }
+    bg.classList.add('show');
+    document.body.style.overflow='hidden';
+    dmApplyCharts();
+    $('#m_search').value=searchQ||'';
+    $('#drillHost').scrollTop=0;
+  }else if(!drill.length&&open){
+    bg.classList.remove('show');
+    document.body.style.overflow='';
+    let anchor=$('#drillHome');
+    for(const id of DM_MOVE){ const el=$('#'+id); if(el){ anchor.after(el); anchor=el; } }
+    if(_dmGhost){ _dmGhost.remove(); _dmGhost=null; }
+  }
+  if(drill.length){
+    /* 标题直接写当前下钻到的对象（和面包屑末级一致），扫一眼就知道在看什么 */
+    let t=TAB_NAME[curTab]||'';
+    try{ const lb=drillLabel(drill[drill.length-1]); if(lb) t+=' \u00B7 '+lb; }catch(e){ t+=' \u00B7 \u4E0B\u94BB\u660E\u7EC6'; }
+    $('#dm_title').textContent=t; $('#dm_title').title=t;
+  }
+}
+/* 「收起图表」：默认折叠（表格行数优先），用户的展开/收起选择记在本机，下次打开沿用。
+   开关有两个入口：弹窗右上角按钮 + 图表原位的内联折叠栏（#ds_toggle，纯 CSS 随 nochart 切换文案）。 */
+let dmChartsOff=true;
+try{ const s=localStorage.getItem('amzDmCharts'); if(s!==null) dmChartsOff=(s==='off'); }catch(e){}
+function dmApplyCharts(){
+  $('#drillModal').classList.toggle('nochart',dmChartsOff);
+  $('#m_charts').textContent=dmChartsOff?'\u5C55\u5F00\u56FE\u8868':'\u6536\u8D77\u56FE\u8868';
+}
+function dmToggleCharts(){
+  dmChartsOff=!dmChartsOff;
+  try{ localStorage.setItem('amzDmCharts',dmChartsOff?'off':'on'); }catch(e){}
+  dmApplyCharts();
+}
+$('#m_charts').onclick=dmToggleCharts;
+$('#drillClose').onclick=()=>goTop();
+$('#drillBg').addEventListener('mousedown',e=>{ if(e.target===$('#drillBg')) goTop(); });
+let _dmSearchT=null;
+$('#m_search').addEventListener('input',e=>{
+  clearTimeout(_dmSearchT);
+  _dmSearchT=setTimeout(()=>{ searchQ=e.target.value.trim(); tableLimit=TABLE_LIMIT_DEFAULT; renderTable(); },220);
+});
+$('#m_export').onclick=()=>$('#export').click();
+</script>
+
+<script id="goal-planner-js">
+/* ================= 目标规划 · 反向拆解计算器 =================
+   口径与当前筛选后的大盘一致：
+   1. 广告流量按广告点击计，自然流量 = Sessions - 广告点击；
+   2. 综合 CVR = 自然流量占比 × 自然 CVR + 广告流量占比 × 广告 CVR；
+   3. 所需广告预算 = 广告点击 × CPC，预算天花板 = 目标销售额 × 目标 TACOS。
+   这里只读取 model.T，不改动原有模型、KPI、诊断和导出计算。 */
+let gpState=null, gpScopeSig='', gpAutoInfo={peakDate:'',peakSales:0,unitsPerOrder:1};
+/* 每次打开页面默认折叠；本次使用中展开后，切筛选仍保持展开。 */
+let gpCollapsed=true;
+
+function gpScopeKey(){
+  const ac=(typeof gAcct!=='undefined'?[...gAcct].sort():[]).join(',');
+  const ct=(typeof gCty!=='undefined'?[...gCty].sort():[]).join(',');
+  return [dispCur,dateRange.from,dateRange.to,ac,ct].join('|');
+}
+function gpDefaults(T,d){
+  const days=Math.max(1,spanDays(dateRange.from,dateRange.to));
+  const totalOrders=T.ordItems||T.units||0;
+  const adVisits=Math.min(T.clicks||0,T.sessions||0);
+  const orgVisits=Math.max(0,(T.sessions||0)-adVisits);
+  const unitsPerOrder=div(T.units,totalOrders)||1;
+  /* 广告报表只有订单数，没有广告销量。按全盘「每单件数」把广告订单换算成
+     广告销量，才能和平均售价、目标销量、单位转化率保持同一口径。 */
+  const adUnits=Math.min(T.units||0,(T.adOrders||0)*unitsPerOrder);
+  const orgUnits=Math.max(0,(T.units||0)-adUnits);
+  /* 目标销售额默认取当前筛选区间的单日峰值，不再取日均值。
+     其他输入直接复用页面小卡片的当前筛选口径：平均售价、广告 CVR、
+     广告点击占比、CPC、TACOS；自然 CVR 与「自然表现」模块同口径。 */
+  const peak=((model&&model.daily)||[]).reduce((best,r)=>
+    (r.gmv||0)>(best.gmv||0)?r:best,{date:'',gmv:0});
+  const peakSales=peak.gmv>0?peak.gmv:div(T.gmv,days);
+  const asp=d.aur||div(T.gmv,totalOrders)||d.aovAll||0;
+  const orgUnitCvr=div(orgUnits,orgVisits);
+  const adUnitCvr=div(adUnits,adVisits);
+  return {
+    sales:toDisp(peakSales),
+    asp:toDisp(asp),
+    orgCvr:orgUnitCvr*100,
+    adCvr:adUnitCvr*100,
+    adShare:Math.min(1,d.adClickPct)*100,
+    cpc:toDisp(d.cpc),
+    tacos:d.tacos*100,
+    peakDate:peak.date||dateRange.to,
+    peakSales:toDisp(peakSales),
+    unitsPerOrder
+  };
+}
+function gpRound(v,n){
+  if(!isFinite(v)) return 0;
+  const p=Math.pow(10,n); return Math.round(v*p)/p;
+}
+function gpReset(T,d){
+  const x=gpDefaults(T,d);
+  gpState={sales:gpRound(x.sales,2),asp:gpRound(x.asp,2),orgCvr:gpRound(x.orgCvr,2),
+    adCvr:gpRound(x.adCvr,2),adShare:gpRound(x.adShare,2),cpc:gpRound(x.cpc,2),tacos:gpRound(x.tacos,2)};
+  gpAutoInfo={peakDate:x.peakDate,peakSales:x.peakSales,unitsPerOrder:x.unitsPerOrder};
+}
+function gpMoney(v,digits){
+  const n=isFinite(v)?v:0, dg=digits===undefined?(dec()===0?0:2):digits;
+  return sym()+_nf(dg,dg).format(n);
+}
+function gpPct(v){ return isFinite(v)?(v*100).toFixed(1)+'%':'-'; }
+function gpInt(v){ return _nf(0,0).format(Math.round(isFinite(v)?v:0)); }
+
+function gpCalculate(){
+  const err=$('#gp_error'), out=$('#gp_results'), note=$('#gp_note');
+  if(!err||!out||!note||!gpState) return;
+  const bad=[];
+  if(!(gpState.sales>0)) bad.push('目标日销售额必须大于 0');
+  if(!(gpState.asp>0)) bad.push('客单价 ASP 必须大于 0');
+  if(gpState.orgCvr<0||gpState.orgCvr>100) bad.push('自然 CVR 应在 0% 到 100% 之间');
+  if(gpState.adCvr<0||gpState.adCvr>100) bad.push('广告 CVR 应在 0% 到 100% 之间');
+  if(gpState.adShare<0||gpState.adShare>100) bad.push('广告流量占比应在 0% 到 100% 之间');
+  if(gpState.cpc<0) bad.push('平均 CPC 不能小于 0');
+  if(gpState.tacos<0||gpState.tacos>100) bad.push('TACOS 目标应在 0% 到 100% 之间');
+  document.querySelectorAll('#gp_form input').forEach(el=>{
+    const v=parseFloat(el.value), k=el.dataset.k;
+    const invalid=!isFinite(v)||(k==='sales'||k==='asp'?v<=0:v<0)||
+      ((k==='orgCvr'||k==='adCvr'||k==='adShare'||k==='tacos')&&v>100);
+    el.setAttribute('aria-invalid',invalid?'true':'false');
+  });
+  const orgCvr=gpState.orgCvr/100, adCvr=gpState.adCvr/100;
+  const adShare=gpState.adShare/100, targetTacos=gpState.tacos/100;
+  const weighted=(1-adShare)*orgCvr+adShare*adCvr;
+  if(weighted<=0) bad.push('综合转化率为 0，无法反推流量');
+  if(bad.length){
+    err.classList.add('show'); err.textContent=bad.join('；');
+    out.innerHTML=''; note.innerHTML='请修正标红输入项后再计算。'; return;
+  }
+  err.classList.remove('show'); err.textContent='';
+  const targetUnits=gpState.sales/gpState.asp;
+  const sessions=targetUnits/weighted;
+  const adClicks=sessions*adShare, orgSessions=sessions-adClicks;
+  const adUnits=adClicks*adCvr, orgUnits=orgSessions*orgCvr;
+  const adSales=adUnits*gpState.asp;
+  const needBudget=adClicks*gpState.cpc;
+  const budgetCap=gpState.sales*targetTacos;
+  const estAcos=div(needBudget,adSales), estTacos=div(needBudget,gpState.sales);
+  const gap=needBudget-budgetCap, ok=gap<=0.005;
+  const verdict=ok
+    ? `达标 · 预算余量 ${gpMoney(Math.abs(gap),0)}/天`
+    : `超标 ${gpMoney(gap,0)}/天 · 需提效率或调目标`;
+  out.innerHTML=`
+    <div class="gp-route">
+      <div class="gp-route-title">需求侧：销售目标反推流量</div>
+      <div class="gp-row"><span class="l">目标销量</span><span class="v">${gpInt(targetUnits)} 件/天</span></div>
+      <div class="gp-row"><span class="l">综合转化率（流量加权）</span><span class="v">${gpPct(weighted)}</span></div>
+      <div class="gp-row"><span class="l">目标流量（总 Sessions）</span><span class="v">${gpInt(sessions)} Sessions/天</span></div>
+      <div class="gp-row"><span class="l">自然流量 → 自然销量</span><span class="v">${gpInt(orgSessions)} → ${gpInt(orgUnits)} 件</span></div>
+      <div class="gp-row"><span class="l">广告点击 → 广告销量</span><span class="v">${gpInt(adClicks)} → ${gpInt(adUnits)} 件</span></div>
+    </div>
+    <div class="gp-route">
+      <div class="gp-route-title">预算侧：TACOS 目标校验广告投入</div>
+      <div class="gp-row"><span class="l">广告销售额</span><span class="v">${gpMoney(adSales,0)}/天</span></div>
+      <div class="gp-row key"><span class="l">广告日预算（需要）</span><span class="v">${gpMoney(needBudget,0)}/天</span></div>
+      <div class="gp-row"><span class="l">预算天花板（TACOS目标×销售额）</span><span class="v">${gpMoney(budgetCap,0)}/天</span></div>
+      <div class="gp-row"><span class="l">测算 ACOS / TACOS</span><span class="v">ACOS ${adSales>0?gpPct(estAcos):'-'} / TACOS ${gpPct(estTacos)}</span></div>
+      <div class="gp-row"><span class="l">达标判断</span><span class="v ${ok?'good':'bad'}">${verdict}</span></div>
+    </div>`;
+  note.innerHTML=`口径：转化率统一按<b>销量 ÷ 流量</b>计算，与 ASP 和目标销量保持一致。`
+    +`广告销量按广告订单 × 每单 ${gpAutoInfo.unitsPerOrder.toFixed(2)} 件估算；自然销量 = 总销量 - 估算广告销量。`
+    +`广告流量按<b>广告点击</b>计，自然流量按<b>总 Sessions - 广告点击</b>计。`
+    +`广告订单是归因口径，因此自然与广告拆分仍是规划估算值。`
+    +`效率没有达标时不要盲目加预算，优先按 <b>提转化率 → 降 CPC → 加曝光 → 最后加预算</b> 的顺序处理。`
+    +`完整净利润仍需扣除售价、采购成本、平台费用与广告费。`;
+}
+
+function renderGoalPlanner(T,d){
+  const sec=$('#goalplan'), form=$('#gp_form'), src=$('#gp_source');
+  if(!sec||!form||!src) return;
+  const sig=gpScopeKey();
+  if(!gpState||sig!==gpScopeSig){ gpScopeSig=sig; gpReset(T,d); }
+  sec.classList.toggle('collapsed',gpCollapsed);
+  const toggle=$('#gp_toggle');
+  toggle.textContent=gpCollapsed?'展开计算器':'收起计算器';
+  toggle.setAttribute('aria-expanded',gpCollapsed?'false':'true');
+  const days=Math.max(1,spanDays(dateRange.from,dateRange.to));
+  src.innerHTML=`<span>已自动带入当前筛选范围的单位口径数据</span><span class="gp-dot"></span>`
+    +`<span><b>${dateRange.from}</b> 至 <b>${dateRange.to}</b>（${days} 天）</span><span class="gp-dot"></span>`
+    +`<span>目标销售额取 <b>${esc(gpAutoInfo.peakDate)}</b> 单日峰值 <b>${gpMoney(gpAutoInfo.peakSales,dec()===0?0:2)}</b></span><span class="gp-dot"></span>`
+    +`<span>当前每单 <b>${gpAutoInfo.unitsPerOrder.toFixed(2)}</b> 件</span><span class="gp-dot"></span>`
+    +`<span>金额币种 <b>${esc(dispCur)}</b></span><button class="btn" id="gp_reset" type="button">重新读取当前筛选值</button>`;
+  const fields=[
+    ['sales',`目标日销售额（默认取区间峰值，${esc(sym())}）`,0,'',dec()===0?1:.01,1],
+    ['asp',`客单价 ASP（${esc(sym())}）`,0,'',dec()===0?1:.01,0],
+    ['orgCvr','自然单位转化率（估，%）',0,100,.1,0],
+    ['adCvr','广告单位转化率（估，%）',0,100,.1,0],
+    ['adShare','广告流量占比（%）',0,100,.1,0],
+    ['cpc',`平均 CPC（${esc(sym())}）`,0,'',dec()===0?1:.01,0],
+    ['tacos','TACOS 目标（%）',0,100,.1,1]
+  ];
+  form.innerHTML=fields.map(([k,l,min,max,step,goal])=>`<div class="gp-field${goal?' goal':''}">`
+    +`<label for="gp_${k}">${l}</label><input id="gp_${k}" data-k="${k}" type="number" min="${min}"`
+    +`${max!==''?` max="${max}"`:''} step="${step}" value="${gpState[k]}"></div>`).join('');
+  form.querySelectorAll('input').forEach(el=>el.addEventListener('input',()=>{
+    const v=parseFloat(el.value); gpState[el.dataset.k]=isFinite(v)?v:NaN; gpCalculate();
+  }));
+  $('#gp_reset').onclick=()=>{ gpReset(T,d); renderGoalPlanner(T,d); };
+  toggle.onclick=()=>{
+    gpCollapsed=!gpCollapsed; sec.classList.toggle('collapsed',gpCollapsed);
+    toggle.textContent=gpCollapsed?'展开计算器':'收起计算器';
+    toggle.setAttribute('aria-expanded',gpCollapsed?'false':'true');
+  };
+  gpCalculate();
+}
 </script>
 
 </body>
