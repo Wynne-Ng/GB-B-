@@ -3024,7 +3024,7 @@ function renderTabs(){
   if(!avail[curTab]){ curTab='daily'; drill=[]; }
   /* Demo 式提示行：先告诉用户点行会发生什么，再让他点 */
   const HINT={
-    camp:'\u70B9\u51FB\u884C\u5F39\u7A97\u4E0B\u94BB\uFF1A\u6D3B\u52A8 \u2192 \u8BE5\u6D3B\u52A8\u6BCF\u65E5\u8868\u73B0 \u2192\uFF08\u9762\u677F\u5185\uFF09\u5404\u5E7F\u544A\u7EC4\u5BF9\u6BD4 \u2192 \u5E7F\u544A\u7EC4\u6BCF\u65E5 \u00B7 \u4E3B\u5217\u8868\u4FDD\u6301\u4E0D\u52A8\uFF0C\u5173\u6389\u5F39\u7A97\u56DE\u5230\u539F\u5904 \u00B7 \u540D\u79F0\u65C1\u5FBD\u6807 = \u8BE5\u6D3B\u52A8\u4E0B\u7684\u5E7F\u544A\u7EC4\u6570',
+    camp:'\u70B9\u51FB\u884C\u5F39\u7A97\u4E0B\u94BB\uFF1A\u6D3B\u52A8 \u2192 \u8BE5\u6D3B\u52A8\u6BCF\u65E5 \u2192 \u5F53\u65E5\u5404\u5E7F\u544A\u7EC4 \u2192 \u8BE5\u7EC4\u5F53\u65E5\u641C\u7D22\u8BCD \u00B7 \u4E3B\u5217\u8868\u4FDD\u6301\u4E0D\u52A8\uFF0C\u5173\u6389\u5F39\u7A97\u56DE\u5230\u539F\u5904 \u00B7 \u540D\u79F0\u65C1\u5FBD\u6807 = \u8BE5\u6D3B\u52A8\u4E0B\u7684\u5E7F\u544A\u7EC4\u6570',
     term:'\u70B9\u51FB\u884C\u5F39\u7A97\u4E0B\u94BB\uFF1A\u591A\u6765\u6E90\u8BCD\u5148\u770B\u300C\u6D3B\u52A8 \u00D7 \u5E7F\u544A\u7EC4 \u00D7 \u6295\u653E\u8BCD\u300D\u6765\u6E90\u5BF9\u6BD4\uFF0C\u5355\u6765\u6E90\u76F4\u63A5\u770B\u6BCF\u65E5 \u00B7 \u5FBD\u6807 = \u6765\u6E90\u6570',
     adgroup:'\u70B9\u51FB\u884C\u5F39\u7A97\u67E5\u770B\u8BE5\u5E7F\u544A\u7EC4\u7684\u6BCF\u65E5\u8D70\u52BF\uFF0C\u518D\u70B9\u4EFB\u610F\u4E00\u5929\u53EF\u770B\u5F53\u5929\u641C\u7D22\u8BCD\u660E\u7EC6',
     target:'\u70B9\u51FB\u884C\u5F39\u7A97\u67E5\u770B\u8BE5\u6295\u653E\u8BCD\u5B9E\u9645\u8DD1\u51FA\u6765\u7684\u641C\u7D22\u8BCD\uFF08\u62D3\u8BCD\u4E0E\u5426\u5B9A\u7684\u539F\u6599\uFF09',
@@ -3219,8 +3219,8 @@ function oneDayPanel(r){
    站点     -> 该站点每日 -> ...
    ASIN     -> 该ASIN每日
    运营人员  -> 该运营全部ASIN -> 该ASIN每日
-   广告活动  -> 该活动每日 -> 该活动当日广告位
-             （每日面板里可再进「广告组表现」-> 该广告组每日 -> ...）
+   广告活动  -> 该活动每日 -> 当日各广告组 -> 该组当日搜索词
+             （每日面板另有「广告组表现」区间汇总入口；当日各广告位从广告组视图的面板链接进入）
    广告位   -> 该广告位每日 -> 当日全部广告位
    搜索词   -> 该搜索词每日
    无效流量  -> 该活动每日无效流量                                    */
@@ -3318,6 +3318,13 @@ function drillRows(v){
                               r=>r.date,r=>({date:r.date,term:r.term,camp:r.camp,ag:r.ag||'',
                                 agName:r.agName,cur:r.cur})).sort(bySort);
     case 'campDays':   return M.byDayCamp.filter(r=>r.camp===v.camp).sort(bySort);
+    /* 该活动当日各广告组：行来自搜索词报表的日×组聚合，推广 ASIN 从区间汇总的广告组表补齐 */
+    case 'campDayGroups': {
+      const am=new Map((M.adGroups||[]).map(r=>[r.id,r.adAsin||'']));
+      return M.byDayAdGroup.filter(r=>r.camp===v.camp&&r.date===v.date)
+        .map(r=>({...r,adAsin:r.adAsin||am.get(r.id)||''}))
+        .sort((a,b)=>(b.spend||0)-(a.spend||0));
+    }
     case 'campDayPlaces': return groupBy(M.rawPlace.filter(r=>r.camp===v.camp&&r.date===v.date),
                             r=>r.pl,r=>({pl:r.pl,camp:r.camp,cur:r.cur})).sort((a,b)=>b.spend-a.spend);
     case 'placeDays':  return M.byDayPlace.filter(r=>r.pl===v.pl).sort(bySort);
@@ -3350,6 +3357,7 @@ function drillAlive(v){
     case 'adGroupTermDays': return (M.rawTermsByGroup.get(v.id)||[]).some(r=>r.term===v.term);
     case 'campDays': case 'invDays': return M.camps.some(r=>r.camp===v.camp)||M.invs.some(r=>r.camp===v.camp);
     case 'campDayPlaces': return M.rawPlace.some(r=>r.camp===v.camp&&r.date===v.date);
+    case 'campDayGroups': return M.byDayAdGroup.some(r=>r.camp===v.camp&&r.date===v.date);
     case 'placeDays': return M.places.some(r=>r.pl===v.pl);
     case 'termDays': case 'termCamps': return M.terms.some(r=>r.id===v.id);
     case 'termSrcDays': return M.rawTerm.some(r=>termScopeKey(r)===v.id&&termSrcKey(r)===v.src);
@@ -3394,6 +3402,7 @@ function drillLabel(v){
     case 'adGroupTermDays': return `\u641C\u7D22\u8BCD\u300C${cut(v.term,28)}\u300D\u00B7 \u6BCF\u65E5`;
     case 'campDays': return `${cut(nameOfCamp(v.camp),30)} \u00B7 ${v.camp} \u6BCF\u65E5`;
     case 'campDayPlaces': return `${v.date} \u8BE5\u6D3B\u52A8\u5404\u5E7F\u544A\u4F4D`;
+    case 'campDayGroups': return `${v.date} \u8BE5\u6D3B\u52A8\u5404\u5E7F\u544A\u7EC4`;
     case 'placeDays': return `${v.pl} \u6BCF\u65E5`;
     case 'dayPlaces': return `${v.date} \u5168\u90E8\u5E7F\u544A\u4F4D`;
     case 'termDays': return `\u641C\u7D22\u8BCD\u300C${cut(String(v.id||'').split('\u0001')[0],26)}\u300D\u6BCF\u65E5`;
@@ -3409,7 +3418,7 @@ function drillLabel(v){
    面包屑会显示成「广告活动 › 某日全部站点」，点根节点还会跳回广告活动表，
    和面包屑写的完全对不上。开新链路时按视图类型把 curTab 对齐，根节点才不会说谎。 */
 const VIEW_ROOT={daySites:'daily',siteDays:'site',siteDayAsins:'site',asinDays:'asin',
-  ownerAsins:'owner',pcodeAsins:'pcode',campGroups:'camp',campDays:'camp',campDayPlaces:'camp',
+  ownerAsins:'owner',pcodeAsins:'pcode',campGroups:'camp',campDays:'camp',campDayPlaces:'camp',campDayGroups:'camp',
   adGroupDays:'adgroup',adGroupDayTerms:'adgroup',adGroupTermDays:'adgroup',
   targetTerms:'target',targetDays:'target',targetTermDays:'target',
   placeDays:'place',dayPlaces:'place',termDays:'term',termCamps:'term',termSrcDays:'term',invDays:'inv'};
@@ -3446,6 +3455,7 @@ const goCampDetail=(c,k)=>model&&model.byDayCamp.some(r=>r.camp===c)
   ?goCampDays(c,k)
   :(model&&model.adGroups.some(r=>r.camp===c)?goCampGroups(c,k):goCampDays(c,k));
 const goCampDayPlaces=(c,d,k)=>go({type:'campDayPlaces',camp:c,date:d},k);
+const goCampDayGroups=(c,d,k)=>go({type:'campDayGroups',camp:c,date:d},k);
 const goPlaceDays=(p,k)=>go({type:'placeDays',pl:p},k);
 const goDayPlaces=(d,k)=>go({type:'dayPlaces',date:d},k);
 const goTermDays=(id,k)=>go({type:'termDays',id},k);
@@ -3480,7 +3490,7 @@ function renderCrumb(){
 }
 
 /* ---- 下钻详情面板 ---- */
-const AD_VIEWS=new Set(['campGroups','adGroupDays','adGroupDayTerms','adGroupTermDays',
+const AD_VIEWS=new Set(['campGroups','campDayGroups','adGroupDays','adGroupDayTerms','adGroupTermDays',
   'campDays','campDayPlaces','placeDays','dayPlaces','termDays','invDays',
   'targetTerms','targetDays','targetTermDays','termCamps','termSrcDays']);
 const PERDAY_VIEWS=new Set(['siteDays','asinDays','adGroupDays','adGroupTermDays',
@@ -3531,6 +3541,7 @@ function renderDrillSum(){
       adGroupDayTerms:()=>`${v.date} \u00B7 \u5E7F\u544A\u7EC4\u641C\u7D22\u8BCD\uFF1A${nameOfGroup(v.id)}`,
       adGroupTermDays:()=>`\u641C\u7D22\u8BCD\u6BCF\u65E5\u8868\u73B0\uFF1A${v.term}`,
       campDays:()=>`\u5E7F\u544A\u6D3B\u52A8\u6BCF\u65E5\u8868\u73B0\uFF1A${nameOfCamp(v.camp)}`,
+      campDayGroups:()=>`${v.date} \u00B7 \u5404\u5E7F\u544A\u7EC4\uFF1A${nameOfCamp(v.camp)}`,
       campDayPlaces:()=>`\u6D3B\u52A8 ${v.camp} \u00B7 ${v.date} \u5404\u5E7F\u544A\u4F4D`,
       placeDays:()=>`\u5E7F\u544A\u4F4D\uFF1A${v.pl}`,
       dayPlaces:()=>`${v.date} \u00B7 \u5F53\u65E5\u5168\u90E8\u5E7F\u544A\u4F4D`,
@@ -3543,6 +3554,7 @@ function renderDrillSum(){
       invDays:()=>`\u65E0\u6548\u6D41\u91CF\uFF1A\u6D3B\u52A8 ${v.camp}`};
     name=(NAME[v.type]||(()=>v.type))();
     sub=(v.type==='campGroups'?`\u5171 ${rows.length} \u4E2A\u5E7F\u544A\u7EC4 \u00B7 \u5DE6\u56FE\u6309\u82B1\u8D39\u3001\u53F3\u56FE\u6309\u70B9\u51FB\u6392\u540D`
+      :v.type==='campDayGroups'?`\u5171 ${rows.length} \u4E2A\u5E7F\u544A\u7EC4 \u00B7 \u5DE6\u56FE\u6309\u82B1\u8D39\u3001\u53F3\u56FE\u6309\u70B9\u51FB\u6392\u540D`
       :v.type==='adGroupDayTerms'?`\u5171 ${rows.length} \u4E2A\u641C\u7D22\u8BCD \u00B7 \u5DE6\u56FE\u6309\u82B1\u8D39\u3001\u53F3\u56FE\u6309\u70B9\u51FB\u6392\u540D`
       :v.type==='targetTerms'?`\u5171 ${rows.length} \u4E2A\u641C\u7D22\u8BCD \u00B7 \u56FE\u8868\u53EA\u5C55\u793A TOP 20\uFF0C\u4E0B\u65B9\u8868\u683C\u4E3A\u5168\u90E8`
       :v.type==='termCamps'?`\u5171 ${rows.length} \u4E2A\u6765\u6E90\uFF08\u6D3B\u52A8\u00D7\u5E7F\u544A\u7EC4\u00D7\u6295\u653E\u8BCD\u00D7\u5339\u914D\u65B9\u5F0F\uFF09 \u00B7 \u56FE\u8868\u53EA\u5C55\u793A TOP 20 \u00B7 \u70B9\u8868\u683C\u4EFB\u610F\u4E00\u884C\u770B\u8BE5\u6765\u6E90\u9010\u65E5`
@@ -3550,9 +3562,13 @@ function renderDrillSum(){
       +(curs.length?` \u00B7 \u5E01\u79CD ${curs.join('/')}`:'')
       +(v.type==='campGroups'?' \u00B7 \u70B9\u4E0B\u65B9\u8868\u683C\u7684\u5E7F\u544A\u7EC4\u67E5\u770B\u6BCF\u65E5\u8868\u73B0':'')
       +(v.type==='adGroupDayTerms'?' \u00B7 \u70B9\u4E0B\u65B9\u8868\u683C\u7684\u641C\u7D22\u8BCD\u67E5\u770B\u6BCF\u65E5\u8D8B\u52BF':'')
-      +(v.type==='campDays'?' \u00B7 \u70B9\u8868\u683C\u4EFB\u610F\u4E00\u884C\u53EF\u770B\u5F53\u65E5\u5404\u5E7F\u544A\u4F4D'
+      +(v.type==='campDays'?' \u00B7 \u70B9\u8868\u683C\u4EFB\u610F\u4E00\u884C\u53EF\u770B\u5F53\u65E5\u5404\u5E7F\u544A\u7EC4'
         +(model.adGroups.some(r=>r.camp===v.camp)
-          ?' \u00B7 <span id="ds_campgroups" style="color:#146EB4;cursor:pointer;text-decoration:underline;text-underline-offset:2px">\u67E5\u770B\u8BE5\u6D3B\u52A8\u7684\u5E7F\u544A\u7EC4\u8868\u73B0 \u203A</span>':'')
+          ?' \u00B7 <span id="ds_campgroups" style="color:#146EB4;cursor:pointer;text-decoration:underline;text-underline-offset:2px">\u67E5\u770B\u533A\u95F4\u6C47\u603B\u7684\u5E7F\u544A\u7EC4\u8868\u73B0 \u203A</span>':'')
+        :'')
+      +(v.type==='campDayGroups'?' \u00B7 \u70B9\u4E0B\u65B9\u8868\u683C\u7684\u5E7F\u544A\u7EC4\u770B\u8BE5\u7EC4\u5F53\u65E5\u641C\u7D22\u8BCD'
+        +(model.rawPlace.some(r=>r.camp===v.camp&&r.date===v.date)
+          ?' \u00B7 <span id="ds_dayplaces" style="color:#146EB4;cursor:pointer;text-decoration:underline;text-underline-offset:2px">\u67E5\u770B\u5F53\u65E5\u5404\u5E7F\u544A\u4F4D \u203A</span>':'')
         :'')
       +(v.type==='placeDays'?' \u00B7 \u70B9\u8868\u683C\u4EFB\u610F\u4E00\u884C\u53EF\u770B\u5F53\u65E5\u5168\u90E8\u5E7F\u544A\u4F4D':'');
     /* 投放词视图：补上匹配方式、所属活动/广告组，以及推广的 ASIN + 品名 */
@@ -3635,6 +3651,9 @@ function renderDrillSum(){
     campGroups:['\u5E7F\u544A\u7EC4\u82B1\u8D39 Top 20','\u5E7F\u544A\u7EC4\u70B9\u51FB Top 20',
       '<span><i style="background:#C0392B"></i>\u82B1\u8D39</span><span>\u6807\u6CE8\uFF1A\u5E7F\u544A\u9500\u552E\u989D / ACOS</span>',
       '<span><i style="background:#146EB4"></i>\u70B9\u51FB</span><span>\u6807\u6CE8\uFF1A\u66DD\u5149 / CTR</span>'],
+    campDayGroups:['\u5E7F\u544A\u7EC4\u82B1\u8D39 Top 20','\u5E7F\u544A\u7EC4\u70B9\u51FB Top 20',
+      '<span><i style="background:#C0392B"></i>\u82B1\u8D39</span><span>\u6807\u6CE8\uFF1A\u5E7F\u544A\u9500\u552E\u989D / ACOS</span>',
+      '<span><i style="background:#146EB4"></i>\u70B9\u51FB</span><span>\u6807\u6CE8\uFF1A\u66DD\u5149 / CTR</span>'],
     adGroupDayTerms:['\u641C\u7D22\u8BCD\u82B1\u8D39 Top 20','\u641C\u7D22\u8BCD\u70B9\u51FB Top 20',
       '<span><i style="background:#C0392B"></i>\u82B1\u8D39</span><span>\u6807\u6CE8\uFF1A\u5E7F\u544A\u9500\u552E\u989D / ACOS</span>',
       '<span><i style="background:#146EB4"></i>\u70B9\u51FB</span><span>\u6807\u6CE8\uFF1A\u66DD\u5149 / CTR</span>'],
@@ -3714,8 +3733,10 @@ function renderDrillSum(){
   { const tg=$('#ds_toggle');
     if(tg) tg.onclick=()=>{ if(typeof dmToggleCharts==='function') dmToggleCharts(); }; }
   $('#dsclose').onclick=()=>drill.length>1?goLevel(drill.length-2):goTop();
-  { const bg=$('#ds_campgroups');                      /* 活动每日 -> 广告组表现（加一层） */
+  { const bg=$('#ds_campgroups');                      /* 活动每日 -> 广告组表现（区间汇总） */
     if(bg) bg.onclick=e=>{ e.stopPropagation(); goCampGroups(v.camp,true); }; }
+  { const bp=$('#ds_dayplaces');                       /* 当日广告组 -> 当日各广告位 */
+    if(bp) bp.onclick=e=>{ e.stopPropagation(); goCampDayPlaces(v.camp,v.date,true); }; }
   s.querySelectorAll('.sp-seg .sg').forEach(el=>el.onclick=e=>{      // 切换拆分维度
     e.stopPropagation();
     ownerSplit={owner:v.owner,by:el.dataset.by};
@@ -3992,8 +4013,8 @@ function drawDrillCharts(v,rows,t){
       {share:r=>div(r.adOrders,r.ordItems||0)});
     return;
   }
-  if(v.type==='campGroups'||v.type==='adGroupDayTerms'||v.type==='targetTerms'||v.type==='termCamps'){
-    const isGroup=v.type==='campGroups', isSrc=v.type==='termCamps';
+  if(v.type==='campGroups'||v.type==='campDayGroups'||v.type==='adGroupDayTerms'||v.type==='targetTerms'||v.type==='termCamps'){
+    const isGroup=v.type==='campGroups'||v.type==='campDayGroups', isSrc=v.type==='termCamps';
     const TOPN=20;                                   // 条形图只取 TOP 20，全部数据看下方表格
     const labelOf=isGroup
       ? (r=>(r.agName||r.ag||'(\u672A\u547D\u540D\u5E7F\u544A\u7EC4)')+(r.adAsin?` \u00B7 ${r.adAsin}`:''))
@@ -4366,6 +4387,7 @@ const COLS={
     Cc('adSalesPct','\u5360\u5F53\u65E5\u9500\u552E\u989D',{f:fmt.pct1}),Cc('tacos','TACOS',{pill:[0.05,0.10],f:fmt.pct1})],
   dayPlaces:[txtCol('pl','\u5E7F\u544A\u4F4D','158px'),...ADO,Cc('adSalesPct','\u5360\u5F53\u65E5\u9500\u552E\u989D',{f:fmt.pct1})],
   campDayPlaces:[txtCol('pl','\u5E7F\u544A\u4F4D','158px'),...ADO],
+  campDayGroups:[nameCol('agName','\u5E7F\u544A\u7EC4\u540D','220px'),txtCol('adAsin','\u63A8\u5E7F ASIN','112px'),...ADO],
   term:[Cc('term','\u641C\u7D22\u8BCD',{left:1,raw:1,w:'216px',
       tip:'\u540D\u79F0\u65C1\u5FBD\u6807 = \u8BE5\u8BCD\u7684\u6765\u6E90\u6570\uFF08\u6D3B\u52A8\u00D7\u5E7F\u544A\u7EC4\u00D7\u6295\u653E\u8BCD\uFF09\uFF1B\u591A\u6765\u6E90\u70B9\u884C\u5148\u770B\u6765\u6E90\u5BF9\u6BD4\uFF0C\u5355\u6765\u6E90\u76F4\u63A5\u770B\u6BCF\u65E5',
       rf:r=>capSpan(r.term,'168px')+(r.nSrc>1?`<span class="agbadge">${r.nSrc} \u6765\u6E90</span>`:'')}),
@@ -4405,7 +4427,7 @@ const DEFAULT_SORT={daily:{k:'date',asc:true},site:{k:'gmv',asc:false},asin:{k:'
   asinDays:{k:'date',asc:true},ownerAsins:{k:'gmv',asc:false},
   campGroups:{k:'spend',asc:false},adGroupDays:{k:'date',asc:true},
   adGroupDayTerms:{k:'spend',asc:false},adGroupTermDays:{k:'date',asc:true},campDays:{k:'date',asc:true},
-  campDayPlaces:{k:'spend',asc:false},placeDays:{k:'date',asc:true},dayPlaces:{k:'spend',asc:false},
+  campDayPlaces:{k:'spend',asc:false},campDayGroups:{k:'spend',asc:false},placeDays:{k:'date',asc:true},dayPlaces:{k:'spend',asc:false},
   termDays:{k:'date',asc:true},invDays:{k:'date',asc:true}};
 let sortState={...DEFAULT_SORT};
 const sortOf=v=>sortState[v]||(sortState[v]={k:COLS[v][0].k,asc:true});
@@ -4496,7 +4518,7 @@ const DRILL_KEY={daily:'date',daySites:'site',site:'site',siteDays:'date',siteDa
   asin:'cid',ownerAsins:'cid',owner:'owner',camp:'camp',campGroups:'id',
   pcode:'pcode',pcodeAsins:'cid',
   adgroup:'id',target:'id',targetTerms:'term',
-  adGroupDays:'date',adGroupDayTerms:'term',campDays:'date',place:'pl',
+  adGroupDays:'date',adGroupDayTerms:'term',campDays:'date',campDayGroups:'id',place:'pl',
   placeDays:'date',dayPlaces:'pl',term:'id',termCamps:'srcId',inv:'camp'};
 const TABLE_LIMIT_DEFAULT=500;
 function resetTableLimit(){ tableLimit=TABLE_LIMIT_DEFAULT; }
@@ -4519,7 +4541,10 @@ function doDrill(view,val){
     case 'campGroups': return goAdGroupDays(val,true);
     case 'adGroupDays': return goAdGroupDayTerms(v.id,val,true);
     case 'adGroupDayTerms': return goAdGroupTermDays(v.id,val,true);
-    case 'campDays': return goCampDayPlaces(v.camp,val,true);
+    case 'campDays': return goCampDayGroups(v.camp,val,true);
+    /* 当日广告组 -> 该组当日搜索词；当天没有搜索词明细就看该组每日 */
+    case 'campDayGroups': return model.rawTermsByGroupDay.has(v.date+'\u0001'+val)
+      ?goAdGroupDayTerms(val,v.date,true):goAdGroupDays(val,true);
     case 'place': return goPlaceDays(val,false);
     case 'placeDays': return goDayPlaces(val,true);
     case 'dayPlaces': return goPlaceDays(val,true);
@@ -4551,7 +4576,7 @@ const FREEZE={daily:[1,'96px'],siteDays:[1,'96px'],asinDays:[1,'96px'],
   site:[2,'112px','58px'],daySites:[2,'112px','58px'],
   asin:[2,'252px','116px'],siteDayAsins:[2,'252px','116px'],ownerAsins:[2,'252px','116px'],
   pcode:[2,'116px','270px'],pcodeAsins:[2,'252px','116px'],
-  camp:[1,'270px'],campGroups:[2,'240px','132px'],adGroupDayTerms:[1,'240px'],
+  camp:[1,'270px'],campGroups:[2,'240px','132px'],campDayGroups:[2,'240px','132px'],adGroupDayTerms:[1,'240px'],
   adgroup:[2,'230px','220px'],target:[2,'220px','106px'],targetTerms:[1,'260px'],
   targetDays:[1,'96px'],targetTermDays:[1,'96px'],
   term:[2,'236px','104px'],termCamps:[1,'250px'],termSrcDays:[1,'96px'],inv:[2,'240px','148px']};
@@ -4708,12 +4733,13 @@ function renderTable(){
     asinDays:'\u8BE5 ASIN \u5728\u8BE5\u56FD\u5BB6\u7AD9\u70B9\u7684\u9010\u65E5\u8868\u73B0\uFF0C\u5DF2\u5408\u5E76\u540C\u7AD9\u70B9\u4E0B\u5171\u7528\u8BE5 listing \u7684\u5168\u90E8\u8D26\u53F7\u4E0E SKU\uFF08\u8BBF\u5BA2\u6570\u53D6\u6700\u5927\u503C\uFF0C\u9500\u91CF / \u5E7F\u544A\u76F8\u52A0\uFF09\u3002',
     ownerAsins:'\u70B9\u4EFB\u610F\u4E00\u884C\u770B\u8BE5 ASIN \u6BCF\u65E5\u8D8B\u52BF\u3002',
     owner:'\u6309\u8FD0\u8425\u4EBA\u5458\u6C47\u603B\uFF08\u6765\u81EA ASIN \u65E5\u62A5\u7684\u300C\u8FD0\u8425\u4EBA\u5458\u300D\u5B57\u6BB5\uFF09\uFF0C\u70B9\u884C\u770B\u5176\u540D\u4E0B\u5168\u90E8 ASIN\u3002',
-    camp:'\u70B9\u4EFB\u610F\u4E00\u884C\u5148\u770B\u8BE5\u6D3B\u52A8\u7684\u6BCF\u65E5\u8868\u73B0\uFF1B\u5728\u6BCF\u65E5\u9762\u677F\u4E2D\u53EF\u518D\u8FDB\u5165\u300C\u5E7F\u544A\u7EC4\u8868\u73B0\u300D\uFF0C\u5BF9\u6BD4\u54EA\u4E2A\u5E7F\u544A\u7EC4\u82B1\u8D39\u5360\u6BD4\u9AD8\u3001ACOS \u9AD8\u4E8E\u6D3B\u52A8\u5E73\u5747\u3002\u65E5\u9884\u7B97\u53D6\u533A\u95F4\u5185\u6700\u540E\u4E00\u5929\u7684\u503C\u3002',
+    camp:'\u70B9\u4EFB\u610F\u4E00\u884C\u5148\u770B\u8BE5\u6D3B\u52A8\u7684\u6BCF\u65E5\u8868\u73B0\uFF1B\u518D\u70B9\u67D0\u4E00\u5929\u770B\u5F53\u65E5\u5404\u5E7F\u544A\u7EC4\uFF0C\u7EE7\u7EED\u70B9\u7EC4\u770B\u8BE5\u7EC4\u5F53\u65E5\u641C\u7D22\u8BCD\u3002\u6BCF\u65E5\u9762\u677F\u4E2D\u53E6\u53EF\u8FDB\u5165\u533A\u95F4\u6C47\u603B\u7684\u300C\u5E7F\u544A\u7EC4\u8868\u73B0\u300D\u3002\u65E5\u9884\u7B97\u53D6\u533A\u95F4\u5185\u6700\u540E\u4E00\u5929\u7684\u503C\u3002',
     campGroups:'\u9ED8\u8BA4\u6309\u82B1\u8D39\u4ECE\u9AD8\u5230\u4F4E\u6392\u5217\u3002\u5E7F\u544A\u7EC4\u6307\u6807\u6765\u81EA\u641C\u7D22\u8BCD\u62A5\u8868\uFF1B\u63A8\u5E7F\u5546\u54C1\u62A5\u8868\u53EA\u7528\u6765\u8865\u5145\u8BE5\u7EC4\u5BF9\u5E94\u7684 ASIN\uFF0C\u4E0D\u91CD\u590D\u7D2F\u52A0\u82B1\u8D39\u548C\u9500\u552E\u989D\u3002\u70B9\u5E7F\u544A\u7EC4\u770B\u6BCF\u65E5\u8868\u73B0\u3002',
     adGroupDays:'\u8BE5\u5E7F\u544A\u7EC4\u7684\u9010\u65E5\u8868\u73B0\u3002\u70B9\u4EFB\u610F\u4E00\u5929\uFF0C\u67E5\u770B\u5F53\u5929\u5177\u4F53\u662F\u54EA\u4E9B\u641C\u7D22\u8BCD\u62D6\u540E\u817F\u3002',
     adGroupDayTerms:'\u8BE5\u5E7F\u544A\u7EC4\u5728\u5F53\u5929\u7684\u641C\u7D22\u8BCD\u660E\u7EC6\uFF0C\u9ED8\u8BA4\u6309\u82B1\u8D39\u4ECE\u9AD8\u5230\u4F4E\u6392\u5217\u3002\u70B9\u641C\u7D22\u8BCD\u53EF\u7EE7\u7EED\u770B\u9010\u65E5\u8D8B\u52BF\u3002',
     adGroupTermDays:'\u8BE5\u641C\u7D22\u8BCD\u5728\u5F53\u524D\u5E7F\u544A\u7EC4\u4E2D\u7684\u9010\u65E5\u8868\u73B0\u3002',
-    campDays:'\u70B9\u4EFB\u610F\u4E00\u884C\u770B\u8BE5\u6D3B\u52A8\u5F53\u65E5\u5404\u5E7F\u544A\u4F4D\u5206\u5E03\uFF1B\u4E0A\u65B9\u9762\u677F\u53EF\u8FDB\u5165\u300C\u5E7F\u544A\u7EC4\u8868\u73B0\u300D\u7EE7\u7EED\u4E0B\u94BB\u3002',
+    campDays:'\u70B9\u4EFB\u610F\u4E00\u884C\u770B\u8BE5\u6D3B\u52A8\u5F53\u65E5\u5404\u5E7F\u544A\u7EC4\u3002',
+    campDayGroups:'\u8BE5\u6D3B\u52A8\u5F53\u65E5\u5404\u5E7F\u544A\u7EC4\uFF0C\u9ED8\u8BA4\u6309\u82B1\u8D39\u4ECE\u9AD8\u5230\u4F4E\u6392\u5217\u3002\u70B9\u4EFB\u610F\u4E00\u884C\u770B\u8BE5\u7EC4\u5F53\u65E5\u641C\u7D22\u8BCD\u660E\u7EC6\uFF1B\u5F53\u65E5\u5404\u5E7F\u544A\u4F4D\u4ECE\u4E0A\u65B9\u9762\u677F\u94FE\u63A5\u8FDB\u5165\u3002',
     place:'\u70B9\u4EFB\u610F\u4E00\u884C\u770B\u8BE5\u5E7F\u544A\u4F4D\u6BCF\u65E5\u3002Top of Search / Detail Page / Other / Off Amazon \u4E3A\u4E9A\u9A6C\u900A\u539F\u751F\u5206\u7C7B\u3002',
     placeDays:'\u70B9\u4EFB\u610F\u4E00\u884C\u770B\u5F53\u65E5\u5168\u90E8\u5E7F\u544A\u4F4D\u5BF9\u6BD4\u3002',
     dayPlaces:'\u70B9\u4EFB\u610F\u4E00\u884C\u770B\u8BE5\u5E7F\u544A\u4F4D\u6BCF\u65E5\u8D8B\u52BF\u3002',
