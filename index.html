@@ -1109,6 +1109,145 @@ select{border:1px solid var(--line);border-radius:6px;padding:4px 8px;font-size:
   .gp-results{grid-template-columns:1fr}.gp-route+.gp-route{border-left:0;border-top:1px solid rgba(255,255,255,.13)}
   .gp-row{grid-template-columns:minmax(0,1fr) auto;gap:8px}.gp-route{padding-left:13px;padding-right:13px}
 }
+
+/* ============================================================
+   顶部功能导航 + 分屏面板（纯排版新增，未触碰任何计算逻辑）
+   采用渐进增强：脚本成功接管后 body 才拿到 .js-tabs，
+   万一脚本报错，页面自动回落成原来的整屏长页，内容一条都不少。
+   ============================================================ */
+#tnav{display:none}
+body.js-tabs #tnav{
+  display:flex;gap:4px;margin-top:16px;padding:5px;border-radius:12px;flex-wrap:wrap;
+  background:linear-gradient(180deg,#2B3A4C,#232F3E);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05), 0 6px 18px rgba(20,40,70,.10)}
+.tnav-btn{flex:1 1 0;min-width:148px;display:flex;align-items:center;gap:9px;
+  padding:8px 12px;border:1px solid transparent;border-radius:9px;background:transparent;
+  color:#C3D2E0;cursor:pointer;font-family:inherit;text-align:left;transition:.15s}
+.tnav-btn:hover{background:rgba(255,255,255,.06);color:#EAF1F8}
+.tnav-btn .tn-n{flex:none;width:22px;height:22px;border-radius:50%;font-size:12px;font-weight:700;
+  display:inline-flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.10);color:#9FB4C8;transition:.15s}
+.tnav-btn .tn-tx{display:flex;flex-direction:column;line-height:1.25;min-width:0}
+.tnav-btn .tn-tx b{font-size:13.5px;font-weight:700;white-space:nowrap}
+.tnav-btn .tn-tx i{font-size:10.5px;font-style:normal;color:#8398AE;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.tnav-btn.on{background:var(--card);border-color:#12283E;box-shadow:0 2px 8px rgba(10,25,45,.25)}
+.tnav-btn.on .tn-n{background:var(--yellow);color:#2B1C00}
+.tnav-btn.on .tn-tx b{color:var(--navy)}
+.tnav-btn.on .tn-tx i{color:var(--muted)}
+.tnav-btn:focus-visible{outline:2px solid var(--yellow);outline-offset:2px}
+@media(max-width:860px){
+  .tnav-btn{min-width:0;flex:1 1 auto;justify-content:center;padding:8px 10px}
+  .tnav-btn .tn-tx i{display:none}
+}
+
+/* 分屏面板：一次只显示一个（回落时全部显示） */
+body.js-tabs .tpanel{display:none}
+body.js-tabs .tpanel.tpanel-on{display:block}
+body.js-tabs .tpanel>.grp:first-child{margin-top:16px}
+
+/* ===== 使用说明按钮（表头） ===== */
+#helpbtn{display:none}
+body.js-tabs #helpbtn{display:inline-flex;align-items:center;gap:5px;
+  background:transparent;border:1px solid #4A5C6E;color:#DCE6F0;font-weight:600;
+  padding:5px 12px;border-radius:6px;cursor:pointer;font-family:inherit;font-size:12px}
+body.js-tabs #helpbtn:hover{background:rgba(255,255,255,.08);border-color:#6A7C8E}
+
+/* ===== 使用说明弹窗 ===== */
+#helpModal{position:fixed;inset:0;z-index:400;display:none;
+  align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto;
+  background:rgba(15,25,38,.55);backdrop-filter:blur(2px)}
+#helpModal.show{display:flex}
+.hm-card{background:var(--card);border-radius:14px;max-width:780px;width:100%;
+  box-shadow:0 24px 60px rgba(10,25,45,.35);overflow:hidden;animation:hmIn .18s ease-out}
+@keyframes hmIn{from{transform:translateY(10px);opacity:0}to{transform:none;opacity:1}}
+.hm-top{position:sticky;top:0;z-index:2;color:#fff;padding:15px 22px;display:flex;
+  align-items:center;gap:12px;background:linear-gradient(180deg,#2B3A4C,#232F3E)}
+.hm-top h2{font-size:16px;font-weight:700}
+.hm-top .hm-sub{font-size:11.5px;color:#AFC0D2;font-weight:400;margin-left:2px}
+.hm-top .sp{flex:1}
+.hm-x{background:rgba(255,255,255,.12);border:none;color:#fff;width:28px;height:28px;
+  border-radius:7px;cursor:pointer;font-size:17px;line-height:1;flex:none}
+.hm-x:hover{background:rgba(255,255,255,.22)}
+.hm-body{padding:20px 24px 24px;line-height:1.7;color:var(--ink);font-size:13px}
+.hm-body h3{font-size:13.5px;color:var(--navy);margin:20px 0 8px;padding-left:9px;
+  border-left:3px solid var(--blue);font-weight:700}
+.hm-body h3:first-child{margin-top:0}
+.hm-body p{margin:6px 0;color:#41586E}
+.hm-body b{color:var(--navy)}
+.hm-step{display:flex;gap:11px;margin:9px 0;align-items:flex-start}
+.hm-step .s-n{flex:none;width:22px;height:22px;border-radius:50%;background:var(--sky);
+  color:var(--blue);font-weight:700;font-size:12px;display:inline-flex;
+  align-items:center;justify-content:center;margin-top:1px}
+.hm-step .s-b{flex:1;min-width:0}
+.hm-tabs{display:flex;flex-direction:column;gap:7px;margin:10px 0}
+.hm-tab{display:flex;gap:9px;align-items:baseline;padding:9px 12px;border-radius:9px;
+  background:var(--paper);border:1px solid var(--line)}
+.hm-tab .t-n{flex:none;color:#fff;background:var(--navy);border-radius:20px;
+  font-size:11px;font-weight:700;padding:1px 8px;white-space:nowrap}
+.hm-tab .t-x{min-width:0}
+.hm-tab .t-x b{color:var(--navy)}
+.hm-tab .t-x span{color:var(--muted)}
+.hm-note{margin:12px 0;padding:11px 14px;border-radius:0 9px 9px 0;
+  background:#FFF7E8;border-left:3px solid var(--yellow);font-size:12.5px;color:#5A4A22}
+.hm-note b{color:var(--amber)}
+.hm-note ul{margin:5px 0 0 18px}.hm-note li{margin:3px 0}
+.hm-foot{margin-top:18px;padding-top:12px;border-top:1px solid var(--line);
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.hm-foot .note{font-size:11.5px;color:var(--muted);flex:1}
+.hm-ok{background:var(--blue);border:none;color:#fff;font-weight:600;font-family:inherit;
+  padding:7px 18px;border-radius:7px;cursor:pointer;font-size:12.5px}
+.hm-ok:hover{filter:brightness(1.06)}
+
+/* ============================================================
+   排版精修 v2（仅样式，不改任何计算 / DOM 逻辑）
+   目标：把顶部三行全局筛选合并成一个面板、去掉重复盒子感；KPI 卡片轻量化
+   ============================================================ */
+/* 三行全局筛选（分析区间 / 统一币种 / 筛选范围）合并为一个面板，
+   去掉各自独立的边框与间距，改用内部细分隔线，隐藏行时分隔线自动收起 */
+#ctrlpanel{margin-top:14px;background:var(--card);border:1px solid var(--line);
+  border-radius:10px;box-shadow:0 1px 2px rgba(20,40,70,.035)}
+#ctrlpanel #datebar,#ctrlpanel #curbar,#ctrlpanel #fbar{
+  margin-top:0;border:0;border-radius:0;background:transparent;padding:9px 16px}
+#ctrlpanel #curbar,#ctrlpanel #fbar{border-top:1px solid var(--line)}
+/* 左侧标签统一宽度，三行控件竖向对齐，读起来像一张规整的表单 */
+#ctrlpanel .db-label{min-width:56px;display:inline-block;color:var(--navy);font-weight:600}
+
+/* “已加载报表”条与下方面板视觉统一（同圆角、更紧凑） */
+#loadedbar{border-radius:10px;padding:7px 16px}
+
+/* KPI 卡片轻量化：更圆的角 + 微阴影 + 悬停轻反馈 + 数字更醒目 */
+.kpi{border-radius:10px;box-shadow:0 1px 2px rgba(20,40,70,.04);
+  transition:box-shadow .15s ease,border-color .15s ease}
+.kpi:hover{border-color:#CFDAE6;box-shadow:0 6px 18px rgba(20,40,70,.09)}
+.kpi .val{font-size:22px;letter-spacing:-.01em}
+
+/* ---- 明细页下钻更好懂（仅样式，不改任何计算 / 交互）---- */
+/* 可下钻行的 › 常显一点，让新人一眼看出「这行能点」 */
+tbody tr.drill td:first-child::after{opacity:.3}
+tbody tr.drill:hover td:first-child::after{opacity:1}
+/* 表格上方的下钻提示做成醒目小框：统一「点行下钻」徽标 + 返回说明 */
+#tblhint:not(:empty){font-size:12px;color:#2F4C68;background:var(--sky);
+  border:1px solid #CFE2F2;border-radius:8px;padding:7px 12px;margin:5px 0 9px;line-height:1.6}
+#tblhint::before{content:"点开看细节";background:var(--blue);color:#fff;font-weight:600;
+  font-size:11px;border-radius:5px;padding:1px 8px;margin-right:8px;white-space:nowrap}
+#tblhint::after{content:" · 会弹出小窗，关掉即返回，原表不动";color:#7C8DA0}
+/* 说明弹窗里的「怎么看数据 · 下钻逻辑」高亮框 */
+.hm-flow{margin:12px 0;padding:12px 15px;border-radius:0 10px 10px 0;background:#EFF6FC;
+  border-left:3px solid var(--blue);font-size:12.5px;line-height:1.75;color:#33506B}
+.hm-flow b{color:var(--navy)}
+.hm-flow .ar{color:var(--blue);font-weight:700;margin:0 3px}
+.hm-flow .eg{display:block;margin-top:7px;padding-top:7px;border-top:1px dashed #C7DCEF;
+  font-size:12px;color:#5A748F}
+
+/* 广告活动详情：两条下钻路线切换 */
+.cr-seg{display:flex;align-items:center;gap:6px;margin:2px 0 10px;flex-wrap:wrap}
+.cr-seg .cr-lb{font-size:11.5px;color:var(--muted);margin-right:2px}
+.cr-b{font-size:12px;font-family:inherit;padding:4px 13px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);border-radius:20px;cursor:pointer;transition:.15s}
+.cr-b:hover:not(:disabled){border-color:var(--blue);color:var(--blue)}
+.cr-b.on{background:var(--sky);border-color:var(--blue);color:var(--blue);font-weight:600}
+.cr-b:disabled{opacity:.45;cursor:not-allowed}
 </style>
 </head>
 <body>
@@ -1121,6 +1260,7 @@ select{border:1px solid var(--line);border-radius:6px;padding:4px 8px;font-size:
   </svg>
   <h1>亚马逊运营看板</h1>
   <div class="range" id="daterange">上传报表后自动生成分析</div>
+  <button id="helpbtn" type="button" title="第一次用？点这里看怎么用（约 1 分钟）">📖 使用说明</button>
   <button class="btn hdbtn hide" id="rptbtn" title="生成可打印的分析报告，在打印对话框里选「另存为 PDF」">导出分析报告 PDF</button>
 </header>
 <div id="report"></div>
@@ -1179,6 +1319,8 @@ select{border:1px solid var(--line);border-radius:6px;padding:4px 8px;font-size:
 
   <div id="board" class="hide">
 
+    <!-- 全局筛选：三行合并为一个面板（仅排版分组，ID 不变） -->
+    <div id="ctrlpanel">
     <div id="datebar">
       <span class="db-label">分析区间</span>
       <input type="date" id="dfrom"> <span class="db-dash">至</span> <input type="date" id="dto">
@@ -1215,7 +1357,29 @@ select{border:1px solid var(--line);border-radius:6px;padding:4px 8px;font-size:
       <span class="db-info" id="finfo"></span>
       <span class="fnote" id="fnote"></span>
     </div>
+    </div><!-- /ctrlpanel -->
 
+    <!-- ===== 顶部功能导航（仅排版，不改任何计算） ===== -->
+    <nav id="tnav" role="tablist" aria-label="功能导航">
+      <button class="tnav-btn on" role="tab" data-panel="overview" aria-selected="true" tabindex="0">
+        <span class="tn-n">①</span><span class="tn-tx"><b>总览驾驶舱</b><i>大盘 KPI · 每日趋势</i></span>
+      </button>
+      <button class="tnav-btn" role="tab" data-panel="goal" aria-selected="false" tabindex="-1">
+        <span class="tn-n">②</span><span class="tn-tx"><b>目标规划</b><i>反推流量 · 预算 · 校验天花板</i></span>
+      </button>
+      <button class="tnav-btn" role="tab" data-panel="todo" aria-selected="false" tabindex="-1">
+        <span class="tn-n">③</span><span class="tn-tx"><b>要处理的</b><i>预警 · 漏斗诊断 · 投放优化</i></span>
+      </button>
+      <button class="tnav-btn" role="tab" data-panel="checkup" aria-selected="false" tabindex="-1">
+        <span class="tn-n">④</span><span class="tn-tx"><b>长期体检</b><i>边际 ROAS · 自然表现</i></span>
+      </button>
+      <button class="tnav-btn" role="tab" data-panel="detail" aria-selected="false" tabindex="-1">
+        <span class="tn-n">⑤</span><span class="tn-tx"><b>明细数据</b><i>各维度表 · 点开看明细 · 覆盖体检</i></span>
+      </button>
+    </nav>
+
+    <!-- ② 目标规划 -->
+    <div class="tpanel" data-panel="goal" role="tabpanel" aria-label="目标规划">
     <section id="goalplan">
       <div class="gp-head">
         <h3>目标规划 · 反向拆解计算器</h3>
@@ -1230,7 +1394,10 @@ select{border:1px solid var(--line);border-radius:6px;padding:4px 8px;font-size:
         <div class="gp-note" id="gp_note"></div>
       </div>
     </section>
+    </div><!-- /panel:goal -->
 
+    <!-- ① 总览驾驶舱（默认显示） -->
+    <div class="tpanel tpanel-on" data-panel="overview" role="tabpanel" aria-label="总览驾驶舱">
     <div id="kpis"></div>
     <div id="kpimore"></div>
     <div id="kpis2" class="hide"></div>
@@ -1255,7 +1422,10 @@ select{border:1px solid var(--line);border-radius:6px;padding:4px 8px;font-size:
       </div>
       <div id="daypanel" class="hide"></div>
     </section>
+    </div><!-- /panel:overview -->
 
+    <!-- ③ 要处理的 -->
+    <div class="tpanel" data-panel="todo" role="tabpanel" aria-label="要处理的">
     <!-- ===== 分组一：要处理的（按紧急度排） ===== -->
     <div class="grp">
       <div class="grp-t"><span class="gt-n">要处理的</span>
@@ -1328,7 +1498,10 @@ select{border:1px solid var(--line);border-radius:6px;padding:4px 8px;font-size:
     </section>
       </div>
     </div>
+    </div><!-- /panel:todo -->
 
+    <!-- ④ 长期体检 -->
+    <div class="tpanel" data-panel="checkup" role="tabpanel" aria-label="长期体检">
     <!-- ===== 分组二：长期体检（每周看一次就够） ===== -->
     <div class="grp">
       <div class="grp-t"><span class="gt-n">长期体检</span>
@@ -1365,7 +1538,10 @@ select{border:1px solid var(--line);border-radius:6px;padding:4px 8px;font-size:
     </section>
       </div>
     </div>
+    </div><!-- /panel:checkup -->
 
+    <!-- ⑤ 明细数据（含各维度表 + 数据覆盖体检） -->
+    <div class="tpanel" data-panel="detail" role="tabpanel" aria-label="明细数据">
     <section>
       <div class="sechead">
         <div class="tabs" id="tabs">
@@ -1407,6 +1583,7 @@ select{border:1px solid var(--line);border-radius:6px;padding:4px 8px;font-size:
       <div class="tblwrap" id="cov_tbl" style="max-height:420px"></div>
       <div id="cov_note"></div>
     </section>
+    </div><!-- /panel:detail -->
 
   </div>
 </div>
@@ -2479,10 +2656,19 @@ function buildModel(from,to){
     let a=rawTermsByGroup.get(k); if(!a){a=[];rawTermsByGroup.set(k,a);} a.push(r);
     let d=rawTermsByGroupDay.get(dk); if(!d){d=[];rawTermsByGroupDay.set(dk,d);} d.push(r);
   }
-  const adGroups=withRef(K,{key:adGroupScopeKey,
+  /* 广告组的曝光/点击/花费改用「推广商品报表」(G) 汇总——它与活动报表(C)完全对得齐；
+     搜索词报表(K)只记录了部分曝光，会把广告组 CTR 抬得虚高（常见某些行 CTR 高达 30%~60%）。
+     推广商品报表覆盖的广告组通常是搜索词报表的超集；用并集兜底，绝不漏广告组：
+     G 里出现过的广告组用 G，仅在 K 里出现的广告组才回退到 K。
+     没上传推广商品报表时整体回退到 K（沿用旧口径）。搜索词数/关键词数仍来自 K。 */
+  const _agInG=new Set((G||[]).map(adGroupScopeKey));
+  const agMetricSrc=(G&&G.length)
+    ? G.concat(K.filter(r=>!_agInG.has(adGroupScopeKey(r))))
+    : K;
+  const adGroups=withRef(agMetricSrc,{key:adGroupScopeKey,
     meta:r=>({id:adGroupScopeKey(r),camp:r.camp,campName:r.campName,ag:r.ag||'',agName:r.agName,
       acct:r.acct,country:r.country,cur:r.cur,site:r.country||r.site||curSite(r.cur)}),ref:()=>0});
-  const byDayAdGroup=withRef(K,{key:r=>r.date+'\u0001'+adGroupScopeKey(r),
+  const byDayAdGroup=withRef(agMetricSrc,{key:r=>r.date+'\u0001'+adGroupScopeKey(r),
     meta:r=>({date:r.date,id:adGroupScopeKey(r),camp:r.camp,campName:r.campName,
       ag:r.ag||'',agName:r.agName,acct:r.acct,country:r.country,cur:r.cur,
       site:r.country||r.site||curSite(r.cur)}),ref:()=>0});
@@ -3223,11 +3409,17 @@ function renderTabs(){
   if(!avail[curTab]){ curTab='daily'; drill=[]; }
   /* Demo 式提示行：先告诉用户点行会发生什么，再让他点 */
   const HINT={
-    camp:'\u70B9\u51FB\u884C\u5F39\u7A97\u4E0B\u94BB\uFF1A\u6D3B\u52A8 \u2192 \u5404\u5E7F\u544A\u7EC4\u5BF9\u6BD4 \u2192 \u6BCF\u65E5 \u00B7 \u4E3B\u5217\u8868\u4FDD\u6301\u4E0D\u52A8\uFF0C\u5173\u6389\u5F39\u7A97\u56DE\u5230\u539F\u5904 \u00B7 \u540D\u79F0\u65C1\u5FBD\u6807 = \u8BE5\u6D3B\u52A8\u4E0B\u7684\u5E7F\u544A\u7EC4\u6570',
-    term:'\u70B9\u51FB\u884C\u5F39\u7A97\u4E0B\u94BB\uFF1A\u591A\u6765\u6E90\u8BCD\u5148\u770B\u300C\u6D3B\u52A8 \u00D7 \u5E7F\u544A\u7EC4 \u00D7 \u6295\u653E\u8BCD\u300D\u6765\u6E90\u5BF9\u6BD4\uFF0C\u5355\u6765\u6E90\u76F4\u63A5\u770B\u6BCF\u65E5 \u00B7 \u5FBD\u6807 = \u6765\u6E90\u6570',
-    adgroup:'\u70B9\u51FB\u884C\u5F39\u7A97\u67E5\u770B\u8BE5\u5E7F\u544A\u7EC4\u7684\u6BCF\u65E5\u8D70\u52BF\uFF0C\u518D\u70B9\u4EFB\u610F\u4E00\u5929\u53EF\u770B\u5F53\u5929\u641C\u7D22\u8BCD\u660E\u7EC6',
-    target:'\u70B9\u51FB\u884C\u5F39\u7A97\u67E5\u770B\u8BE5\u6295\u653E\u8BCD\u5B9E\u9645\u8DD1\u51FA\u6765\u7684\u641C\u7D22\u8BCD\uFF08\u62D3\u8BCD\u4E0E\u5426\u5B9A\u7684\u539F\u6599\uFF09',
-    daily:'\u70B9\u51FB\u4EFB\u610F\u4E00\u884C\u5F39\u7A97\u67E5\u770B\u5F53\u65E5\u5168\u90E8\u7AD9\u70B9'};
+    daily:'当天全部站点；可继续点站点 → ASIN 一路往下',
+    site:'该站点每日；再往下看当天各 ASIN / 该 ASIN 每日',
+    asin:'该 ASIN 的每日走势',
+    pcode:'该产品编号下各 ASIN / 站点的拆分',
+    owner:'该运营名下全部 ASIN；再点 ASIN 看每日',
+    camp:'各广告组对比 → 每日（名称旁徽标 = 广告组数）',
+    adgroup:'该广告组每日；再点某天看当天搜索词',
+    target:'该投放词实际跑出的搜索词（拓词 / 否定的原料）',
+    place:'该广告位的每日走势',
+    term:'来源对比（活动 × 广告组 × 投放词）或每日（单来源）',
+    inv:'该活动逐日的无效曝光 / 无效点击'};
   const hint=$('#tblhint'); if(hint) hint.textContent=HINT[curTab]||'';
 }
 
@@ -3518,6 +3710,10 @@ function drillRows(v){
     case 'campDays':   return M.byDayCamp.filter(r=>r.camp===v.camp).sort(bySort);
     case 'campDayPlaces': return groupBy(M.rawPlace.filter(r=>r.camp===v.camp&&r.date===v.date),
                             r=>r.pl,r=>({pl:r.pl,camp:r.camp,cur:r.cur})).sort((a,b)=>b.spend-a.spend);
+    case 'campPlaces': return groupBy(M.rawPlace.filter(r=>r.camp===v.camp),
+                            r=>r.pl,r=>({pl:r.pl,camp:r.camp,cur:r.cur})).sort((a,b)=>b.spend-a.spend);
+    case 'campPlaceDays': return groupBy(M.rawPlace.filter(r=>r.camp===v.camp&&r.pl===v.pl),
+                            r=>r.date,r=>({date:r.date,pl:r.pl,camp:r.camp,cur:r.cur})).sort(bySort);
     case 'placeDays':  return M.byDayPlace.filter(r=>r.pl===v.pl).sort(bySort);
     case 'dayPlaces':  return M.byDayPlace.filter(r=>r.date===v.date).sort((a,b)=>b.spend-a.spend);
     case 'termDays':   return groupBy(M.rawTerm.filter(r=>termScopeKey(r)===v.id),
@@ -3548,6 +3744,8 @@ function drillAlive(v){
     case 'adGroupTermDays': return (M.rawTermsByGroup.get(v.id)||[]).some(r=>r.term===v.term);
     case 'campDays': case 'invDays': return M.camps.some(r=>r.camp===v.camp)||M.invs.some(r=>r.camp===v.camp);
     case 'campDayPlaces': return M.rawPlace.some(r=>r.camp===v.camp&&r.date===v.date);
+    case 'campPlaces': return M.rawPlace.some(r=>r.camp===v.camp);
+    case 'campPlaceDays': return M.rawPlace.some(r=>r.camp===v.camp&&r.pl===v.pl);
     case 'placeDays': return M.places.some(r=>r.pl===v.pl);
     case 'termDays': case 'termCamps': return M.terms.some(r=>r.id===v.id);
     case 'termSrcDays': return M.rawTerm.some(r=>termScopeKey(r)===v.id&&termSrcKey(r)===v.src);
@@ -3592,6 +3790,8 @@ function drillLabel(v){
     case 'adGroupTermDays': return `\u641C\u7D22\u8BCD\u300C${cut(v.term,28)}\u300D\u00B7 \u6BCF\u65E5`;
     case 'campDays': return `${cut(nameOfCamp(v.camp),30)} \u00B7 ${v.camp} \u6BCF\u65E5`;
     case 'campDayPlaces': return `${v.date} \u8BE5\u6D3B\u52A8\u5404\u5E7F\u544A\u4F4D`;
+    case 'campPlaces': return `${cut(nameOfCamp(v.camp),30)} · 各广告位`;
+    case 'campPlaceDays': return `${cut(v.pl,20)} · 每日`;
     case 'placeDays': return `${v.pl} \u6BCF\u65E5`;
     case 'dayPlaces': return `${v.date} \u5168\u90E8\u5E7F\u544A\u4F4D`;
     case 'termDays': return `\u641C\u7D22\u8BCD\u300C${cut(String(v.id||'').split('\u0001')[0],26)}\u300D\u6BCF\u65E5`;
@@ -3607,7 +3807,7 @@ function drillLabel(v){
    面包屑会显示成「广告活动 › 某日全部站点」，点根节点还会跳回广告活动表，
    和面包屑写的完全对不上。开新链路时按视图类型把 curTab 对齐，根节点才不会说谎。 */
 const VIEW_ROOT={daySites:'daily',siteDays:'site',siteDayAsins:'site',asinDays:'asin',
-  ownerAsins:'owner',pcodeAsins:'pcode',campGroups:'camp',campDays:'camp',campDayPlaces:'camp',
+  ownerAsins:'owner',pcodeAsins:'pcode',campGroups:'camp',campDays:'camp',campDayPlaces:'camp',campPlaces:'camp',campPlaceDays:'camp',
   adGroupDays:'adgroup',adGroupDayTerms:'adgroup',adGroupTermDays:'adgroup',
   targetTerms:'target',targetDays:'target',targetTermDays:'target',
   placeDays:'place',dayPlaces:'place',termDays:'term',termCamps:'term',termSrcDays:'term',invDays:'inv'};
@@ -3638,7 +3838,15 @@ const goTargetTermDays=(id,term,k)=>go({type:'targetTermDays',id,term},k);
 const goAdGroupDayTerms=(id,date,k)=>go({type:'adGroupDayTerms',id,date},k);
 const goAdGroupTermDays=(id,term,k)=>go({type:'adGroupTermDays',id,term},k);
 const goCampDays=(c,k)=>go({type:'campDays',camp:c},k);
-const goCampDetail=(c,k)=>model&&model.adGroups.some(r=>r.camp===c)?goCampGroups(c,k):goCampDays(c,k);
+const goCampPlaces=(c,k)=>go({type:'campPlaces',camp:c},k);
+const goCampPlaceDays=(c,p,k)=>go({type:'campPlaceDays',camp:c,pl:p},k);
+/* 广告活动点行：默认进「广告组」路线；没有广告组时退到「广告位」，两者都没有才看每日。
+   进入后详情头部有「按广告组 / 按广告位」切换，可在两条路线间来回。 */
+const goCampDetail=(c,k)=>{
+  if(model&&model.adGroups.some(r=>r.camp===c)) return goCampGroups(c,k);
+  if(model&&model.rawPlace.some(r=>r.camp===c)) return goCampPlaces(c,k);
+  return goCampDays(c,k);
+};
 const goCampDayPlaces=(c,d,k)=>go({type:'campDayPlaces',camp:c,date:d},k);
 const goPlaceDays=(p,k)=>go({type:'placeDays',pl:p},k);
 const goDayPlaces=(d,k)=>go({type:'dayPlaces',date:d},k);
@@ -3675,10 +3883,10 @@ function renderCrumb(){
 
 /* ---- 下钻详情面板 ---- */
 const AD_VIEWS=new Set(['campGroups','adGroupDays','adGroupDayTerms','adGroupTermDays',
-  'campDays','campDayPlaces','placeDays','dayPlaces','termDays','invDays',
+  'campDays','campDayPlaces','campPlaces','campPlaceDays','placeDays','dayPlaces','termDays','invDays',
   'targetTerms','targetDays','targetTermDays','termCamps','termSrcDays']);
 const PERDAY_VIEWS=new Set(['siteDays','asinDays','adGroupDays','adGroupTermDays',
-  'campDays','placeDays','termDays','invDays','targetDays','targetTermDays','termSrcDays']);
+  'campDays','placeDays','campPlaceDays','termDays','invDays','targetDays','targetTermDays','termSrcDays']);
 function bindAcctCollapse(root){
   if(!root) return;
   root.querySelectorAll('.ds-fold').forEach(box=>{
@@ -3728,8 +3936,10 @@ function renderDrillSum(){
       adGroupDays:()=>`\u5E7F\u544A\u7EC4\u6BCF\u65E5\u8868\u73B0\uFF1A${nameOfGroup(v.id)}`,
       adGroupDayTerms:()=>`${v.date} \u00B7 \u5E7F\u544A\u7EC4\u641C\u7D22\u8BCD\uFF1A${nameOfGroup(v.id)}`,
       adGroupTermDays:()=>`\u641C\u7D22\u8BCD\u6BCF\u65E5\u8868\u73B0\uFF1A${v.term}`,
-      campDays:()=>`\u5E7F\u544A\u6D3B\u52A8 ${v.camp}`,
+      campDays:()=>`广告活动每日明细：${nameOfCamp(v.camp)}`,
       campDayPlaces:()=>`\u6D3B\u52A8 ${v.camp} \u00B7 ${v.date} \u5404\u5E7F\u544A\u4F4D`,
+      campPlaces:()=>`活动各广告位表现：${nameOfCamp(v.camp)}`,
+      campPlaceDays:()=>`广告位每日表现：${v.pl}`,
       placeDays:()=>`\u5E7F\u544A\u4F4D\uFF1A${v.pl}`,
       dayPlaces:()=>`${v.date} \u00B7 \u5F53\u65E5\u5168\u90E8\u5E7F\u544A\u4F4D`,
       termDays:()=>`\u641C\u7D22\u8BCD\uFF1A${String(v.id||'').split('\u0001')[0]}`,
@@ -3744,9 +3954,11 @@ function renderDrillSum(){
       :v.type==='adGroupDayTerms'?`\u5171 ${rows.length} \u4E2A\u641C\u7D22\u8BCD \u00B7 \u5DE6\u56FE\u6309\u82B1\u8D39\u3001\u53F3\u56FE\u6309\u70B9\u51FB\u6392\u540D`
       :v.type==='targetTerms'?`\u5171 ${rows.length} \u4E2A\u641C\u7D22\u8BCD \u00B7 \u56FE\u8868\u53EA\u5C55\u793A TOP 20\uFF0C\u4E0B\u65B9\u8868\u683C\u4E3A\u5168\u90E8`
       :v.type==='termCamps'?`\u5171 ${rows.length} \u4E2A\u6765\u6E90\uFF08\u6D3B\u52A8\u00D7\u5E7F\u544A\u7EC4\u00D7\u6295\u653E\u8BCD\u00D7\u5339\u914D\u65B9\u5F0F\uFF09 \u00B7 \u56FE\u8868\u53EA\u5C55\u793A TOP 20 \u00B7 \u70B9\u8868\u683C\u4EFB\u610F\u4E00\u884C\u770B\u8BE5\u6765\u6E90\u9010\u65E5`
+      :v.type==='campPlaces'?`\u5171 ${rows.length} \u4E2A\u5E7F\u544A\u4F4D`
       :perDay?`\u533A\u95F4 ${dateRange.from} ~ ${dateRange.to}\uFF08${nDays} \u5929\uFF09`:`\u5171 ${rows.length} \u884C`)
       +(curs.length?` \u00B7 \u5E01\u79CD ${curs.join('/')}`:'')
       +(v.type==='campGroups'?' \u00B7 \u70B9\u4E0B\u65B9\u8868\u683C\u7684\u5E7F\u544A\u7EC4\u67E5\u770B\u6BCF\u65E5\u8868\u73B0':'')
+      +(v.type==='campPlaces'?' · 点表格里的广告位可看它每日表现':'')
       +(v.type==='adGroupDayTerms'?' \u00B7 \u70B9\u4E0B\u65B9\u8868\u683C\u7684\u641C\u7D22\u8BCD\u67E5\u770B\u6BCF\u65E5\u8D8B\u52BF':'')
       +(v.type==='campDays'?' \u00B7 \u70B9\u8868\u683C\u4EFB\u610F\u4E00\u884C\u53EF\u770B\u5F53\u65E5\u5404\u5E7F\u544A\u4F4D':'')
       +(v.type==='placeDays'?' \u00B7 \u70B9\u8868\u683C\u4EFB\u610F\u4E00\u884C\u53EF\u770B\u5F53\u65E5\u5168\u90E8\u5E7F\u544A\u4F4D':'');
@@ -3884,6 +4096,12 @@ function renderDrillSum(){
     campDayPlaces:['\u82B1\u8D39 / \u5E7F\u544A\u9500\u552E\u989D \u5BF9\u6BD4','\u66DD\u5149 / \u70B9\u51FB \u5BF9\u6BD4',
       '<span><i style="background:#C0392B"></i>\u82B1\u8D39</span><span>\u6807\u6CE8\u4E3A\u5E7F\u544A\u9500\u552E\u989D\u4E0E ACOS</span>',
       '<span><i style="background:#146EB4"></i>\u70B9\u51FB</span><span>\u6807\u6CE8\u4E3A\u66DD\u5149\u4E0E CTR</span>'],
+    campPlaces:['各广告位 花费 / 广告销售额 对比','各广告位 曝光 / 点击 对比',
+      '<span><i style="background:#C0392B"></i>花费</span><span>标注为广告销售额与 ACOS</span>',
+      '<span><i style="background:#146EB4"></i>点击</span><span>标注为曝光与 CTR</span>'],
+    campPlaceDays:['每日 广告销售额 / 花费 / ACOS','每日 曝光 / 点击 / CTR',
+      '<span><i style="background:#CFE2F5"></i>广告销售额</span><span><i style="background:#C0392B"></i>花费</span><span><i style="background:#B7791F"></i>ACOS（右轴）</span>',
+      '<span><i style="background:#CFE2F5"></i>曝光</span><span><i style="background:#146EB4"></i>点击</span><span><i style="background:#1E7A46"></i>CTR（右轴）</span>'],
     invDays:['\u6BCF\u65E5 \u603B\u66DD\u5149 / \u65E0\u6548\u66DD\u5149','\u6BCF\u65E5 \u603B\u70B9\u51FB / \u65E0\u6548\u70B9\u51FB',
       '<span><i style="background:#CFE2F5"></i>\u603B\u66DD\u5149</span><span><i style="background:#C0392B"></i>\u65E0\u6548\u66DD\u5149</span><span><i style="background:#B7791F"></i>\u65E0\u6548\u7387\uFF08\u53F3\u8F74\uFF09</span>',
       '<span><i style="background:#CFE2F5"></i>\u603B\u70B9\u51FB</span><span><i style="background:#C0392B"></i>\u65E0\u6548\u70B9\u51FB</span><span><i style="background:#B7791F"></i>\u65E0\u6548\u7387\uFF08\u53F3\u8F74\uFF09</span>'],
@@ -3921,6 +4139,28 @@ function renderDrillSum(){
     const same=(v.country||null)===c&&(v.acct||null)===a;             // 再点一次取消筛选
     return goOwnerAsins(v.owner, same?null:{country:c,acct:a}, drill.length>1);
   });
+  // ==== 广告活动：三条下钻路线切换（按广告组 / 按广告位 / 按每日）====
+  if(v.type==='campGroups'||v.type==='campPlaces'||v.type==='campDays'){
+    const hasG=!!(model&&model.adGroups.some(r=>r.camp===v.camp));
+    const hasP=!!(model&&model.rawPlace.some(r=>r.camp===v.camp));
+    const hasD=!!(model&&model.byDayCamp&&model.byDayCamp.some(r=>r.camp===v.camp));
+    const head=s.querySelector('.ds-head');
+    if(head&&(hasG||hasP||hasD)){
+      const R2T={g:'campGroups',p:'campPlaces',d:'campDays'};
+      const seg=document.createElement('div');
+      seg.className='cr-seg';
+      seg.innerHTML='<span class="cr-lb">看这个活动的</span>'
+        +`<button type="button" class="cr-b${v.type==='campGroups'?' on':''}" data-r="g"${hasG?'':' disabled'}>按广告组</button>`
+        +`<button type="button" class="cr-b${v.type==='campPlaces'?' on':''}" data-r="p"${hasP?'':' disabled'}>按广告位</button>`
+        +`<button type="button" class="cr-b${v.type==='campDays'?' on':''}" data-r="d"${hasD?'':' disabled'}>按每日</button>`;
+      head.insertAdjacentElement('afterend',seg);
+      seg.querySelectorAll('.cr-b').forEach(b=>{ if(b.disabled) return;
+        b.onclick=()=>{ const to=R2T[b.dataset.r];
+          if(!to||to===v.type) return;
+          drill[drill.length-1]={type:to,camp:v.camp}; afterNav(); };
+      });
+    }
+  }
   drawDrillCharts(v,rows,t);
 }
 
@@ -4223,7 +4463,7 @@ function drawDrillCharts(v,rows,t){
        ['CTR',fmt.pct2(B.ctr)],['CPC',fmt.$c(B.cpc)]]);
     return;
   }
-  if(v.type==='adGroupDays'||v.type==='adGroupTermDays'||v.type==='campDays'||v.type==='placeDays'||v.type==='termDays'||v.type==='targetDays'||v.type==='targetTermDays'||v.type==='termSrcDays'){
+  if(v.type==='adGroupDays'||v.type==='adGroupTermDays'||v.type==='campDays'||v.type==='placeDays'||v.type==='campPlaceDays'||v.type==='termDays'||v.type==='targetDays'||v.type==='targetTermDays'||v.type==='termSrcDays'){
     $('#dsc1').innerHTML=comboChart(rows,[{get:r=>r.adSales,color:'#CFE2F5',label:'\u5E7F\u544A\u9500\u552E\u989D'},
       {get:r=>r.spend,color:'#C0392B',label:'\u82B1\u8D39',labelColor:'#C0392B'}],
       {get:r=>r.acos,color:'#B7791F',label:'ACOS',fmt:x=>fmt.pct1(x)});
@@ -4667,6 +4907,8 @@ const COLS={
     Cc('adSalesPct','\u5360\u5F53\u65E5\u9500\u552E\u989D',{f:fmt.pct1}),Cc('tacos','TACOS',{pill:[0.05,0.10],f:fmt.pct1})],
   dayPlaces:[txtCol('pl','\u5E7F\u544A\u4F4D','158px'),...ADO,Cc('adSalesPct','\u5360\u5F53\u65E5\u9500\u552E\u989D',{f:fmt.pct1})],
   campDayPlaces:[txtCol('pl','\u5E7F\u544A\u4F4D','158px'),...ADO],
+  campPlaces:[txtCol('pl','\u5E7F\u544A\u4F4D','158px'),...ADO],
+  campPlaceDays:[dateCol,...ADO],
   term:[Cc('term','\u641C\u7D22\u8BCD',{left:1,raw:1,w:'216px',
       tip:'\u540D\u79F0\u65C1\u5FBD\u6807 = \u8BE5\u8BCD\u7684\u6765\u6E90\u6570\uFF08\u6D3B\u52A8\u00D7\u5E7F\u544A\u7EC4\u00D7\u6295\u653E\u8BCD\uFF09\uFF1B\u591A\u6765\u6E90\u70B9\u884C\u5148\u770B\u6765\u6E90\u5BF9\u6BD4\uFF0C\u5355\u6765\u6E90\u76F4\u63A5\u770B\u6BCF\u65E5',
       rf:r=>capSpan(r.term,'168px')+(r.nSrc>1?`<span class="agbadge">${r.nSrc} \u6765\u6E90</span>`:'')}),
@@ -4706,7 +4948,7 @@ const DEFAULT_SORT={daily:{k:'date',asc:true},site:{k:'gmv',asc:false},asin:{k:'
   asinDays:{k:'date',asc:true},ownerAsins:{k:'gmv',asc:false},
   campGroups:{k:'spend',asc:false},adGroupDays:{k:'date',asc:true},
   adGroupDayTerms:{k:'spend',asc:false},adGroupTermDays:{k:'date',asc:true},campDays:{k:'date',asc:true},
-  campDayPlaces:{k:'spend',asc:false},placeDays:{k:'date',asc:true},dayPlaces:{k:'spend',asc:false},
+  campDayPlaces:{k:'spend',asc:false},campPlaces:{k:'spend',asc:false},campPlaceDays:{k:'date',asc:true},placeDays:{k:'date',asc:true},dayPlaces:{k:'spend',asc:false},
   termDays:{k:'date',asc:true},invDays:{k:'date',asc:true}};
 let sortState={...DEFAULT_SORT};
 const sortOf=v=>sortState[v]||(sortState[v]={k:COLS[v][0].k,asc:true});
@@ -4797,7 +5039,7 @@ const DRILL_KEY={daily:'date',daySites:'site',site:'site',siteDays:'date',siteDa
   asin:'cid',ownerAsins:'cid',owner:'owner',camp:'camp',campGroups:'id',
   pcode:'pcode',pcodeAsins:'cid',
   adgroup:'id',target:'id',targetTerms:'term',
-  adGroupDays:'date',adGroupDayTerms:'term',campDays:'date',place:'pl',
+  adGroupDays:'date',adGroupDayTerms:'term',campDays:'date',campPlaces:'pl',place:'pl',
   placeDays:'date',dayPlaces:'pl',term:'id',termCamps:'srcId',inv:'camp'};
 const TABLE_LIMIT_DEFAULT=500;
 function resetTableLimit(){ tableLimit=TABLE_LIMIT_DEFAULT; }
@@ -4821,6 +5063,7 @@ function doDrill(view,val){
     case 'adGroupDays': return goAdGroupDayTerms(v.id,val,true);
     case 'adGroupDayTerms': return goAdGroupTermDays(v.id,val,true);
     case 'campDays': return goCampDayPlaces(v.camp,val,true);
+    case 'campPlaces': return goCampPlaceDays(v.camp,val,true);
     case 'place': return goPlaceDays(val,false);
     case 'placeDays': return goDayPlaces(val,true);
     case 'dayPlaces': return goPlaceDays(val,true);
@@ -4846,8 +5089,8 @@ const CMP_ROW_COLS={site:['gmv','spend','adSales','acos','tacos','ordCvr'],
 /* 冻结列宽 = 列内文本 max-width + 20px 内边距，两边必须对齐，否则粘性列会错位 */
 const FREEZE={daily:[1,'96px'],siteDays:[1,'96px'],asinDays:[1,'96px'],
   adGroupDays:[1,'96px'],adGroupTermDays:[1,'96px'],campDays:[1,'96px'],
-  placeDays:[1,'96px'],termDays:[1,'96px'],invDays:[1,'96px'],
-  place:[1,'178px'],dayPlaces:[1,'178px'],campDayPlaces:[1,'178px'],
+  placeDays:[1,'96px'],campPlaceDays:[1,'96px'],termDays:[1,'96px'],invDays:[1,'96px'],
+  place:[1,'178px'],dayPlaces:[1,'178px'],campDayPlaces:[1,'178px'],campPlaces:[1,'178px'],
   owner:[1,'96px'],   /* 主管列已删，只冻结运营列 */
   site:[2,'112px','58px'],daySites:[2,'112px','58px'],
   asin:[2,'252px','116px'],siteDayAsins:[2,'252px','116px'],ownerAsins:[2,'252px','116px'],
@@ -5031,9 +5274,10 @@ function renderTable(){
     ownerAsins:'\u70B9\u4EFB\u610F\u4E00\u884C\u770B\u8BE5 ASIN \u6BCF\u65E5\u8D8B\u52BF\u3002',
     owner:'\u6309\u8FD0\u8425\u4EBA\u5458\u6C47\u603B\uFF08\u6765\u81EA ASIN \u65E5\u62A5\u7684\u300C\u8FD0\u8425\u4EBA\u5458\u300D\u5B57\u6BB5\uFF09\uFF0C\u70B9\u884C\u770B\u5176\u540D\u4E0B\u5168\u90E8 ASIN\u3002',
     camp:'\u70B9\u4EFB\u610F\u4E00\u884C\u4E0B\u94BB\u5230\u8BE5\u6D3B\u52A8\u7684\u5E7F\u544A\u7EC4\uFF0C\u5BF9\u6BD4\u54EA\u4E2A\u5E7F\u544A\u7EC4\u82B1\u8D39\u5360\u6BD4\u9AD8\u3001ACOS \u9AD8\u4E8E\u6D3B\u52A8\u5E73\u5747\u3002\u82E5\u641C\u7D22\u8BCD\u62A5\u8868\u4E2D\u6CA1\u6709\u8BE5\u6D3B\u52A8\u7684\u5E7F\u544A\u7EC4\u6570\u636E\uFF0C\u5219\u81EA\u52A8\u56DE\u9000\u5230\u6D3B\u52A8\u6BCF\u65E5 / \u5E7F\u544A\u4F4D\u660E\u7EC6\u3002\u65E5\u9884\u7B97\u53D6\u533A\u95F4\u5185\u6700\u540E\u4E00\u5929\u7684\u503C\u3002',
-    campGroups:'\u9ED8\u8BA4\u6309\u82B1\u8D39\u4ECE\u9AD8\u5230\u4F4E\u6392\u5217\u3002\u5E7F\u544A\u7EC4\u6307\u6807\u6765\u81EA\u641C\u7D22\u8BCD\u62A5\u8868\uFF1B\u63A8\u5E7F\u5546\u54C1\u62A5\u8868\u53EA\u7528\u6765\u8865\u5145\u8BE5\u7EC4\u5BF9\u5E94\u7684 ASIN\uFF0C\u4E0D\u91CD\u590D\u7D2F\u52A0\u82B1\u8D39\u548C\u9500\u552E\u989D\u3002\u70B9\u5E7F\u544A\u7EC4\u770B\u6BCF\u65E5\u8868\u73B0\u3002',
+    adgroup:'广告组的曝光 / 点击 / 花费来自推广商品报表，与活动报表精确对齐；广告销售 / 订单也取自该表，但在广告组维度上不是简单可加（跨广告组的订单会各记一次、活动还含广告带动的其他商品销售），各行相加与活动 / 广告位可能差约 ±1%，看活动整体请以活动报表口径（按广告位 / 按每日）为准。搜索词 / 关键词个数来自搜索词报表。点任意一行看该广告组每日表现。',
+    campGroups:'默认按花费从高到低排列。广告组的曝光 / 点击 / 花费来自推广商品报表，与活动报表精确对齐（CTR 不再虚高）；广告销售 / 订单也取自该表，但在广告组维度上不是简单可加——跨广告组的订单会各记一次、活动报表还含广告带动的其他商品销售，各行相加与活动 / 广告位可能差约 ±1%，看活动整体销售 / 订单请以「按广告位 / 按每日」为准。搜索词 / 关键词个数来自搜索词报表。点广告组看每日表现。',
     adGroupDays:'\u8BE5\u5E7F\u544A\u7EC4\u7684\u9010\u65E5\u8868\u73B0\u3002\u70B9\u4EFB\u610F\u4E00\u5929\uFF0C\u67E5\u770B\u5F53\u5929\u5177\u4F53\u662F\u54EA\u4E9B\u641C\u7D22\u8BCD\u62D6\u540E\u817F\u3002',
-    adGroupDayTerms:'\u8BE5\u5E7F\u544A\u7EC4\u5728\u5F53\u5929\u7684\u641C\u7D22\u8BCD\u660E\u7EC6\uFF0C\u9ED8\u8BA4\u6309\u82B1\u8D39\u4ECE\u9AD8\u5230\u4F4E\u6392\u5217\u3002\u70B9\u641C\u7D22\u8BCD\u53EF\u7EE7\u7EED\u770B\u9010\u65E5\u8D8B\u52BF\u3002',
+    adGroupDayTerms:'该广告组在当天的搜索词明细，默认按花费从高到低排列。点搜索词可继续看逐日趋势。注意：搜索词报表只会列出部分搜索词（亚马逊略去了很多长尾词的曝光），所以这里各搜索词的曝光相加通常小于广告组当天的总曝光——这是报表特性、不是算错；广告组那一层的合计才是完整口径。',
     adGroupTermDays:'\u8BE5\u641C\u7D22\u8BCD\u5728\u5F53\u524D\u5E7F\u544A\u7EC4\u4E2D\u7684\u9010\u65E5\u8868\u73B0\u3002',
     campDays:'\u70B9\u4EFB\u610F\u4E00\u884C\u770B\u8BE5\u6D3B\u52A8\u5F53\u65E5\u5404\u5E7F\u544A\u4F4D\u5206\u5E03\u3002',
     place:'\u70B9\u4EFB\u610F\u4E00\u884C\u770B\u8BE5\u5E7F\u544A\u4F4D\u6BCF\u65E5\u3002Top of Search / Detail Page / Other / Off Amazon \u4E3A\u4E9A\u9A6C\u900A\u539F\u751F\u5206\u7C7B\u3002',
@@ -5048,7 +5292,7 @@ function renderTable(){
   if(view==='campGroups'&&drill.length){
     const parent=model.camps.find(r=>r.camp===drill[drill.length-1].camp);
     if(parent&&parent.spend>0){
-      notes.push(`\u5F53\u524D\u8868\u5185\u5E7F\u544A\u7EC4\u82B1\u8D39 ${fmt.$2(tot.spend)}\uFF0C\u5360\u6295\u653E\u62A5\u8868\u8BE5\u6D3B\u52A8\u82B1\u8D39 ${fmt.pct1(div(tot.spend,parent.spend))}\u3002\u4E24\u4EFD\u62A5\u8868\u7684\u8D26\u53F7 / \u7AD9\u70B9\u6216\u65E5\u671F\u8986\u76D6\u4E0D\u4E00\u81F4\u65F6\uFF0C\u6BD4\u4F8B\u53EF\u80FD\u4E0D\u662F 100%\u3002`);
+      notes.push(`当前表内广告组花费 ${fmt.$2(tot.spend)}，占该活动花费 ${fmt.pct1(div(tot.spend,parent.spend))}。广告组已改用推广商品报表、与活动对得齐，正常≈100%；若没上传该报表而回退到搜索词报表，此比例会明显偏低。`);
     }
   }
   /* 会话去重说明：合计行的会话不是各行相加 */
@@ -5280,10 +5524,10 @@ function adiagBottleneck(r,ctrL,cvrL,obj,over,bench){
     if(over){
       const act={
         asin:'先按 CPC / CVR / 客单价定位并控制亏损；CTR 仅辅助核查价格、展示与相关性，不把 ACOS 超线归因成主图问题',
-        camp:'先下钻搜索词、投放对象与广告位，按 CPC / CVR 控制亏损；CTR 仅作为相关性与展示效率的辅助信号',
+        camp:'先细查搜索词、投放对象与广告位，按 CPC / CVR 控制亏损；CTR 仅作为相关性与展示效率的辅助信号',
         term:'先降竞价控制 ACOS，并核查搜索词与落地商品的转化匹配；CTR 只辅助判断相关性'
       }[obj];
-      return {block:'转化偏低·CTR亦低',cls:'t-cvr',act,actShort:obj==='asin'?'先控成本与转化':(obj==='camp'?'先下钻控亏损':'降竞价·查转化')};
+      return {block:'转化偏低·CTR亦低',cls:'t-cvr',act,actShort:obj==='asin'?'先控成本与转化':(obj==='camp'?'先细查控亏损':'降竞价·查转化')};
     }
     const ctrMild=(r.ctr/ctrL)>=0.80;
     const ctrWorse=!ctrMild&&(r.ctr/ctrL)<=(r.cvr/cvrL);
@@ -8822,7 +9066,7 @@ document.addEventListener('keydown',e=>{
 <div id="drillBg">
   <div id="drillModal">
     <div class="dm-top">
-      <span class="dm-t" id="dm_title">下钻明细</span>
+      <span class="dm-t" id="dm_title">查看明细</span>
       <input type="search" id="m_search" placeholder="在当前层搜索…">
       <button class="btn" id="m_charts">收起图表</button>
       <button class="btn" id="m_export">导出 CSV</button>
@@ -8905,8 +9149,8 @@ $('#m_export').onclick=()=>$('#export').click();
    3. 所需广告预算 = 广告点击 × CPC，预算天花板 = 目标销售额 × 目标 TACOS。
    这里只读取 model.T，不改动原有模型、KPI、诊断和导出计算。 */
 let gpState=null, gpScopeSig='', gpAutoInfo={peakDate:'',peakSales:0,unitsPerOrder:1};
-/* 每次打开页面默认折叠；本次使用中展开后，切筛选仍保持展开。 */
-let gpCollapsed=true;
+/* 目标规划已独占一个标签页，默认展开，无需手动点开；仍可手动收起。 */
+let gpCollapsed=false;
 
 function gpScopeKey(){
   const ac=(typeof gAcct!=='undefined'?[...gAcct].sort():[]).join(',');
@@ -9063,6 +9307,156 @@ function renderGoalPlanner(T,d){
   };
   gpCalculate();
 }
+</script>
+
+<!-- ============================================================
+     使用说明弹窗（纯排版内容，不参与任何计算）
+     ============================================================ -->
+<div id="helpModal" role="dialog" aria-modal="true" aria-labelledby="hm_title">
+  <div class="hm-card">
+    <div class="hm-top">
+      <h2 id="hm_title">使用说明</h2>
+      <span class="hm-sub">新人先读，约 1 分钟</span>
+      <span class="sp"></span>
+      <button class="hm-x" type="button" data-close aria-label="关闭">×</button>
+    </div>
+    <div class="hm-body">
+
+      <h3>这个工具是做什么的</h3>
+      <p>把亚马逊后台导出的报表拖进来，它会自动算好大盘数据、诊断广告问题、列出「今天该改什么」。<b>所有计算都在你自己的浏览器里完成，报表不会上传到任何服务器。</b></p>
+
+      <h3>三步就能上手</h3>
+      <div class="hm-step"><span class="s-n">1</span><span class="s-b"><b>上传报表。</b>把文件拖进上传框（可多选 xlsx / csv）。最少上传一张「站点日报」就能看大盘；再加一张「ASIN日报」，才有每个 ASIN 的明细。没有文件？先点<b>「加载示例数据」</b>看效果。</span></div>
+      <div class="hm-step"><span class="s-n">2</span><span class="s-b"><b>定区间、币种、筛选。</b>顶部三行是全局设置，切到哪个标签都生效：<b>分析区间</b>选日期或用快捷预设，可开「对比」看环比 / 同比；<b>统一币种</b>把多站点折算成一个币种再汇总（默认汇率记得按自己的结算汇率改）；<b>筛选范围</b>按账号 / 站点缩小范围。</span></div>
+      <div class="hm-step"><span class="s-n">3</span><span class="s-b"><b>按标签逐块看。</b>顶部导航把内容分成 5 块，一次只看一块，不用在一屏里翻半天：</span></div>
+
+      <div class="hm-tabs">
+        <div class="hm-tab"><span class="t-n">① 总览驾驶舱</span><span class="t-x"><b>整体好不好</b> <span>· 大盘 KPI 卡片 + 每日销售 / ACOS / TACOS 趋势图，点柱子看当天各站点</span></span></div>
+        <div class="hm-tab"><span class="t-n">② 目标规划</span><span class="t-x"><b>想做到多少</b> <span>· 填目标销售额，反推需要多少流量、自然与广告销量、广告预算，并校验 TACOS 天花板</span></span></div>
+        <div class="hm-tab"><span class="t-n">③ 要处理的</span><span class="t-x"><b>今天动手改</b> <span>· 恶化预警、广告漏斗诊断、投放优化（词 / 广告位 / 预算），按紧急度排，导出后照着在后台改</span></span></div>
+        <div class="hm-tab"><span class="t-n">④ 长期体检</span><span class="t-x"><b>每周看一次</b> <span>· 边际 ROAS（还能不能再加预算）、自然表现（对广告的依赖度）</span></span></div>
+        <div class="hm-tab"><span class="t-n">⑤ 明细数据</span><span class="t-x"><b>往下挖细节</b> <span>· 各维度数据表（站点 / ASIN / 运营 / 活动 / 搜索词…），名称旁带 › 的行都能点开，一层层往下看明细，底部有数据覆盖体检</span></span></div>
+      </div>
+
+      <div class="hm-flow">
+        <b>怎么看数据（从大盘挖到明细）：</b>先在 <b>①总览</b> 看整体好不好（趋势图<b>点柱子</b>就能就地看当天各站点）<span class="ar">→</span> <b>③要处理的</b> 帮你挑今天先改哪块 <span class="ar">→</span> 想知道「是谁 / 哪个 ASIN / 哪个词」在拖后腿，就进 <b>⑤明细数据</b>。<br>
+        在 ⑤ 里：先用上方标签<b>切维度</b>（站点 / ASIN / 运营 / 活动 / 搜索词…）定位对象；<b>表格里名称旁带 › 箭头的行都能点</b>，点一下就会弹出一个小窗，可以<b>一层层往下看明细</b>；关掉、或点小窗里的「返回上一级」就回到这里，原表不动。ASIN 层的 ACOS / TACOS 可不可信，翻到最下面看<b>「数据覆盖体检」</b>。
+        <span class="eg">例：每日大盘点某天 <span class="ar">›</span> 当天各站点 <span class="ar">›</span> 该站点每日 <span class="ar">›</span> 当天各 ASIN <span class="ar">›</span> 该 ASIN 每日</span>
+      </div>
+
+      <div class="hm-note">
+        <b>几个容易踩坑的口径，记一下：</b>
+        <ul>
+          <li>「要处理的」里每块右侧的金额是<b>各自口径</b>的估算，会有重叠（同一笔浪费可能被两块同时算到），<b>不要跨块相加</b>。</li>
+          <li>汇率是默认的市场中间价，<b>务必改成自己的结算汇率</b>，改完立即重算。</li>
+          <li>ASIN 层的 ACOS / TACOS 只有在「数据覆盖体检」覆盖率高时才可信——覆盖率低说明 ASIN 明细没导全。</li>
+        </ul>
+      </div>
+
+      <h3>导出</h3>
+      <p>每一块都有<b>「导出 CSV」</b>按钮，可以直接拿去在后台操作或存档；右上角<b>「导出分析报告 PDF」</b>会生成一份可打印的报告，在打印对话框里选「另存为 PDF」即可。随时想再看这份说明，点右上角<b>「📖 使用说明」</b>。</p>
+
+      <div class="hm-foot">
+        <span class="note">提示：按 <b>Esc</b> 可关闭本窗口；导航栏支持左右方向键切换。</span>
+        <button class="hm-ok" type="button" data-close>知道了，开始用</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     顶部导航 + 使用说明 的交互（纯排版，未改动任何计算函数）
+     渐进增强：一切就绪后才给 body 加 .js-tabs 接管分屏；
+     若本段脚本抛错，页面自动保持原样（整屏长页，内容不丢）。
+     ============================================================ -->
+<script id="ui-nav">
+(function(){
+  try{
+    var nav = document.getElementById('tnav');
+    if(!nav) return;
+    var btns   = [].slice.call(nav.querySelectorAll('.tnav-btn'));
+    var panels = [].slice.call(document.querySelectorAll('.tpanel'));
+    if(!btns.length || !panels.length) return;
+
+    function activate(name, doScroll){
+      btns.forEach(function(b){
+        var on = b.getAttribute('data-panel') === name;
+        b.classList.toggle('on', on);
+        b.setAttribute('aria-selected', on ? 'true' : 'false');
+        b.tabIndex = on ? 0 : -1;
+      });
+      panels.forEach(function(p){
+        p.classList.toggle('tpanel-on', p.getAttribute('data-panel') === name);
+      });
+      if(doScroll){
+        var top = document.getElementById('datebar') || nav;
+        try{ top.scrollIntoView({behavior:'smooth', block:'start'}); }catch(e){ top.scrollIntoView(); }
+      }
+    }
+
+    btns.forEach(function(b, i){
+      b.addEventListener('click', function(){ activate(b.getAttribute('data-panel'), true); });
+      b.addEventListener('keydown', function(e){
+        var ni = null;
+        if(e.key === 'ArrowRight' || e.key === 'ArrowDown')      ni = (i + 1) % btns.length;
+        else if(e.key === 'ArrowLeft' || e.key === 'ArrowUp')    ni = (i - 1 + btns.length) % btns.length;
+        else if(e.key === 'Home')                                ni = 0;
+        else if(e.key === 'End')                                 ni = btns.length - 1;
+        else return;
+        e.preventDefault();
+        btns[ni].focus();
+        activate(btns[ni].getAttribute('data-panel'), true);
+      });
+    });
+
+    /* 「总览」里的覆盖率提示条，点它要跳到「明细数据」里的覆盖体检表：
+       先切到 detail 标签（此处捕获阶段先跑），原有的 scrollIntoView 随后就能生效。 */
+    document.addEventListener('click', function(e){
+      var t = e.target;
+      var ca = (t && t.closest) ? t.closest('#covalert') : null;
+      if(ca){ activate('detail', false); }
+    }, true);
+
+    /* 接管成功：启用分屏，并确保初始停在「总览」 */
+    document.body.classList.add('js-tabs');
+    activate('overview', false);
+  }catch(err){
+    /* 失败就回落成原来的整屏长页，内容一条都不少 */
+    document.body.classList.remove('js-tabs');
+    if(window.console && console.warn) console.warn('导航栏初始化失败，已回落为整屏显示：', err);
+  }
+
+  /* 使用说明弹窗（独立于分屏，即使上面回落也照常可用） */
+  try{
+    var modal = document.getElementById('helpModal');
+    var openB = document.getElementById('helpbtn');
+    var last  = null;
+    function openHelp(){
+      last = document.activeElement;
+      modal.classList.add('show');
+      var x = modal.querySelector('.hm-x'); if(x) x.focus();
+    }
+    function closeHelp(){
+      modal.classList.remove('show');
+      if(last && last.focus) last.focus();
+    }
+    if(openB && modal){
+      openB.addEventListener('click', openHelp);
+      modal.addEventListener('click', function(e){ if(e.target === modal) closeHelp(); });
+      [].forEach.call(modal.querySelectorAll('[data-close]'), function(el){
+        el.addEventListener('click', closeHelp);
+      });
+      /* Esc 关弹窗，用捕获阶段抢在页面原有的 Esc（收起区块）逻辑之前 */
+      document.addEventListener('keydown', function(e){
+        if(e.key === 'Escape' && modal.classList.contains('show')){
+          closeHelp(); e.stopPropagation();
+        }
+      }, true);
+    }
+  }catch(err){
+    if(window.console && console.warn) console.warn('使用说明初始化失败：', err);
+  }
+})();
 </script>
 
 </body>
